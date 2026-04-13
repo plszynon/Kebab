@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pl"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kebab Klikacz</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&amp;family=Rubik:wght@400;600;800&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a0a00;
+    --panel: #2b1200;
+    --panel2: #3d1a00;
+    --accent: #ff6b00;
+    --accent2: #ffbe00;
+    --red: #e03c00;
+    --text: #ffe8c0;
+    --muted: #a07050;
+    --green: #6fcf45;
+    --border: #5a2e00;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Rubik', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, #3d1500 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, #2a0d00 0%, transparent 60%);
+  }
+
+  h1 {
+    font-family: 'Rubik Dirt', cursive;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--accent2);
+    text-shadow: 0 0 30px #ff6b0088, 0 4px 0 #7a3000;
+    letter-spacing: 2px;
+    margin: 18px 0 4px;
+    text-align: center;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: .9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .main {
+    display: flex;
+    gap: 18px;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 12px 30px;
+    align-items: flex-start;
+  }
+
+  /* LEFT - clicker */
+  .clicker-col {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    min-width: 220px;
+  }
+
+  .counter-box {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 28px;
+    text-align: center;
+    width: 100%;
+    box-shadow: 0 4px 24px #0008;
+  }
+
+  .counter-label {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--muted);
+  }
+
+  .counter-val {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--accent2);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .counter-ps {
+    font-size: .85rem;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+
+  /* kebab button */
+  .kebab-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .kebab-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 7rem;
+    line-height: 1;
+    filter: drop-shadow(0 0 18px #ff6b0066);
+    transition: transform .08s ease, filter .1s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    display: block;
+  }
+
+  .kebab-btn:active {
+    transform: scale(0.88) rotate(-5deg);
+    filter: drop-shadow(0 0 32px #ffbe00cc);
+  }
+
+  .kebab-btn.pop {
+    animation: kpop .15s ease-out;
+  }
+
+  @keyframes kpop {
+    0%  { transform: scale(1); }
+    40% { transform: scale(1.18) rotate(4deg); }
+    100%{ transform: scale(1); }
+  }
+
+  .glow-ring {
+    position: absolute;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%,100% { transform: scale(.85); opacity: 0; }
+    50%      { transform: scale(1.1); opacity: .35; }
+  }
+
+  /* floaty text */
+  .floaty {
+    position: fixed;
+    pointer-events: none;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--accent2);
+    text-shadow: 0 2px 8px #0008;
+    animation: floaty-up .9s ease forwards;
+    z-index: 999;
+  }
+  @keyframes floaty-up {
+    0%   { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-80px) scale(.6); opacity: 0; }
+  }
+
+  /* upgrades */
+  .upgrades-col {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .section-title {
+    font-family: 'Rubik Dirt', cursive;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 6px;
+    margin-bottom: 2px;
+  }
+
+  .upgrade-item {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, transform .1s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .upgrade-item:hover:not(.locked) {
+    background: var(--panel2);
+    border-color: var(--accent);
+    transform: translateX(3px);
+  }
+
+  .upgrade-item.locked {
+    opacity: .45;
+    cursor: not-allowed;
+    filter: grayscale(.6);
+  }
+
+  .upgrade-item.bought {
+    border-color: var(--green);
+    background: #0d2200;
+  }
+
+  .upgrade-icon { font-size: 2rem; flex-shrink: 0; }
+
+  .upgrade-info { flex: 1; }
+  .upgrade-name { font-weight: 800; font-size: 1rem; }
+  .upgrade-desc { font-size: .78rem; color: var(--muted); margin-top: 1px; }
+
+  .upgrade-cost {
+    font-weight: 800;
+    font-size: .95rem;
+    color: var(--accent2);
+    white-space: nowrap;
+  }
+  .upgrade-cost.cant { color: var(--red); }
+
+  .upgrade-item.bought .upgrade-cost { color: var(--green); }
+
+  /* buildings */
+  .buildings-col {
+    flex: 0 0 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .building-item {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 9px 12px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .building-item:hover:not(.locked) {
+    background: var(--panel2);
+    border-color: var(--accent);
+  }
+  .building-item.locked { opacity: .4; cursor: not-allowed; }
+
+  .building-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .building-info { flex: 1; min-width: 0; }
+  .building-name { font-weight: 700; font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .building-owned { font-size: .72rem; color: var(--accent); }
+  .building-cost  { font-size: .8rem; font-weight: 700; color: var(--accent2); white-space: nowrap; }
+  .building-cost.cant { color: var(--red); }
+
+  /* milestone toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #3d1a00;
+    border: 2px solid var(--accent2);
+    border-radius: 14px;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--accent2);
+    box-shadow: 0 4px 24px #0009;
+    z-index: 9999;
+    transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+    pointer-events: none;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* milestone bar */
+  .milestone-bar {
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 12px 6px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .milestone-badge {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: .75rem;
+    font-weight: 700;
+    color: var(--muted);
+    transition: color .3s, border-color .3s;
+  }
+  .milestone-badge.done { color: var(--accent2); border-color: var(--accent2); }
+
+  /* save bar */
+  .save-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  .save-btn {
+    background: var(--panel2);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Rubik', sans-serif;
+    font-weight: 700;
+    font-size: .85rem;
+    padding: 7px 18px;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+    letter-spacing: 1px;
+  }
+  .save-btn:hover { background: #5a2e00; border-color: var(--accent); }
+  .save-btn.danger { border-color: var(--red); color: var(--red); }
+  .save-btn.danger:hover { background: #3a0000; }
+  .save-btn.dl { border-color: var(--accent2); color: var(--accent2); }
+  .save-btn.dl:hover { background: #3a2500; }
+
+  /* responsive */
+  @media (max-width: 700px) {
+    .main { flex-direction: column; align-items: center; }
+    .buildings-col { flex: unset; width: 100%; flex-direction: row; flex-wrap: wrap; }
+    .building-item { flex: 0 0 calc(50% - 4px); }
+    .upgrades-col { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🌯 KEBAB KLIKACZ</h1>
+<p class="subtitle">Nakarm cały świat</p>
+
+<div class="save-bar">
+  <button class="save-btn" onclick="saveGame()">💾 Zapisz</button>
+  <button class="save-btn" onclick="loadGame()">📂 Wczytaj</button>
+  <button class="save-btn danger" onclick="resetGame()">🗑️ Reset</button>
+  <button class="save-btn dl" onclick="downloadGame()">⬇️ Pobierz grę</button>
+</div>
+<div class="milestone-bar" id="milestoneBar"><div class="milestone-badge">1 Kebab</div><div class="milestone-badge">10 Kebabów</div><div class="milestone-badge">100 Kebabów</div><div class="milestone-badge">1 000</div><div class="milestone-badge">10 000</div><div class="milestone-badge">100 000</div><div class="milestone-badge">1 Milion</div></div>
+
+<div class="main">
+  <!-- LEFT -->
+  <div class="clicker-col">
+    <div class="counter-box">
+      <div class="counter-label">Kebaby</div>
+      <div class="counter-val" id="counterVal">0</div>
+      <div class="counter-ps" id="counterPS">0 kebabów/s</div>
+    </div>
+    <div class="kebab-wrap">
+      <div class="glow-ring"></div>
+      <button class="kebab-btn" id="kebabBtn" title="Kliknij!">🌯</button>
+    </div>
+    <div class="counter-box" style="font-size:.82rem; color:var(--muted); padding:8px 16px;">
+      Łącznie zrobiono: <strong id="totalMade" style="color:var(--accent2)">0</strong>
+    </div>
+  </div>
+
+  <!-- UPGRADES -->
+  <div class="upgrades-col">
+    <div class="section-title">⚡ Ulepszenia</div>
+    <div id="upgradeList"><div class="upgrade-item locked">
+      <div class="upgrade-icon">🔪</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">Lepszy szamszir</div>
+        <div class="upgrade-desc">+1 kebab za klik</div>
+      </div>
+      <div class="upgrade-cost cant">
+        15 🌯
+      </div></div><div class="upgrade-item locked">
+      <div class="upgrade-icon">🥩</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">Podwójne mięso</div>
+        <div class="upgrade-desc">+3 kebaby za klik</div>
+      </div>
+      <div class="upgrade-cost cant">
+        100 🌯
+      </div></div><div class="upgrade-item locked">
+      <div class="upgrade-icon">🌶️</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">Sosik harissy</div>
+        <div class="upgrade-desc">×2 kebaby za klik</div>
+      </div>
+      <div class="upgrade-cost cant">
+        500 🌯
+      </div></div><div class="upgrade-item locked">
+      <div class="upgrade-icon">✨</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">Złoty szpikulec</div>
+        <div class="upgrade-desc">+10 za klik</div>
+      </div>
+      <div class="upgrade-cost cant">
+        2000 🌯
+      </div></div><div class="upgrade-item locked">
+      <div class="upgrade-icon">⚡</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">Turboklik</div>
+        <div class="upgrade-desc">×3 za klik</div>
+      </div>
+      <div class="upgrade-cost cant">
+        10&nbsp;000 🌯
+      </div></div><div class="upgrade-item locked">
+      <div class="upgrade-icon">👼</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">Boskie mięso</div>
+        <div class="upgrade-desc">+50 za klik</div>
+      </div>
+      <div class="upgrade-cost cant">
+        50&nbsp;000 🌯
+      </div></div></div>
+  </div>
+
+  <!-- BUILDINGS -->
+  <div class="buildings-col">
+    <div class="section-title">🏗️ Budynki</div>
+    <div id="buildingList"><div class="building-item locked">
+      <div class="building-icon">🔥</div>
+      <div class="building-info">
+        <div class="building-name">Grill</div>
+        <div class="building-owned">Posiadasz: 0</div>
+      </div>
+      <div>
+        <div class="building-cost cant">10 🌯</div>
+      </div></div><div class="building-item locked">
+      <div class="building-icon">🏠</div>
+      <div class="building-info">
+        <div class="building-name">Kebabiarnia</div>
+        <div class="building-owned">Posiadasz: 0</div>
+      </div>
+      <div>
+        <div class="building-cost cant">80 🌯</div>
+      </div></div><div class="building-item locked">
+      <div class="building-icon">🚐</div>
+      <div class="building-info">
+        <div class="building-name">Food Truck</div>
+        <div class="building-owned">Posiadasz: 0</div>
+      </div>
+      <div>
+        <div class="building-cost cant">400 🌯</div>
+      </div></div><div class="building-item locked">
+      <div class="building-icon">🏪</div>
+      <div class="building-info">
+        <div class="building-name">Restauracja</div>
+        <div class="building-owned">Posiadasz: 0</div>
+      </div>
+      <div>
+        <div class="building-cost cant">2000 🌯</div>
+      </div></div><div class="building-item locked">
+      <div class="building-icon">🏭</div>
+      <div class="building-info">
+        <div class="building-name">Fabryka</div>
+        <div class="building-owned">Posiadasz: 0</div>
+      </div>
+      <div>
+        <div class="building-cost cant">10&nbsp;000 🌯</div>
+      </div></div><div class="building-item locked">
+      <div class="building-icon">🌆</div>
+      <div class="building-info">
+        <div class="building-name">Kebabplex</div>
+        <div class="building-owned">Posiadasz: 0</div>
+      </div>
+      <div>
+        <div class="building-cost cant">60&nbsp;000 🌯</div>
+      </div></div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STATE =====
+const state = {
+  kebabs: 0,
+  totalMade: 0,
+  clickPower: 1,
+  perSecond: 0,
+};
+
+// ===== DATA =====
+const UPGRADES = [
+  { id: 'u1', name: 'Lepszy szamszir', icon: '🔪', desc: '+1 kebab za klik', cost: 15,  bought: false, apply: () => state.clickPower += 1 },
+  { id: 'u2', name: 'Podwójne mięso',  icon: '🥩', desc: '+3 kebaby za klik', cost: 100, bought: false, apply: () => state.clickPower += 3 },
+  { id: 'u3', name: 'Sosik harissy',   icon: '🌶️', desc: '×2 kebaby za klik', cost: 500, bought: false, apply: () => state.clickPower *= 2 },
+  { id: 'u4', name: 'Złoty szpikulec', icon: '✨', desc: '+10 za klik',        cost: 2000, bought: false, apply: () => state.clickPower += 10 },
+  { id: 'u5', name: 'Turboklik',       icon: '⚡', desc: '×3 za klik',         cost: 10000, bought: false, apply: () => state.clickPower *= 3 },
+  { id: 'u6', name: 'Boskie mięso',    icon: '👼', desc: '+50 za klik',        cost: 50000, bought: false, apply: () => state.clickPower += 50 },
+];
+
+const BUILDINGS = [
+  { id: 'b1', name: 'Grill',       icon: '🔥', desc: '+0.5/s',  baseCost: 10,   owned: 0, baseCps: 0.5 },
+  { id: 'b2', name: 'Kebabiarnia', icon: '🏠', desc: '+2/s',    baseCost: 80,   owned: 0, baseCps: 2 },
+  { id: 'b3', name: 'Food Truck',  icon: '🚐', desc: '+8/s',    baseCost: 400,  owned: 0, baseCps: 8 },
+  { id: 'b4', name: 'Restauracja', icon: '🏪', desc: '+25/s',   baseCost: 2000, owned: 0, baseCps: 25 },
+  { id: 'b5', name: 'Fabryka',     icon: '🏭', desc: '+100/s',  baseCost: 10000,owned: 0, baseCps: 100 },
+  { id: 'b6', name: 'Kebabplex',   icon: '🌆', desc: '+500/s',  baseCost: 60000,owned: 0, baseCps: 500 },
+];
+
+const MILESTONES = [
+  { val: 1,      label: '1 Kebab' },
+  { val: 10,     label: '10 Kebabów' },
+  { val: 100,    label: '100 Kebabów' },
+  { val: 1000,   label: '1 000' },
+  { val: 10000,  label: '10 000' },
+  { val: 100000, label: '100 000' },
+  { val: 1e6,    label: '1 Milion' },
+];
+
+let reachedMilestones = new Set();
+
+// ===== HELPERS =====
+function fmt(n) {
+  if (n >= 1e9) return (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return (n/1e6).toFixed(2) + 'M';
+  if (n >= 1000) return Math.floor(n).toLocaleString('pl');
+  return Math.floor(n).toString();
+}
+
+function buildingCost(b) {
+  return Math.ceil(b.baseCost * Math.pow(1.15, b.owned));
+}
+
+function recalcCps() {
+  state.perSecond = BUILDINGS.reduce((s, b) => s + b.baseCps * b.owned, 0);
+}
+
+// ===== RENDER =====
+function renderUpgrades() {
+  const list = document.getElementById('upgradeList');
+  list.innerHTML = '';
+  UPGRADES.forEach(u => {
+    const div = document.createElement('div');
+    div.className = 'upgrade-item' + (u.bought ? ' bought' : (state.kebabs < u.cost ? ' locked' : ''));
+    div.innerHTML = `
+      <div class="upgrade-icon">${u.icon}</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">${u.name}</div>
+        <div class="upgrade-desc">${u.desc}</div>
+      </div>
+      <div class="upgrade-cost ${u.bought ? '' : (state.kebabs < u.cost ? 'cant' : '')}">
+        ${u.bought ? '✔ Kupione' : fmt(u.cost) + ' 🌯'}
+      </div>`;
+    if (!u.bought) div.onclick = () => buyUpgrade(u);
+    list.appendChild(div);
+  });
+}
+
+function renderBuildings() {
+  const list = document.getElementById('buildingList');
+  list.innerHTML = '';
+  BUILDINGS.forEach(b => {
+    const cost = buildingCost(b);
+    const locked = state.kebabs < cost;
+    const div = document.createElement('div');
+    div.className = 'building-item' + (locked ? ' locked' : '');
+    div.innerHTML = `
+      <div class="building-icon">${b.icon}</div>
+      <div class="building-info">
+        <div class="building-name">${b.name}</div>
+        <div class="building-owned">Posiadasz: ${b.owned}</div>
+      </div>
+      <div>
+        <div class="building-cost ${locked ? 'cant' : ''}">${fmt(cost)} 🌯</div>
+      </div>`;
+    div.onclick = () => buyBuilding(b);
+    list.appendChild(div);
+  });
+}
+
+function renderMilestones() {
+  const bar = document.getElementById('milestoneBar');
+  bar.innerHTML = '';
+  MILESTONES.forEach(m => {
+    const badge = document.createElement('div');
+    badge.className = 'milestone-badge' + (reachedMilestones.has(m.val) ? ' done' : '');
+    badge.textContent = m.label;
+    bar.appendChild(badge);
+  });
+}
+
+function renderCounter() {
+  document.getElementById('counterVal').textContent = fmt(state.kebabs);
+  document.getElementById('counterPS').textContent = fmt(state.perSecond) + ' kebabów/s';
+  document.getElementById('totalMade').textContent = fmt(state.totalMade);
+}
+
+function render() {
+  renderCounter();
+  renderUpgrades();
+  renderBuildings();
+  renderMilestones();
+}
+
+// ===== ACTIONS =====
+function buyUpgrade(u) {
+  if (u.bought || state.kebabs < u.cost) return;
+  state.kebabs -= u.cost;
+  u.bought = true;
+  u.apply();
+  showToast('✅ Ulepszenie: ' + u.name);
+  render();
+}
+
+function buyBuilding(b) {
+  const cost = buildingCost(b);
+  if (state.kebabs < cost) return;
+  state.kebabs -= cost;
+  b.owned++;
+  recalcCps();
+  render();
+}
+
+// ===== CLICK =====
+const btn = document.getElementById('kebabBtn');
+btn.addEventListener('click', (e) => {
+  state.kebabs += state.clickPower;
+  state.totalMade += state.clickPower;
+  checkMilestones();
+
+  btn.classList.remove('pop');
+  void btn.offsetWidth;
+  btn.classList.add('pop');
+
+  spawnFloaty(e.clientX, e.clientY, '+' + fmt(state.clickPower));
+  renderCounter();
+  renderUpgrades();
+  renderBuildings();
+});
+
+function spawnFloaty(x, y, text) {
+  const el = document.createElement('div');
+  el.className = 'floaty';
+  el.textContent = text;
+  el.style.left = (x - 20 + Math.random()*30) + 'px';
+  el.style.top  = (y - 10) + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+// ===== MILESTONES =====
+function checkMilestones() {
+  MILESTONES.forEach(m => {
+    if (!reachedMilestones.has(m.val) && state.totalMade >= m.val) {
+      reachedMilestones.add(m.val);
+      showToast('🎉 Osiągnięcie: ' + m.label + ' kebabów!');
+      renderMilestones();
+    }
+  });
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== TICK =====
+let last = performance.now();
+function tick(now) {
+  const dt = (now - last) / 1000;
+  last = now;
+  if (state.perSecond > 0) {
+    const earned = state.perSecond * dt;
+    state.kebabs += earned;
+    state.totalMade += earned;
+    checkMilestones();
+    renderCounter();
+  }
+  requestAnimationFrame(tick);
+}
+
+// ===== SAVE / LOAD =====
+const SAVE_KEY = 'kebab_clicker_save';
+
+function saveGame() {
+  const data = {
+    kebabs: state.kebabs,
+    totalMade: state.totalMade,
+    clickPower: state.clickPower,
+    upgrades: UPGRADES.map(u => ({ id: u.id, bought: u.bought })),
+    buildings: BUILDINGS.map(b => ({ id: b.id, owned: b.owned })),
+    milestones: [...reachedMilestones],
+  };
+  localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  showToast('💾 Gra zapisana!');
+}
+
+function loadGame() {
+  const raw = localStorage.getItem(SAVE_KEY);
+  if (!raw) { showToast('❌ Brak zapisu!'); return; }
+  try {
+    const data = JSON.parse(raw);
+    state.kebabs    = data.kebabs    || 0;
+    state.totalMade = data.totalMade || 0;
+    state.clickPower= data.clickPower|| 1;
+    reachedMilestones = new Set(data.milestones || []);
+    data.upgrades.forEach(saved => {
+      const u = UPGRADES.find(x => x.id === saved.id);
+      if (u && saved.bought && !u.bought) { u.bought = true; u.apply(); }
+    });
+    data.buildings.forEach(saved => {
+      const b = BUILDINGS.find(x => x.id === saved.id);
+      if (b) b.owned = saved.owned || 0;
+    });
+    recalcCps();
+    render();
+    showToast('📂 Wczytano zapis!');
+  } catch(e) { showToast('❌ Błąd wczytywania!'); }
+}
+
+function resetGame() {
+  if (!confirm('Na pewno chcesz zresetować grę? Stracisz wszystko!')) return;
+  localStorage.removeItem(SAVE_KEY);
+  location.reload();
+}
+
+function downloadGame() {
+  try {
+    const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    // base64 działa z emoji i polskimi znakami
+    const b64 = btoa(unescape(encodeURIComponent(html)));
+    const a = document.createElement('a');
+    a.href = 'data:text/html;charset=utf-8;base64,' + b64;
+    a.download = 'kebab-klikacz.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch(e) {
+    showToast('❌ Błąd pobierania: ' + e.message);
+  }
+}
+
+// autosave co 30s
+setInterval(saveGame, 30000);
+
+// ===== INIT =====
+// próba auto-wczytania przy starcie
+(function autoLoad() {
+  const raw = localStorage.getItem(SAVE_KEY);
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    state.kebabs    = data.kebabs    || 0;
+    state.totalMade = data.totalMade || 0;
+    state.clickPower= data.clickPower|| 1;
+    reachedMilestones = new Set(data.milestones || []);
+    data.upgrades.forEach(saved => {
+      const u = UPGRADES.find(x => x.id === saved.id);
+      if (u && saved.bought && !u.bought) { u.bought = true; u.apply(); }
+    });
+    data.buildings.forEach(saved => {
+      const b = BUILDINGS.find(x => x.id === saved.id);
+      if (b) b.owned = saved.owned || 0;
+    });
+    recalcCps();
+  } catch(e) {}
+})();
+render();
+requestAnimationFrame(ts => { last = ts; tick(ts); });
+</script>
+
+
+</body></html>

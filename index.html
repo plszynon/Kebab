@@ -117,12 +117,14 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
   <button class="save-btn" onclick="loadGame()">📂 Wczytaj</button>
   <button class="save-btn danger" onclick="resetGame()">🗑️ Reset</button>
   <button class="save-btn prestige" onclick="openPrestige()">⭐ Prestige</button>
+  <button class="save-btn" style="border-color:var(--blue);color:var(--blue);" onclick="document.getElementById('tabBtn-log').click()">📋 Log</button>
 </div>
 
 <div class="tabs">
   <button class="tab-btn active" id="tabBtn-game" onclick="showTab('game',this)">🌯 Gra</button>
   <button class="tab-btn" id="tabBtn-stats" onclick="showTab('stats',this)">📊 Statystyki</button>
   <button class="tab-btn" id="tabBtn-ranking" onclick="showTab('ranking',this)">🏆 Ranking</button>
+  <button class="tab-btn" id="tabBtn-log" onclick="showTab('log',this)">📋 Update Log</button>
 </div>
 
 <div class="milestone-bar" id="milestoneBar"></div>
@@ -179,6 +181,91 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
   </table>
 </div>
 
+<!-- UPDATE LOG -->
+<div class="tab-panel" id="tab-log">
+  <div class="section-title" style="margin-top:10px;">📋 Update Log</div>
+  <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
+
+    <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v1.5 — Najnowsza</span>
+        <span style="font-size:.75rem;color:var(--muted);">2025</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">👽 Dodano event "Inwazja Kebabów" (×50!)</li>
+        <li style="font-size:.85rem;">🌊 Nowy event: Fala Kebabów (×8 produkcja)</li>
+        <li style="font-size:.85rem;">💫 Nowy event: Złoty Kebab (×20 za klik)</li>
+        <li style="font-size:.85rem;">🍖 Nowy event: Mięsny Deszcz (×6 wszystko)</li>
+        <li style="font-size:.85rem;">📋 Dodano przycisk Log w górnym menu</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.4</span>
+        <span style="font-size:.75rem;color:var(--muted);">2025</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">📋 Dodano zakładkę Update Log</li>
+        <li style="font-size:.85rem;">🗑️ Usunięto event "Gorący Grill"</li>
+        <li style="font-size:.85rem;">🎉 Dodano event "Kebab Mania" (×10 za klik)</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.3</span>
+        <span style="font-size:.75rem;color:var(--muted);">2025</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">⭐ Dodano system Prestige (bonus ×1.5)</li>
+        <li style="font-size:.85rem;">📊 Dodano zakładkę Statystyki</li>
+        <li style="font-size:.85rem;">🏆 Dodano Ranking graczy</li>
+        <li style="font-size:.85rem;">🎲 Dodano losowe wydarzenia</li>
+        <li style="font-size:.85rem;">🛸 Nowe budynki: Satelita i Galaktyka</li>
+        <li style="font-size:.85rem;">📜 Nowe ulepszenia: Szef kuchni, Sekretna receptura i inne</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.2</span>
+        <span style="font-size:.75rem;color:var(--muted);">2025</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">💾 Dodano zapis/wczytywanie gry</li>
+        <li style="font-size:.85rem;">⏰ Autosave co 30 sekund</li>
+        <li style="font-size:.85rem;">🔄 Przycisk Reset</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.1</span>
+        <span style="font-size:.75rem;color:var(--muted);">2025</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">🏗️ Dodano budynki (Grill, Kebabiarnia...)</li>
+        <li style="font-size:.85rem;">⚡ Dodano ulepszenia</li>
+        <li style="font-size:.85rem;">🎯 Dodano osiągnięcia/milestones</li>
+        <li style="font-size:.85rem;">✨ Animacje i efekty wizualne</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.0</span>
+        <span style="font-size:.75rem;color:var(--muted);">2025</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">🌯 Pierwsza wersja gry</li>
+        <li style="font-size:.85rem;">👆 Podstawowe klikanie kebaba</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
 <!-- PRESTIGE MODAL -->
 <div class="modal-overlay" id="prestigeModal">
   <div class="modal">
@@ -231,10 +318,14 @@ const MILESTONES=[
 ];
 
 const EVENTS=[
-  {name:'💰 Kebab Festiwal!',  desc:'×5 za klik 20s',    mult:5,duration:20,type:'click'},
-  {name:'⚡ Turbo Kebab!',     desc:'×2 wszystko 45s',   mult:2,duration:45,type:'all'},
-  {name:'🌶️ Chili Boost!',    desc:'×4 produkcja 25s',  mult:4,duration:25,type:'cps'},
-  {name:'🎉 Kebab Mania!',     desc:'×10 za klik 10s',   mult:10,duration:10,type:'click'},
+  {name:'💰 Kebab Festiwal!',  desc:'×5 za klik 20s',    mult:5,  duration:20, type:'click'},
+  {name:'⚡ Turbo Kebab!',     desc:'×2 wszystko 45s',   mult:2,  duration:45, type:'all'},
+  {name:'🌶️ Chili Boost!',    desc:'×4 produkcja 25s',  mult:4,  duration:25, type:'cps'},
+  {name:'🎉 Kebab Mania!',     desc:'×10 za klik 10s',   mult:10, duration:10, type:'click'},
+  {name:'👽 Inwazja Kebabów!', desc:'×50 wszystko 8s',   mult:50, duration:8,  type:'all'},
+  {name:'🌊 Fala Kebabów!',    desc:'×8 produkcja 30s',  mult:8,  duration:30, type:'cps'},
+  {name:'💫 Złoty Kebab!',     desc:'×20 za klik 15s',   mult:20, duration:15, type:'click'},
+  {name:'🍖 Mięsny Deszcz!',   desc:'×6 wszystko 20s',   mult:6,  duration:20, type:'all'},
 ];
 
 let reachedMilestones=new Set();

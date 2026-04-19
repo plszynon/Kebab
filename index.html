@@ -149,6 +149,10 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
         Za klik: <strong id="clickPowerDisplay" style="color:var(--accent)">1</strong><br>
         Combo: <strong id="comboDisplay" style="color:var(--purple)">×1</strong>
       </div>
+      <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:10px 12px;width:100%;">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:6px;">🎯 Dzienne Wyzwanie</div>
+        <div id="dailyChallenge">Ładowanie...</div>
+      </div>
     </div>
     <div class="upgrades-col">
       <div class="section-title">⚡ Ulepszenia</div>
@@ -189,17 +193,16 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 
     <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v1.6 — Najnowsza</span>
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v1.7 — Najnowsza</span>
         <span style="font-size:.75rem;color:var(--muted);">2025</span>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-        <li style="font-size:.85rem;">🔥 Dodano system COMBO (klikaj szybko!)</li>
-        <li style="font-size:.85rem;">🌀 Nowy budynek: Kebab-Wymiar</li>
-        <li style="font-size:.85rem;">🌠 Nowy budynek: Kebab-Wszechświat</li>
-        <li style="font-size:.85rem;">👁️ Nowy budynek: Bóg Kebaba</li>
-        <li style="font-size:.85rem;">🏅 Nowe ulepszenia: Kebab Mistrz, Kosmiczny sos, Wieczny Kebab</li>
-        <li style="font-size:.85rem;">🏆 Naprawiono ranking (dodano daty)</li>
-        <li style="font-size:.85rem;">⚠️ naprawiono błędy itp</li>
+        <li style="font-size:.85rem;">🌐 Ranking jest teraz ONLINE (wszyscy gracze!)</li>
+        <li style="font-size:.85rem;">🎯 Dodano Dzienne Wyzwania z nagrodami</li>
+        <li style="font-size:.85rem;">🌪️ Nowy event: Kebab Tornado (×15)</li>
+        <li style="font-size:.85rem;">🔮 Nowy event: Magiczny Sos (×30)</li>
+        <li style="font-size:.85rem;">💥 Nowy event: Wielki Wybuch (×100!)</li>
+        <li style="font-size:.85rem;">🎪 Nowy event: Kebab Cyrk (×7)</li>
       </ul>
     </div>
 
@@ -348,7 +351,65 @@ const EVENTS=[
   {name:'🌊 Fala Kebabów!',    desc:'×8 produkcja 30s',  mult:8,  duration:30, type:'cps'},
   {name:'💫 Złoty Kebab!',     desc:'×20 za klik 15s',   mult:20, duration:15, type:'click'},
   {name:'🍖 Mięsny Deszcz!',   desc:'×6 wszystko 20s',   mult:6,  duration:20, type:'all'},
+  {name:'🌪️ Kebab Tornado!',  desc:'×15 produkcja 12s', mult:15, duration:12, type:'cps'},
+  {name:'🔮 Magiczny Sos!',    desc:'×30 za klik 7s',    mult:30, duration:7,  type:'click'},
+  {name:'💥 Wielki Wybuch!',   desc:'×100 wszystko 5s',  mult:100,duration:5,  type:'all'},
+  {name:'🎪 Kebab Cyrk!',      desc:'×7 wszystko 35s',   mult:7,  duration:35, type:'all'},
 ];
+
+// DZIENNE WYZWANIE
+const DAILY_CHALLENGES=[
+  {id:'c1', name:'Kliknij 100 razy',     check:()=>state.totalClicks>=100,   reward:500,   icon:'👆'},
+  {id:'c2', name:'Zdobądź 10 000 kebabów', check:()=>state.totalMade>=10000, reward:5000,  icon:'🌯'},
+  {id:'c3', name:'Kup 5 budynków',       check:()=>BUILDINGS.reduce((s,b)=>s+b.owned,0)>=5, reward:2000, icon:'🏗️'},
+  {id:'c4', name:'Osiągnij ×5 combo',    check:()=>state.combo>=5,           reward:3000,  icon:'🔥'},
+  {id:'c5', name:'Zdobądź 1M kebabów',   check:()=>state.totalMade>=1000000, reward:50000, icon:'💎'},
+];
+
+let dailyChallenge=null;
+let dailyClaimed=false;
+
+function initDailyChallenge(){
+  const today=new Date().toDateString();
+  const saved=JSON.parse(localStorage.getItem('kebab_daily')||'{}');
+  if(saved.date===today){
+    dailyChallenge=DAILY_CHALLENGES.find(c=>c.id===saved.id)||DAILY_CHALLENGES[0];
+    dailyClaimed=saved.claimed||false;
+  } else {
+    dailyChallenge=DAILY_CHALLENGES[Math.floor(Math.random()*DAILY_CHALLENGES.length)];
+    localStorage.setItem('kebab_daily',JSON.stringify({date:today,id:dailyChallenge.id,claimed:false}));
+    dailyClaimed=false;
+  }
+  renderDailyChallenge();
+}
+
+function renderDailyChallenge(){
+  const el=document.getElementById('dailyChallenge');
+  if(!el||!dailyChallenge)return;
+  const done=dailyChallenge.check();
+  el.innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:1.8rem">${dailyChallenge.icon}</span>
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:.9rem">${dailyChallenge.name}</div>
+        <div style="font-size:.75rem;color:var(--muted)">Nagroda: ${fmt(dailyChallenge.reward)} 🌯</div>
+      </div>
+      <button onclick="claimDaily()" style="background:${dailyClaimed?'#333':done?'var(--green)':'var(--border)'};border:none;border-radius:8px;color:${done&&!dailyClaimed?'#000':'var(--muted)'};font-family:'Rubik',sans-serif;font-weight:700;font-size:.82rem;padding:6px 12px;cursor:${done&&!dailyClaimed?'pointer':'not-allowed'}">
+        ${dailyClaimed?'✔ Odebrano':done?'🎁 Odbierz!':'🔒 W toku'}
+      </button>
+    </div>`;
+}
+
+function claimDaily(){
+  if(!dailyChallenge||dailyClaimed||!dailyChallenge.check())return;
+  state.kebabs+=dailyChallenge.reward;
+  state.totalMade+=dailyChallenge.reward;
+  dailyClaimed=true;
+  const today=new Date().toDateString();
+  localStorage.setItem('kebab_daily',JSON.stringify({date:today,id:dailyChallenge.id,claimed:true}));
+  showToast('🎁 Odebrano nagrodę: +'+fmt(dailyChallenge.reward)+' kebabów!');
+  renderCounter();renderDailyChallenge();
+}
 
 let reachedMilestones=new Set();
 let currentEvent=null;
@@ -535,35 +596,60 @@ function doPrestige(){
   showToast('⭐ Prestige '+state.prestigeLevel+'! Bonus: ×'+state.prestigeBonus.toFixed(2));
 }
 
-// RANKING - localStorage (lokalny ranking)
-const RANK_KEY='kebab_ranking_v3';
-function getScores(){try{return JSON.parse(localStorage.getItem(RANK_KEY)||'[]');}catch(e){return[];}}
-function submitScore(){
+// ONLINE RANKING via JSONBin.io
+const BIN_ID='6840a1418561e97a50f3b9a2';
+const BIN_KEY='$2a$10$k8QwXvZ3mN9pL2dR7hY6uOjF4tGcB1sE5nA0iW8qM3oP6xK9rV7l';
+const BIN_URL='https://api.jsonbin.io/v3/b/'+BIN_ID;
+
+async function fetchOnlineScores(){
+  try{
+    const res=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY}});
+    const data=await res.json();
+    return data.record?.scores||[];
+  }catch(e){return[];}
+}
+
+async function pushOnlineScores(scores){
+  try{
+    await fetch(BIN_URL,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},
+      body:JSON.stringify({scores})
+    });
+  }catch(e){}
+}
+
+async function submitScore(){
   const nick=document.getElementById('rankNickInput').value.trim();
   if(!nick){showToast('❌ Wpisz nick!');return;}
-  const scores=getScores();
+  showToast('⏳ Wysyłanie...');
+  const scores=await fetchOnlineScores();
   const ei=scores.findIndex(s=>s.nick===nick);
   const entry={nick,score:Math.floor(state.totalMade),prestige:state.prestigeLevel,date:Date.now()};
   if(ei>=0){if(entry.score>scores[ei].score)scores[ei]=entry;}
   else scores.push(entry);
   scores.sort((a,b)=>b.score-a.score);
-  localStorage.setItem(RANK_KEY,JSON.stringify(scores.slice(0,20)));
+  const top=scores.slice(0,50);
+  await pushOnlineScores(top);
   localStorage.setItem('kebab_my_nick',nick);
-  showToast('🏆 Wynik zapisany!');
+  showToast('🏆 Wynik wysłany online!');
   renderRanking();
 }
-function renderRanking(){
-  const scores=getScores();
+
+async function renderRanking(){
   const myNick=localStorage.getItem('kebab_my_nick')||'';
   document.getElementById('rankNickInput').value=myNick;
   const tbody=document.getElementById('rankingBody');
+  tbody.innerHTML='<tr><td colspan="4" class="no-scores">⏳ Ładowanie...</td></tr>';
+  const scores=await fetchOnlineScores();
   if(!scores.length){tbody.innerHTML='<tr><td colspan="4" class="no-scores">Brak wyników — bądź pierwszy! 🌯</td></tr>';return;}
   const medals=['🥇','🥈','🥉'];
-  tbody.innerHTML=scores.slice(0,20).map((s,i)=>{
+  tbody.innerHTML=scores.slice(0,50).map((s,i)=>{
     const date=s.date?new Date(s.date).toLocaleDateString('pl'):'';
-    return `<tr class="${s.nick===myNick?'rank-me':''} rank-${i+1}">
+    const isMe=s.nick===myNick;
+    return `<tr class="${isMe?'rank-me':''} rank-${i+1}">
       <td class="rank-num">${medals[i]||i+1}</td>
-      <td class="rank-name">${s.nick}${s.nick===myNick?' 👈':''}<br><span style="font-size:.7rem;color:var(--muted)">${date}</span></td>
+      <td class="rank-name">${s.nick}${isMe?' 👈':''}<br><span style="font-size:.7rem;color:var(--muted)">${date}</span></td>
       <td class="rank-prestige">${s.prestige>0?'⭐'.repeat(Math.min(s.prestige,5)):'-'}</td>
       <td class="rank-score">${fmt(s.score)} 🌯</td>
     </tr>`;
@@ -588,7 +674,7 @@ function tick(now){
   if(state.perSecond>0){
     const earned=state.perSecond*state.prestigeBonus*evCpsMult()*dt;
     state.kebabs+=earned;state.totalMade+=earned;
-    checkMilestones();renderCounter();
+    checkMilestones();renderCounter();renderDailyChallenge();
   }
   requestAnimationFrame(tick);
 }
@@ -628,6 +714,7 @@ setInterval(saveGame,30000);
   try{applyLoad(JSON.parse(raw));}catch(e){}
 })();
 render();
+initDailyChallenge();
 requestAnimationFrame(ts=>{last=ts;tick(ts);});
 </script>
 </body>

@@ -146,7 +146,8 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
       </div>
       <div class="counter-box" style="font-size:.8rem;color:var(--muted);padding:7px 14px;">
         Łącznie: <strong id="totalMade" style="color:var(--accent2)">0</strong><br>
-        Za klik: <strong id="clickPowerDisplay" style="color:var(--accent)">1</strong>
+        Za klik: <strong id="clickPowerDisplay" style="color:var(--accent)">1</strong><br>
+        Combo: <strong id="comboDisplay" style="color:var(--purple)">×1</strong>
       </div>
     </div>
     <div class="upgrades-col">
@@ -188,15 +189,29 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 
     <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v1.5 — Najnowsza</span>
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v1.6 — Najnowsza</span>
         <span style="font-size:.75rem;color:var(--muted);">2025</span>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-        <li style="font-size:.85rem;">👽 Dodano event "Inwazja Kebabów" (×50!)</li>
-        <li style="font-size:.85rem;">🌊 Nowy event: Fala Kebabów (×8 produkcja)</li>
-        <li style="font-size:.85rem;">💫 Nowy event: Złoty Kebab (×20 za klik)</li>
-        <li style="font-size:.85rem;">🍖 Nowy event: Mięsny Deszcz (×6 wszystko)</li>
-        <li style="font-size:.85rem;">📋 Dodano przycisk Log w górnym menu</li>
+        <li style="font-size:.85rem;">🔥 Dodano system COMBO (klikaj szybko!)</li>
+        <li style="font-size:.85rem;">🌀 Nowy budynek: Kebab-Wymiar</li>
+        <li style="font-size:.85rem;">🌠 Nowy budynek: Kebab-Wszechświat</li>
+        <li style="font-size:.85rem;">👁️ Nowy budynek: Bóg Kebaba</li>
+        <li style="font-size:.85rem;">🏅 Nowe ulepszenia: Kebab Mistrz, Kosmiczny sos, Wieczny Kebab</li>
+        <li style="font-size:.85rem;">🏆 Naprawiono ranking (dodano daty)</li>
+        <li style="font-size:.85rem;">⚠️ naprawiono błędy itp</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.5</span>
+        <span style="font-size:.75rem;color:var(--muted);">2025</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">👽 Dodano event "Inwazja Kebabów" (×50)</li>
+        <li style="font-size:.85rem;">🌊 Fala Kebabów, 💫 Złoty Kebab, 🍖 Mięsny Deszcz</li>
+        <li style="font-size:.85rem;">📋 Przycisk Log w górnym menu</li>
       </ul>
     </div>
 
@@ -283,9 +298,9 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 <div class="toast" id="toast"></div>
 
 <script>
-const state={kebabs:0,totalMade:0,clickPower:1,perSecond:0,prestigeLevel:0,prestigeBonus:1,totalClicks:0,totalSpent:0,playTimeSeconds:0,sessionStart:Date.now()};
+const state={kebabs:0,totalMade:0,clickPower:1,perSecond:0,prestigeLevel:0,prestigeBonus:1,totalClicks:0,totalSpent:0,playTimeSeconds:0,sessionStart:Date.now(),combo:0,comboTimer:0,comboBonus:1};
 
-const ORIG_CPS=[0.5,2,8,25,100,500,3000,20000];
+const ORIG_CPS=[0.5,2,8,25,100,500,3000,20000,150000,1000000,8000000];
 
 const UPGRADES=[
   {id:'u1', name:'Lepszy szamszir',    icon:'🔪', desc:'+1 kebab za klik',    cost:15,      bought:false, apply:()=>{state.clickPower+=1;}},
@@ -298,17 +313,24 @@ const UPGRADES=[
   {id:'u8', name:'Szef kuchni',        icon:'👨‍🍳',desc:'×2 produkcja/s',      cost:5000,    bought:false, apply:()=>{BUILDINGS.forEach(b=>b.baseCps*=2);recalcCps();}},
   {id:'u9', name:'Ekspresowe dostawy', icon:'🚀', desc:'×3 produkcja/s',      cost:100000,  bought:false, apply:()=>{BUILDINGS.forEach(b=>b.baseCps*=3);recalcCps();}},
   {id:'u10',name:'Sekretna receptura', icon:'📜', desc:'+500 za klik',        cost:1000000, bought:false, apply:()=>{state.clickPower+=500;}},
+  {id:'u11',name:'Kebab Mistrz',       icon:'🏅', desc:'×10 za klik',         cost:5000000, bought:false, apply:()=>{state.clickPower*=10;}},
+  {id:'u12',name:'Kosmiczny sos',      icon:'🛸', desc:'×5 produkcja/s',      cost:10000000,bought:false, apply:()=>{BUILDINGS.forEach(b=>b.baseCps*=5);recalcCps();}},
+  {id:'u13',name:'Combo Master',       icon:'🔥', desc:'×2 za każdy combo',   cost:500000,  bought:false, apply:()=>{state.comboBonus=2;}},
+  {id:'u14',name:'Wieczny Kebab',      icon:'♾️', desc:'+5000 za klik',       cost:50000000,bought:false, apply:()=>{state.clickPower+=5000;}},
 ];
 
 const BUILDINGS=[
-  {id:'b1',name:'Grill',         icon:'🔥',baseCost:10,     owned:0,baseCps:0.5},
-  {id:'b2',name:'Kebabiarnia',   icon:'🏠',baseCost:80,     owned:0,baseCps:2},
-  {id:'b3',name:'Food Truck',    icon:'🚐',baseCost:400,    owned:0,baseCps:8},
-  {id:'b4',name:'Restauracja',   icon:'🏪',baseCost:2000,   owned:0,baseCps:25},
-  {id:'b5',name:'Fabryka',       icon:'🏭',baseCost:10000,  owned:0,baseCps:100},
-  {id:'b6',name:'Kebabplex',     icon:'🌆',baseCost:60000,  owned:0,baseCps:500},
-  {id:'b7',name:'Kebab-Satelita',icon:'🛸',baseCost:400000, owned:0,baseCps:3000},
-  {id:'b8',name:'Kebab-Galaktyka',icon:'🌌',baseCost:3000000,owned:0,baseCps:20000},
+  {id:'b1', name:'Grill',          icon:'🔥', baseCost:10,      owned:0, baseCps:0.5},
+  {id:'b2', name:'Kebabiarnia',    icon:'🏠', baseCost:80,      owned:0, baseCps:2},
+  {id:'b3', name:'Food Truck',     icon:'🚐', baseCost:400,     owned:0, baseCps:8},
+  {id:'b4', name:'Restauracja',    icon:'🏪', baseCost:2000,    owned:0, baseCps:25},
+  {id:'b5', name:'Fabryka',        icon:'🏭', baseCost:10000,   owned:0, baseCps:100},
+  {id:'b6', name:'Kebabplex',      icon:'🌆', baseCost:60000,   owned:0, baseCps:500},
+  {id:'b7', name:'Kebab-Satelita', icon:'🛸', baseCost:400000,  owned:0, baseCps:3000},
+  {id:'b8', name:'Kebab-Galaktyka',icon:'🌌', baseCost:3000000, owned:0, baseCps:20000},
+  {id:'b9', name:'Kebab-Wymiar',   icon:'🌀', baseCost:25000000,owned:0, baseCps:150000},
+  {id:'b10',name:'Kebab-Wszechświat',icon:'🌠',baseCost:200000000,owned:0,baseCps:1000000},
+  {id:'b11',name:'Bóg Kebaba',     icon:'👁️', baseCost:2000000000,owned:0,baseCps:8000000},
 ];
 
 const MILESTONES=[
@@ -388,7 +410,11 @@ function renderCounter(){
   document.getElementById('counterVal').textContent=fmt(state.kebabs);
   document.getElementById('counterPS').textContent=fmt(state.perSecond*state.prestigeBonus*evCpsMult())+' kebabów/s';
   document.getElementById('totalMade').textContent=fmt(state.totalMade);
-  document.getElementById('clickPowerDisplay').textContent=fmt(state.clickPower*state.prestigeBonus*evClickMult());
+  const comboMult=1+((state.combo-1)*0.1*state.comboBonus);
+  document.getElementById('clickPowerDisplay').textContent=fmt(Math.floor(state.clickPower*state.prestigeBonus*evClickMult()*(state.combo>0?comboMult:1)));
+  const cd=document.getElementById('comboDisplay');
+  cd.textContent='×'+state.combo+' ('+(state.combo>0?'+'+Math.round((comboMult-1)*100)+'%':'0%')+')';
+  cd.style.color=state.combo>=10?'#c060ff':state.combo>=5?'#ffbe00':'#a07050';
 }
 
 function renderPrestigeBadge(){
@@ -438,18 +464,24 @@ function buyBuilding(b){
 
 const btn=document.getElementById('kebabBtn');
 btn.addEventListener('click',(e)=>{
-  const power=Math.floor(state.clickPower*state.prestigeBonus*evClickMult());
+  // combo
+  state.combo=Math.min(state.combo+1,20);
+  state.comboTimer=3;
+  const comboMult=1+((state.combo-1)*0.1*state.comboBonus);
+  const power=Math.floor(state.clickPower*state.prestigeBonus*evClickMult()*comboMult);
   state.kebabs+=power;state.totalMade+=power;state.totalClicks++;
   checkMilestones();
   btn.classList.remove('pop');void btn.offsetWidth;btn.classList.add('pop');
-  spawnFloaty(e.clientX,e.clientY,'+'+fmt(power));
+  const floatColor=state.combo>=10?'#c060ff':state.combo>=5?'#ffbe00':'#ff6b00';
+  spawnFloaty(e.clientX,e.clientY,'+'+fmt(power)+(state.combo>1?' ×'+state.combo:''),floatColor);
   renderCounter();renderUpgrades();renderBuildings();
 });
 
-function spawnFloaty(x,y,text){
+function spawnFloaty(x,y,text,color){
   const el=document.createElement('div');
   el.className='floaty';el.textContent=text;
   el.style.left=(x-20+Math.random()*30)+'px';el.style.top=(y-10)+'px';
+  if(color)el.style.color=color;
   document.body.appendChild(el);setTimeout(()=>el.remove(),900);
 }
 
@@ -527,7 +559,15 @@ function renderRanking(){
   const tbody=document.getElementById('rankingBody');
   if(!scores.length){tbody.innerHTML='<tr><td colspan="4" class="no-scores">Brak wyników — bądź pierwszy! 🌯</td></tr>';return;}
   const medals=['🥇','🥈','🥉'];
-  tbody.innerHTML=scores.slice(0,20).map((s,i)=>`<tr class="${s.nick===myNick?'rank-me':''} rank-${i+1}"><td class="rank-num">${medals[i]||i+1}</td><td class="rank-name">${s.nick}${s.nick===myNick?' 👈':''}</td><td class="rank-prestige">${s.prestige>0?'⭐'.repeat(Math.min(s.prestige,5)):'-'}</td><td class="rank-score">${fmt(s.score)} 🌯</td></tr>`).join('');
+  tbody.innerHTML=scores.slice(0,20).map((s,i)=>{
+    const date=s.date?new Date(s.date).toLocaleDateString('pl'):'';
+    return `<tr class="${s.nick===myNick?'rank-me':''} rank-${i+1}">
+      <td class="rank-num">${medals[i]||i+1}</td>
+      <td class="rank-name">${s.nick}${s.nick===myNick?' 👈':''}<br><span style="font-size:.7rem;color:var(--muted)">${date}</span></td>
+      <td class="rank-prestige">${s.prestige>0?'⭐'.repeat(Math.min(s.prestige,5)):'-'}</td>
+      <td class="rank-score">${fmt(s.score)} 🌯</td>
+    </tr>`;
+  }).join('');
 }
 
 let toastTimer;
@@ -540,6 +580,11 @@ let last=performance.now();
 function tick(now){
   const dt=(now-last)/1000;last=now;
   tickEvent(dt);trySpawnEvent();
+  // combo decay
+  if(state.combo>0){
+    state.comboTimer-=dt;
+    if(state.comboTimer<=0){state.combo=0;renderCounter();}
+  }
   if(state.perSecond>0){
     const earned=state.perSecond*state.prestigeBonus*evCpsMult()*dt;
     state.kebabs+=earned;state.totalMade+=earned;
@@ -565,6 +610,7 @@ function applyLoad(data){
   state.prestigeLevel=data.prestigeLevel||0;state.prestigeBonus=data.prestigeBonus||1;
   state.totalClicks=data.totalClicks||0;state.totalSpent=data.totalSpent||0;
   state.playTimeSeconds=data.playTimeSeconds||0;
+  state.comboBonus=data.comboBonus||1;
   reachedMilestones=new Set(data.milestones||[]);
   (data.upgrades||[]).forEach(saved=>{const u=UPGRADES.find(x=>x.id===saved.id);if(u&&saved.bought&&!u.bought){u.bought=true;u.apply();}});
   (data.buildings||[]).forEach(saved=>{const b=BUILDINGS.find(x=>x.id===saved.id);if(b){b.owned=saved.owned||0;if(saved.baseCps)b.baseCps=saved.baseCps;}});

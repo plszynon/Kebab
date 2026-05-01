@@ -568,9 +568,7 @@ let chartAnimFrame=null;
 let devMode=false;
 let devDialogs=[];
 const DEV_PASSWORD='SzYmOn!2#';
-const DEV_DIALOG_BIN='6840a1418561e97a50f3b9a2';
-const DEV_BIN_URL='https://api.jsonbin.io/v3/b/'+DEV_DIALOG_BIN;
-const DEV_BIN_KEY='$2a$10$k8QwXvZ3mN9pL2dR7hY6uOjF4tGcB1sE5nA0iW8qM3oP6xK9rV7l';
+// Firebase used for dev too (FB constant defined in ranking block)
 
 function openPwModal(){
   document.getElementById('pwInput').value='';
@@ -629,22 +627,16 @@ async function devTriggerEventGlobal(){
   const sel=document.getElementById('devGlobalEventSelect');
   if(!sel)return;
   const ev=EVENTS[parseInt(sel.value)];
-  // Odpal lokalnie
   currentEvent={...ev,timeLeft:ev.duration};
   state.totalEvents++;
   document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
   document.getElementById('eventBanner').classList.add('active');
   checkAchievements();
   showToast('📡 Wysyłanie eventu...');
-  // Wyślij online
   try{
-    const res=await fetch(DEV_BIN_URL+'/latest',{headers:{'X-Master-Key':DEV_BIN_KEY}});
-    const data=await res.json();
-    const rec=data.record||{};
-    rec.activeEvent={name:ev.name,desc:ev.desc,mult:ev.mult,duration:ev.duration,type:ev.type,ts:Date.now()};
-    await fetch(DEV_BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':DEV_BIN_KEY},body:JSON.stringify(rec)});
+    await fbSet('/devEvent',{name:ev.name,desc:ev.desc,mult:ev.mult,duration:ev.duration,type:ev.type,ts:Date.now()});
     showToast('📡 Event wysłany do wszystkich: '+ev.name);
-  }catch(e){showToast('📡 Lokalnie OK, brak sieci');console.error(e);}
+  }catch(e){showToast('📡 Lokalnie OK, błąd: '+e.message);console.error(e);}
 }
 
 async function devSendDialog(){
@@ -652,22 +644,12 @@ async function devSendDialog(){
   if(!msg)return;
   document.getElementById('devDialogInput').value='';
   const entry={msg:'👑 Szymon: '+msg,ts:Date.now()};
-  // Pokaż lokalnie od razu
-  const bossEl=document.getElementById('bossMsgText');
-  if(bossEl)bossEl.textContent=entry.msg;
   showToast('📢 Wysyłanie wiadomości...');
-  // Wyślij online przez JSONBin
   try{
-    const res=await fetch(DEV_BIN_URL+'/latest',{headers:{'X-Master-Key':DEV_BIN_KEY}});
-    const data=await res.json();
-    const rec=data.record||{};
-    const dialogs=rec.dialogs||[];
-    dialogs.unshift(entry);
-    const top=dialogs.slice(0,5);
-    await fetch(DEV_BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':DEV_BIN_KEY},body:JSON.stringify({...rec,dialogs:top})});
+    await fbSet('/devmsg',entry);
     showToast('📢 Wiadomość wysłana do wszystkich graczy!');
   }catch(e){
-    showToast('📢 Wysłano lokalnie (brak sieci)');
+    showToast('❌ Błąd wysyłania: '+e.message);
     console.error(e);
   }
 }
@@ -675,17 +657,18 @@ async function devSendDialog(){
 // Sprawdź online dialogi od Szefa (co 18s)
 async function checkDevDialogs(){
   try{
-    const res=await fetch(DEV_BIN_URL+'/latest',{headers:{'X-Master-Key':DEV_BIN_KEY}});
-    if(!res.ok)return;
-    const data=await res.json();
-    const rec=data.record||{};
     // Sprawdź globalny event
-    if(rec.activeEvent&&rec.activeEvent.ts>(Date.now()-rec.activeEvent.duration*1000-5000)&&!currentEvent){
-      const ev=rec.activeEvent;
+    const ev=await fbGet('/devEvent').catch(()=>null);
+    if(ev&&ev.ts&&ev.ts>(Date.now()-ev.duration*1000-5000)&&!currentEvent){
       currentEvent={...ev,timeLeft:Math.max(1,ev.duration-Math.floor((Date.now()-ev.ts)/1000))};
       document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
       document.getElementById('eventBanner').classList.add('active');
       showToast('📡 Event od admina: '+ev.name);
+    }
+    // Sprawdź wiadomość od Szefa
+    const dmsg=await fbGet('/devmsg').catch(()=>null);
+    if(dmsg&&dmsg.ts>(Date.now()-120000)){
+      showToast('📢 '+dmsg.msg);
     }
   }catch(e){}
 }
@@ -1000,51 +983,54 @@ function doPrestige(){
   showToast('⭐ Prestige '+state.prestigeLevel+'! Bonus: ×'+state.prestigeBonus.toFixed(2));
 }
 
-// ===== RANKING =====
-const BIN_ID='6840a1418561e97a50f3b9a2';
-const BIN_KEY='$2a$10$k8QwXvZ3mN9pL2dR7hY6uOjF4tGcB1sE5nA0iW8qM3oP6xK9rV7l';
-const BIN_URL='https://api.jsonbin.io/v3/b/'+BIN_ID;
+// ===== RANKING + DEV ONLINE — FIREBASE =====
+const FB='https://kebabclicker-1b327-default-rtdb.europe-west1.firebasedatabase.app';
 function setRankStatus(msg,ok){const el=document.getElementById('rankStatus');if(!el)return;el.innerHTML=`<div class="rank-status ${ok?'ok':'err'}">${msg}</div>`;}
-async function fetchOnlineScores(){
-  const res=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY}});
-  if(!res.ok)throw new Error('HTTP '+res.status);
-  const data=await res.json();return data.record?.scores||[];
+
+async function fbGet(path){
+  const r=await fetch(FB+path+'.json');
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return r.json();
 }
-async function pushOnlineScores(scores){
-  const res=await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},body:JSON.stringify({scores})});
-  if(!res.ok)throw new Error('HTTP '+res.status);
+async function fbSet(path,data){
+  const r=await fetch(FB+path+'.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return r.json();
 }
+
 async function submitScore(){
   const nick=document.getElementById('rankNickInput').value.trim();
   if(!nick){showToast('❌ Wpisz nick!');return;}
   setRankStatus('⏳ Wysyłanie...',true);showToast('⏳ Wysyłanie...');
   try{
-    const scores=await fetchOnlineScores();
-    const ei=scores.findIndex(s=>s.nick===nick);
+    const key=nick.replace(/[^a-zA-Z0-9_]/g,'_');
     const entry={nick,score:Math.floor(state.totalMade),prestige:state.prestigeLevel,date:Date.now()};
-    if(ei>=0){if(entry.score>scores[ei].score)scores[ei]=entry;}else scores.push(entry);
-    scores.sort((a,b)=>b.score-a.score);
-    await pushOnlineScores(scores.slice(0,50));
+    const existing=await fbGet('/scores/'+key).catch(()=>null);
+    if(!existing||entry.score>existing.score){
+      await fbSet('/scores/'+key,entry);
+    }
     localStorage.setItem('kebab_my_nick',nick);
     setRankStatus('✅ Wynik wysłany!',true);showToast('🏆 Wynik wysłany online!');renderRanking();
   }catch(e){setRankStatus('❌ Błąd: '+e.message,false);showToast('❌ Błąd wysyłania!');console.error(e);}
 }
+
 async function renderRanking(){
   const myNick=localStorage.getItem('kebab_my_nick')||'';
   document.getElementById('rankNickInput').value=myNick;
   const tbody=document.getElementById('rankingBody');
   tbody.innerHTML='<tr><td colspan="4" class="no-scores">⏳ Ładowanie...</td></tr>';
   try{
-    const scores=await fetchOnlineScores();
-    if(!scores.length){tbody.innerHTML='<tr><td colspan="4" class="no-scores">Brak wyników — bądź pierwszy! 🌯</td></tr>';setRankStatus('✅ Połączono',true);return;}
+    const data=await fbGet('/scores');
+    if(!data){tbody.innerHTML='<tr><td colspan="4" class="no-scores">Brak wyników — bądź pierwszy! 🌯</td></tr>';setRankStatus('✅ Połączono z Firebase',true);return;}
+    const scores=Object.values(data).sort((a,b)=>b.score-a.score).slice(0,50);
     setRankStatus('✅ Ranking: '+scores.length+' graczy',true);
     const medals=['🥇','🥈','🥉'];
-    tbody.innerHTML=scores.slice(0,50).map((s,i)=>{
+    tbody.innerHTML=scores.map((s,i)=>{
       const date=s.date?new Date(s.date).toLocaleDateString('pl'):'';
       const isMe=s.nick===myNick;
       return `<tr class="${isMe?'rank-me':''} rank-${i+1}"><td class="rank-num">${medals[i]||i+1}</td><td class="rank-name">${s.nick}${isMe?' 👈':''}<br><span style="font-size:.7rem;color:var(--muted)">${date}</span></td><td class="rank-prestige">${s.prestige>0?'⭐'.repeat(Math.min(s.prestige,5)):'-'}</td><td class="rank-score">${fmt(s.score)} 🌯</td></tr>`;
     }).join('');
-  }catch(e){tbody.innerHTML='<tr><td colspan="4" class="no-scores">❌ Błąd ładowania rankingu.</td></tr>';setRankStatus('❌ '+e.message,false);console.error(e);}
+  }catch(e){tbody.innerHTML='<tr><td colspan="4" class="no-scores">❌ Błąd ładowania.</td></tr>';setRankStatus('❌ '+e.message,false);console.error(e);}
 }
 
 let toastTimer;

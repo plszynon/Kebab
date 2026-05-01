@@ -1039,6 +1039,7 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 // ===== TICK =====
 let last=performance.now();
 let chartTickCounter=0;
+let devTimer=0;
 function tick(now){
   const dt=(now-last)/1000;last=now;
   tickEvent(dt);trySpawnEvent();
@@ -1051,7 +1052,8 @@ function tick(now){
   // wykres co ~2s
   chartTickCounter+=dt;
   if(chartTickCounter>=2){chartTickCounter=0;pushCpsPoint();}
-  bossTimer+=dt;
+  devTimer+=dt;
+  if(devTimer>=15){devTimer=0;checkDevDialogs();}
   requestAnimationFrame(tick);
 }
 

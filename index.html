@@ -609,32 +609,36 @@ function buildDevEventList(){
 function devTriggerLocal(){
   const sel=document.getElementById('devLocalEventSelect');
   if(!sel)return;
-  const idx=parseInt(sel.value);
-  const ev=EVENTS[idx];
-  currentEvent={...ev,timeLeft:ev.duration};
-  document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
+  const ev=EVENTS[parseInt(sel.value)];
+  currentEvent={...ev,timeLeft:Infinity,permanent:true};
+  document.getElementById('eventBanner').textContent=ev.name+' ♾️ (stały)';
   document.getElementById('eventBanner').classList.add('active');
   showToast('🔒 Event lokalny: '+ev.name);
 }
 
-function devResetEvent(){
+async function devResetEvent(){
   currentEvent=null;
   document.getElementById('eventBanner').classList.remove('active');
   showToast('⏹ Event zatrzymany!');
+  try{
+    await fbSet('/devEvent',{active:false,ts:Date.now()});
+    showToast('⏹ Event zresetowany dla wszystkich!');
+  }catch(e){console.error(e);}
 }
 
 async function devTriggerEventGlobal(){
   const sel=document.getElementById('devGlobalEventSelect');
   if(!sel)return;
   const ev=EVENTS[parseInt(sel.value)];
-  currentEvent={...ev,timeLeft:ev.duration};
+  // timeLeft=Infinity — trwa dopóki admin nie zresetuje
+  currentEvent={...ev,timeLeft:Infinity,permanent:true};
   state.totalEvents++;
-  document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
+  document.getElementById('eventBanner').textContent=ev.name+' ♾️ (stały)';
   document.getElementById('eventBanner').classList.add('active');
   checkAchievements();
   showToast('📡 Wysyłanie eventu...');
   try{
-    await fbSet('/devEvent',{name:ev.name,desc:ev.desc,mult:ev.mult,duration:ev.duration,type:ev.type,ts:Date.now()});
+    await fbSet('/devEvent',{name:ev.name,desc:ev.desc,mult:ev.mult,type:ev.type,permanent:true,ts:Date.now(),active:true});
     showToast('📡 Event wysłany do wszystkich: '+ev.name);
   }catch(e){showToast('📡 Lokalnie OK, błąd: '+e.message);console.error(e);}
 }
@@ -657,15 +661,23 @@ async function devSendDialog(){
 // Sprawdź online dialogi od Szefa (co 18s)
 async function checkDevDialogs(){
   try{
-    // Sprawdź globalny event
     const ev=await fbGet('/devEvent').catch(()=>null);
-    if(ev&&ev.ts&&ev.ts>(Date.now()-ev.duration*1000-5000)&&!currentEvent){
-      currentEvent={...ev,timeLeft:Math.max(1,ev.duration-Math.floor((Date.now()-ev.ts)/1000))};
-      document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
-      document.getElementById('eventBanner').classList.add('active');
-      showToast('📡 Event od admina: '+ev.name);
+    if(ev){
+      if(ev.active===false){
+        // Admin zresetował event
+        if(currentEvent&&currentEvent.permanent){
+          currentEvent=null;
+          document.getElementById('eventBanner').classList.remove('active');
+        }
+      } else if(ev.active!==false&&ev.permanent&&!currentEvent){
+        // Stały event od admina — włącz
+        currentEvent={...ev,timeLeft:Infinity,permanent:true};
+        document.getElementById('eventBanner').textContent=ev.name+' ♾️';
+        document.getElementById('eventBanner').classList.add('active');
+        showToast('📡 Event od admina: '+ev.name);
+      }
     }
-    // Sprawdź wiadomość od Szefa
+    // Sprawdź wiadomość
     const dmsg=await fbGet('/devmsg').catch(()=>null);
     if(dmsg&&dmsg.ts>(Date.now()-120000)){
       showToast('📢 '+dmsg.msg);
@@ -962,6 +974,10 @@ function trySpawnEvent(){
 }
 function tickEvent(dt){
   if(!currentEvent)return;
+  if(currentEvent.permanent){
+    document.getElementById('eventBanner').textContent=currentEvent.name+' ♾️';
+    return;
+  }
   currentEvent.timeLeft-=dt;
   document.getElementById('eventBanner').textContent=currentEvent.name+' — '+Math.ceil(currentEvent.timeLeft)+'s';
   if(currentEvent.timeLeft<=0){currentEvent=null;document.getElementById('eventBanner').classList.remove('active');showToast('Wydarzenie zakończone!');}

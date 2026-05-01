@@ -314,6 +314,18 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
   </div>
 </div>
 
+<!-- RESET MODAL -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal">
+    <h2 style="color:var(--red)">🗑️ RESET</h2>
+    <p>Czy na pewno chcesz usunąć cały postęp?<br><br><strong style="color:var(--red)">Tej operacji nie można cofnąć!</strong></p>
+    <div class="modal-btns">
+      <button class="btn-confirm" style="border-color:var(--red);color:var(--red);background:#200000;" onclick="doReset()">🗑️ Tak, resetuj</button>
+      <button class="btn-cancel" onclick="document.getElementById('resetModal').classList.remove('show')">Anuluj</button>
+    </div>
+  </div>
+</div>
+
 <!-- PRESTIGE MODAL -->
 <div class="modal-overlay" id="prestigeModal">
   <div class="modal">
@@ -718,7 +730,8 @@ function doPrestige(){
 }
 
 // ============ ONLINE RANKING — NAPRAWIONY ============
-const BIN_ID='6840a1258561e97a50f3b9a2';
+// BIN_ID z oryginalnego pliku gry (v1.7)
+const BIN_ID='6840a1418561e97a50f3b9a2';
 const BIN_KEY='$2a$10$k8QwXvZ3mN9pL2dR7hY6uOjF4tGcB1sE5nA0iW8qM3oP6xK9rV7l';
 const BIN_URL='https://api.jsonbin.io/v3/b/'+BIN_ID;
 
@@ -864,8 +877,13 @@ function applyLoad(data){
   recalcCps();
 }
 function resetGame(){
-  if(!confirm('Na pewno? Stracisz cały postęp!'))return;
-  localStorage.removeItem(SAVE_KEY);location.reload();
+  document.getElementById('resetModal').classList.add('show');
+}
+function doReset(){
+  localStorage.removeItem(SAVE_KEY);
+  localStorage.removeItem('kebab_v4');
+  localStorage.removeItem('kebab_daily');
+  location.reload();
 }
 setInterval(saveGame,30000);
 

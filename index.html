@@ -145,6 +145,49 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 .chart-box-title{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
 .chart-inner{position:relative;width:100%;height:120px;}
 canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px;}
+.shop-item{background:var(--panel);border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;transition:.2s;cursor:pointer;}
+.shop-item:hover:not(.bought-skin){border-color:var(--accent);transform:translateY(-2px);}
+.shop-item.bought-skin{border-color:var(--green);cursor:default;}
+.shop-item.active-skin{border-color:var(--accent2);box-shadow:0 0 16px #ffbe0033;}
+.shop-emoji{font-size:3rem;margin-bottom:8px;display:block;}
+.shop-name{font-weight:800;font-size:.9rem;margin-bottom:4px;}
+.shop-cost{font-size:.8rem;color:var(--accent2);font-weight:700;}
+.shop-cost.bought-label{color:var(--green);}
+.shop-cost.active-label{color:var(--accent2);}
+.pw-modal{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:20000;}
+.pw-modal.show{display:flex;}
+.pw-box{background:var(--panel);border:3px solid var(--purple);border-radius:18px;padding:24px;max-width:320px;width:90%;text-align:center;}
+.pw-box h3{font-family:'Rubik Dirt',cursive;color:var(--purple);font-size:1.2rem;margin-bottom:10px;}
+.pw-input{background:#1a0800;border:2px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:1rem;padding:9px 14px;width:100%;margin-bottom:10px;text-align:center;letter-spacing:2px;}
+.pw-input:focus{outline:none;border-color:var(--purple);}
+.pw-btn{background:var(--purple);border:none;border-radius:8px;color:#fff;font-family:'Rubik',sans-serif;font-weight:700;font-size:.9rem;padding:9px 20px;cursor:pointer;width:100%;margin-bottom:6px;}
+.pw-btn:hover{background:#9944dd;}
+.pw-cancel{background:none;border:none;color:var(--muted);font-family:'Rubik',sans-serif;font-size:.8rem;cursor:pointer;}
+.dev-panel{position:fixed;bottom:80px;right:12px;background:var(--panel);border:2px solid var(--purple);border-radius:14px;padding:14px;width:260px;z-index:5000;display:none;box-shadow:0 4px 24px #0009;}
+.dev-panel.show{display:block;}
+.dev-panel-title{font-family:'Rubik Dirt',cursive;color:var(--purple);font-size:.95rem;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.dev-event-btn{background:var(--panel2);border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-family:'Rubik',sans-serif;font-weight:700;font-size:.78rem;color:var(--text);cursor:pointer;width:100%;text-align:left;margin-bottom:5px;transition:.15s;}
+.dev-event-btn:hover{border-color:var(--purple);color:var(--purple);}
+.dev-dialog-input{background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.82rem;padding:6px 10px;width:100%;margin-bottom:5px;}
+.dev-dialog-input:focus{outline:none;border-color:var(--purple);}
+.dev-send-btn{background:var(--purple);border:none;border-radius:8px;color:#fff;font-family:'Rubik',sans-serif;font-weight:700;font-size:.82rem;padding:7px 12px;cursor:pointer;width:100%;}
+.dev-send-btn:hover{background:#9944dd;}
+.dev-badge{position:fixed;bottom:24px;right:12px;background:var(--panel);border:2px solid var(--purple);border-radius:50%;width:44px;height:44px;font-size:1.3rem;cursor:pointer;z-index:5001;display:none;align-items:center;justify-content:center;box-shadow:0 2px 10px #0006;}
+.dev-badge.show{display:flex;}
+
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+
+
+
+
+
+
+
+
+
+
 @media(max-width:680px){.main{flex-direction:column;align-items:center;}.buildings-col{flex:unset;width:100%;flex-direction:row;flex-wrap:wrap;}.building-item{flex:0 0 calc(50% - 4px);}.upgrades-col{width:100%;}.clicker-col{width:100%;}}
 </style>
 </head>
@@ -161,12 +204,14 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <button class="save-btn danger" onclick="resetGame()">🗑️ Reset</button>
   <button class="save-btn prestige" onclick="openPrestige()">⭐ Prestige</button>
   <button class="save-btn" style="border-color:var(--blue);color:var(--blue);" onclick="document.getElementById('tabBtn-log').click()">📋 Log</button>
+  <button class="save-btn" style="border-color:var(--purple);color:var(--purple);" onclick="openPwModal()">🔧 Dev</button>
 </div>
 
 <div class="tabs">
   <button class="tab-btn active" id="tabBtn-game" onclick="showTab('game',this)">🌯 Gra</button>
   <button class="tab-btn" id="tabBtn-stats" onclick="showTab('stats',this)">📊 Statystyki</button>
   <button class="tab-btn" id="tabBtn-map" onclick="showTab('map',this)">🗺️ Mapa</button>
+  <button class="tab-btn" id="tabBtn-shop" onclick="showTab('shop',this)">🛒 Sklep</button>
   <button class="tab-btn" id="tabBtn-ranking" onclick="showTab('ranking',this)">🏆 Ranking</button>
   <button class="tab-btn" id="tabBtn-log" onclick="showTab('log',this)">📋 Update Log</button>
 </div>
@@ -228,6 +273,13 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <div class="map-wrap" id="mapWrap"></div>
 </div>
 
+<!-- SKLEP SKÓREK -->
+<div class="tab-panel" id="tab-shop">
+  <div class="section-title" style="margin-top:10px;">🛒 Sklep Skórek Kebaba</div>
+  <p style="font-size:.8rem;color:var(--muted);margin:8px 0 4px;">Wydaj kebaby żeby odblokować nowe wyglądy! Aktywna skórka zmienia ikonę kebaba.</p>
+  <div class="shop-grid" id="shopGrid"></div>
+</div>
+
 <!-- RANKING -->
 <div class="tab-panel" id="tab-ranking">
   <div class="section-title" style="margin-top:10px;">🏆 Ranking Graczy</div>
@@ -248,7 +300,7 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
     <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v1.9 — Najnowsza</span>
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v2.1 — Najnowsza</span>
         <span style="font-size:.75rem;color:var(--muted);">2025</span>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
@@ -256,6 +308,14 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
         <li style="font-size:.85rem;">🗺️ Nowa zakładka: Mapa Postępu (12 etapów)</li>
         <li style="font-size:.85rem;">📈 Wykres produkcji/s w czasie rzeczywistym</li>
         <li style="font-size:.85rem;">🗑️ Naprawiono Reset (własny modal zamiast confirm)</li>
+        <li style="font-size:.85rem;">♾️ Nowy budynek: Centylion Kuchnia (5B/s, koszt 2e18)</li>
+        <li style="font-size:.85rem;">🌯 NOWY MEGA-EVENT: CENTYLION BURST!!! (×1000 wszystko 3s)</li>
+        <li style="font-size:.85rem;">🔢 Centylion (10^303) jako prawdziwy limit gry + rozbudowana skala</li>
+        <li style="font-size:.85rem;">🛒 Sklep skórek — 9 wygląd kebaba do odblokowania</li>
+        <li style="font-size:.85rem;">👨‍🍳 Szef Kebaba — losowe wiadomości co 18s</li>
+        <li style="font-size:.85rem;">📊 Pasek postępu do następnego budynku</li>
+        <li style="font-size:.85rem;">🏅 Licznik rekordowego CPS</li>
+        <li style="font-size:.85rem;">🔧 Sekretny Dev Panel (hasło = SzYmOn!2#) — eventy na żądanie + dialogi</li>
       </ul>
     </div>
     <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
@@ -265,7 +325,7 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
         <li style="font-size:.85rem;">🏅 Dodano 20 osiągnięć w zakładce Statystyki</li>
-        <li style="font-size:.85rem;">🔢 Nowy system liczb do Centyliona (10^303)</li>
+        <li style="font-size:.85rem;">🔢 Centylion (10^303) jako prawdziwy MAX — system liczb rozbudowany</li>
         <li style="font-size:.85rem;">🎪 3 nowe eventy: Kebab Zombie, Błyskawiczny Kebab, Rajd Kebabiarzy</li>
         <li style="font-size:.85rem;">⚡ 2 nowe ulepszenia endgame + nowy budynek</li>
       </ul>
@@ -332,6 +392,38 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   </div>
 </div>
 
+<div class="pw-modal" id="pwModal">
+  <div class="pw-box">
+    <h3>🔐 Dev Panel</h3>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px;">Wpisz hasło aby uzyskać dostęp</p>
+    <input class="pw-input" id="pwInput" type="password" placeholder="••••••••" maxlength="20">
+    <button class="pw-btn" onclick="checkPw()">🔓 Zaloguj</button>
+    <button class="pw-cancel" onclick="closePwModal()">Anuluj</button>
+    <div id="pwError" style="color:var(--red);font-size:.78rem;margin-top:6px;"></div>
+  </div>
+</div>
+
+<div class="dev-panel" id="devPanel">
+  <div class="dev-panel-title">
+    <span>🔧 Dev Panel</span>
+    <span onclick="document.getElementById('devPanel').classList.remove('show')" style="cursor:pointer;font-size:1rem;">✕</span>
+  </div>
+  <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:6px;">⚡ Aktywuj event (dla wszystkich)</div>
+  <select id="devGlobalEventSelect" style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.78rem;padding:6px 8px;width:100%;margin-bottom:5px;"></select>
+  <button class="dev-event-btn" style="width:100%;margin-bottom:4px;" onclick="devTriggerEventGlobal()">📡 Wyślij wszystkim</button>
+  <div id="devEventList" style="display:none;"></div>
+  <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:8px 0 5px;">🔒 Tylko u mnie</div>
+  <select id="devLocalEventSelect" style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.78rem;padding:6px 8px;width:100%;margin-bottom:5px;"></select>
+  <div style="display:flex;gap:5px;">
+    <button class="dev-event-btn" style="flex:1;" onclick="devTriggerLocal()">▶ Odpal u mnie</button>
+    <button class="dev-event-btn" style="flex:1;border-color:var(--red);color:var(--red);" onclick="devResetEvent()">⏹ Reset eventu</button>
+  </div>
+  <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:10px 0 6px;">💬 Wyślij dialog do graczy</div>
+  <input class="dev-dialog-input" id="devDialogInput" placeholder="Twoja wiadomość..." maxlength="60">
+  <button class="dev-send-btn" onclick="devSendDialog()">📢 Wyślij wszystkim</button>
+  <div style="font-size:.65rem;color:var(--muted);margin-top:6px;text-align:center;">Zalogowany jako: Szymon 👑</div>
+</div>
+<button class="dev-badge" id="devBadge" onclick="document.getElementById('devPanel').classList.toggle('show')" title="Dev Panel">🔧</button>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -356,7 +448,7 @@ const BIG_NAMES=[
   [1e51,'Sext'],[1e54,'Sept'],[1e57,'Okt2'],[1e60,'Non2'],[1e63,'Vig'],
   [1e66,'UnVig'],[1e69,'DuoVig'],[1e72,'TreVig'],[1e75,'QuaVig'],[1e78,'QuiVig'],
   [1e81,'SexVig'],[1e84,'SepVig'],[1e87,'OktVig'],[1e90,'NonVig'],[1e93,'Tri'],
-  [1e96,'UnTri'],[1e99,'DuoTri'],[1e100,'Googol'],
+  [1e96,'UnTri'],[1e99,'DuoTri'],[1e100,'Googol'],[1e120,'Cent.'],[1e150,'Milicent.'],[1e200,'Dwucent.'],[1e250,'Trzcent.'],[1e300,'Kwadryt.'],
 ];
 function fmt(n){
   if(isNaN(n)||n===Infinity)return '∞';
@@ -367,14 +459,14 @@ function fmt(n){
   }
   const exp=Math.floor(Math.log10(n));
   const mant=(n/Math.pow(10,exp)).toFixed(2);
-  if(exp>=300) return mant+'e'+exp+' (Centylion!)';
+  if(exp>=303) return mant+'e'+exp+' 🔢 CENTYLION MAX!';
   return mant+'e'+exp;
 }
 const MAX_KEBABS=1e303;
 
 // ===== STATE =====
 const state={kebabs:0,totalMade:0,clickPower:1,perSecond:0,prestigeLevel:0,prestigeBonus:1,totalClicks:0,totalSpent:0,playTimeSeconds:0,sessionStart:Date.now(),combo:0,comboTimer:0,comboBonus:1,totalEvents:0,achUnlocked:new Set()};
-const ORIG_CPS=[0.5,2,8,25,100,500,3000,20000,150000,1000000,8000000,80000000];
+const ORIG_CPS=[0.5,2,8,25,100,500,3000,20000,150000,1000000,8000000,80000000,5000000000];
 
 const UPGRADES=[
   {id:'u1', name:'Lepszy szamszir',    icon:'🔪', desc:'+1 kebab za klik',    cost:15,        bought:false, apply:()=>{state.clickPower+=1;}},
@@ -408,6 +500,7 @@ const BUILDINGS=[
   {id:'b10',name:'Kebab-Wszechświat', icon:'🌠', baseCost:200000000, owned:0, baseCps:1000000},
   {id:'b11',name:'Bóg Kebaba',        icon:'👁️', baseCost:2e9,       owned:0, baseCps:8000000},
   {id:'b12',name:'Kebab-Multiwersum', icon:'🔮', baseCost:2e13,      owned:0, baseCps:100000000},
+  {id:'b13',name:'Centylion Kuchnia',  icon:'♾️', baseCost:2e18,      owned:0, baseCps:5000000000},
 ];
 
 const MILESTONES=[
@@ -470,6 +563,132 @@ const CPS_HISTORY=[];
 const CPS_MAX_POINTS=60;
 let chartCtx=null;
 let chartAnimFrame=null;
+
+// ===== DEV MODE =====
+let devMode=false;
+let devDialogs=[];
+const DEV_PASSWORD='SzYmOn!2#';
+const DEV_DIALOG_BIN='6840a1418561e97a50f3b9a2';
+const DEV_BIN_URL='https://api.jsonbin.io/v3/b/'+DEV_DIALOG_BIN;
+const DEV_BIN_KEY='$2a$10$k8QwXvZ3mN9pL2dR7hY6uOjF4tGcB1sE5nA0iW8qM3oP6xK9rV7l';
+
+function openPwModal(){
+  document.getElementById('pwInput').value='';
+  document.getElementById('pwError').textContent='';
+  document.getElementById('pwModal').classList.add('show');
+  setTimeout(()=>document.getElementById('pwInput').focus(),100);
+}
+function closePwModal(){document.getElementById('pwModal').classList.remove('show');}
+document.addEventListener('keydown',(e)=>{
+  if(document.getElementById('pwModal').classList.contains('show')&&e.key==='Enter')checkPw();
+});
+function checkPw(){
+  const val=document.getElementById('pwInput').value;
+  if(val===DEV_PASSWORD){
+    closePwModal();
+    if(!devMode){
+      devMode=true;
+      document.getElementById('devBadge').classList.add('show');
+      buildDevEventList();
+      showToast('🔧 Dev Mode aktywny! Witaj, Szefie Szymonie! 👑');
+    } else {
+      document.getElementById('devPanel').classList.toggle('show');
+    }
+  } else {
+    document.getElementById('pwError').textContent='❌ Złe hasło!';
+    document.getElementById('pwInput').value='';
+  }
+}
+
+function buildDevEventList(){
+  const opts=EVENTS.map((ev,i)=>`<option value="${i}">${ev.name} ${ev.desc}</option>`).join('');
+  const g=document.getElementById('devGlobalEventSelect');
+  const l=document.getElementById('devLocalEventSelect');
+  if(g)g.innerHTML=opts;
+  if(l)l.innerHTML=opts;
+}
+
+function devTriggerLocal(){
+  const sel=document.getElementById('devLocalEventSelect');
+  if(!sel)return;
+  const idx=parseInt(sel.value);
+  const ev=EVENTS[idx];
+  currentEvent={...ev,timeLeft:ev.duration};
+  document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
+  document.getElementById('eventBanner').classList.add('active');
+  showToast('🔒 Event lokalny: '+ev.name);
+}
+
+function devResetEvent(){
+  currentEvent=null;
+  document.getElementById('eventBanner').classList.remove('active');
+  showToast('⏹ Event zatrzymany!');
+}
+
+async function devTriggerEventGlobal(){
+  const sel=document.getElementById('devGlobalEventSelect');
+  if(!sel)return;
+  const ev=EVENTS[parseInt(sel.value)];
+  // Odpal lokalnie
+  currentEvent={...ev,timeLeft:ev.duration};
+  state.totalEvents++;
+  document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
+  document.getElementById('eventBanner').classList.add('active');
+  checkAchievements();
+  showToast('📡 Wysyłanie eventu...');
+  // Wyślij online
+  try{
+    const res=await fetch(DEV_BIN_URL+'/latest',{headers:{'X-Master-Key':DEV_BIN_KEY}});
+    const data=await res.json();
+    const rec=data.record||{};
+    rec.activeEvent={name:ev.name,desc:ev.desc,mult:ev.mult,duration:ev.duration,type:ev.type,ts:Date.now()};
+    await fetch(DEV_BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':DEV_BIN_KEY},body:JSON.stringify(rec)});
+    showToast('📡 Event wysłany do wszystkich: '+ev.name);
+  }catch(e){showToast('📡 Lokalnie OK, brak sieci');console.error(e);}
+}
+
+async function devSendDialog(){
+  const msg=document.getElementById('devDialogInput').value.trim();
+  if(!msg)return;
+  document.getElementById('devDialogInput').value='';
+  const entry={msg:'👑 Szymon: '+msg,ts:Date.now()};
+  // Pokaż lokalnie od razu
+  const bossEl=document.getElementById('bossMsgText');
+  if(bossEl)bossEl.textContent=entry.msg;
+  showToast('📢 Wysyłanie wiadomości...');
+  // Wyślij online przez JSONBin
+  try{
+    const res=await fetch(DEV_BIN_URL+'/latest',{headers:{'X-Master-Key':DEV_BIN_KEY}});
+    const data=await res.json();
+    const rec=data.record||{};
+    const dialogs=rec.dialogs||[];
+    dialogs.unshift(entry);
+    const top=dialogs.slice(0,5);
+    await fetch(DEV_BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':DEV_BIN_KEY},body:JSON.stringify({...rec,dialogs:top})});
+    showToast('📢 Wiadomość wysłana do wszystkich graczy!');
+  }catch(e){
+    showToast('📢 Wysłano lokalnie (brak sieci)');
+    console.error(e);
+  }
+}
+
+// Sprawdź online dialogi od Szefa (co 18s)
+async function checkDevDialogs(){
+  try{
+    const res=await fetch(DEV_BIN_URL+'/latest',{headers:{'X-Master-Key':DEV_BIN_KEY}});
+    if(!res.ok)return;
+    const data=await res.json();
+    const rec=data.record||{};
+    // Sprawdź globalny event
+    if(rec.activeEvent&&rec.activeEvent.ts>(Date.now()-rec.activeEvent.duration*1000-5000)&&!currentEvent){
+      const ev=rec.activeEvent;
+      currentEvent={...ev,timeLeft:Math.max(1,ev.duration-Math.floor((Date.now()-ev.ts)/1000))};
+      document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
+      document.getElementById('eventBanner').classList.add('active');
+      showToast('📡 Event od admina: '+ev.name);
+    }
+  }catch(e){}
+}
 
 function initChart(){
   const canvas=document.getElementById('cpsChart');
@@ -563,6 +782,7 @@ const ACHIEVEMENTS=[
   {id:'a18', name:'Kolekcjoner',      icon:'📦', desc:'Kup wszystkie ulepszenia',       check:()=>UPGRADES.every(u=>u.bought)},
   {id:'a19', name:'Bogaty Kebabidżyn',icon:'🧞', desc:'Wydaj 1 Miliard kebabów',       check:()=>state.totalSpent>=1e9},
   {id:'a20', name:'Centylion!',       icon:'🔢', desc:'Zdobądź Googol kebabów (1e100)',check:()=>state.totalMade>=1e100},
+  {id:'a23', name:'MAX CENTYLION',    icon:'♾️', desc:'Osiągnij 10^303 — prawdziwy MAX!', check:()=>state.totalMade>=1e303},
   {id:'a21', name:'Nocny Marek',      icon:'🌙', desc:'Włącz tryb nocny',              check:()=>nightMode},
   {id:'a22', name:'Podróżnik',        icon:'🗺️', desc:'Odwiedź zakładkę Mapa',         check:()=>state.mapVisited||false},
 ];
@@ -583,6 +803,7 @@ const EVENTS=[
   {name:'🧟 Kebab Zombie!',      desc:'×25 produkcja 18s', mult:25,  duration:18, type:'cps'},
   {name:'⚡ Błysk. Kebab!',      desc:'×40 za klik 6s',    mult:40,  duration:6,  type:'click'},
   {name:'🏎️ Rajd Kebabiarzy!',  desc:'×12 wszystko 25s',  mult:12,  duration:25, type:'all'},
+  {name:'🌯 CENTYLION BURST!!!', desc:'×1000 wszystko 3s', mult:1000,duration:3,  type:'all'},
 ];
 
 const DAILY_CHALLENGES=[
@@ -633,6 +854,7 @@ function showTab(id,el){
   if(id==='stats'){renderStats();renderAchievements();}
   if(id==='ranking')renderRanking();
   if(id==='map'){state.mapVisited=true;renderMap();}
+  if(id==='shop')renderShop();
 }
 
 function renderUpgrades(){
@@ -843,13 +1065,65 @@ function tick(now){
   // wykres co ~2s
   chartTickCounter+=dt;
   if(chartTickCounter>=2){chartTickCounter=0;pushCpsPoint();}
+  bossTimer+=dt;
   requestAnimationFrame(tick);
 }
 
 // ===== SAVE/LOAD =====
+// ===== SKLEP SKÓREK =====
+const SKINS=[
+  {id:'s1', name:'Klasyczny Kebab',  icon:'🌯', cost:0,      desc:'Domyślny'},
+  {id:'s2', name:'Złoty Kebab',      icon:'✨', cost:5000,   desc:'Błyszczy!'},
+  {id:'s3', name:'Kosmiczny Kebab',  icon:'🛸', cost:50000,  desc:'Z innej planety'},
+  {id:'s4', name:'Smok Kebab',       icon:'🐉', cost:250000, desc:'Ognisty smak'},
+  {id:'s5', name:'Tęczowy Kebab',    icon:'🌈', cost:1000000,desc:'Kolorowy!'},
+  {id:'s6', name:'Diamentowy Kebab', icon:'💎', cost:5000000,desc:'Bezcenny'},
+  {id:'s7', name:'Kebab Zombie',     icon:'🧟', cost:2e7,    desc:'Żywy trup kebaba'},
+  {id:'s8', name:'Kebab Boga',       icon:'👁️', cost:1e9,    desc:'Patrzy na wszystkich'},
+  {id:'s9', name:'Centylion Kebab',  icon:'♾️', cost:1e15,   desc:'Nieskończony'},
+];
+
+let unlockedSkins=new Set(['s1']);
+let activeSkin='s1';
+
+function renderShop(){
+  const grid=document.getElementById('shopGrid');
+  if(!grid)return;
+  grid.innerHTML=SKINS.map(s=>{
+    const owned=unlockedSkins.has(s.id);
+    const active=activeSkin===s.id;
+    const canBuy=state.kebabs>=s.cost&&!owned;
+    return `<div class="shop-item ${owned?'bought-skin':''} ${active?'active-skin':''}" onclick="buySkin('${s.id}')">
+      <span class="shop-emoji">${s.icon}</span>
+      <div class="shop-name">${s.name}</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:6px;">${s.desc}</div>
+      <div class="shop-cost ${active?'active-label':owned?'bought-label':canBuy?'':'cant'}">
+        ${active?'✅ Aktywna':owned?'🟢 Kliknij aby aktywować':s.cost===0?'Darmowa':'Kup za '+fmt(s.cost)+' 🌯'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buySkin(id){
+  const skin=SKINS.find(s=>s.id===id);
+  if(!skin)return;
+  if(unlockedSkins.has(id)){
+    activeSkin=id;
+    document.getElementById('kebabBtn').textContent=skin.icon;
+    showToast('✅ Skórka aktywowana: '+skin.name);
+    renderShop();return;
+  }
+  if(state.kebabs<skin.cost){showToast('❌ Za mało kebabów!');return;}
+  state.kebabs-=skin.cost;state.totalSpent+=skin.cost;
+  unlockedSkins.add(id);activeSkin=id;
+  document.getElementById('kebabBtn').textContent=skin.icon;
+  showToast('🎉 Odblokowano: '+skin.name+'!');
+  renderShop();renderCounter();
+}
+
 const SAVE_KEY='kebab_v5';
 function saveGame(){
-  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned,baseCps:b.baseCps})),milestones:[...reachedMilestones]};
+  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned,baseCps:b.baseCps})),milestones:[...reachedMilestones],unlockedSkins:[...unlockedSkins],activeSkin};
   localStorage.setItem(SAVE_KEY,JSON.stringify(data));showToast('💾 Zapisano!');
 }
 function loadGame(){
@@ -867,6 +1141,8 @@ function applyLoad(data){
   (data.upgrades||[]).forEach(saved=>{const u=UPGRADES.find(x=>x.id===saved.id);if(u&&saved.bought&&!u.bought){u.bought=true;u.apply();}});
   (data.buildings||[]).forEach(saved=>{const b=BUILDINGS.find(x=>x.id===saved.id);if(b){b.owned=saved.owned||0;if(saved.baseCps)b.baseCps=saved.baseCps;}});
   recalcCps();
+  if(data.unlockedSkins)unlockedSkins=new Set(data.unlockedSkins);
+  if(data.activeSkin){activeSkin=data.activeSkin;const sk=SKINS.find(s=>s.id===activeSkin);if(sk)document.getElementById('kebabBtn').textContent=sk.icon;}
 }
 function resetGame(){document.getElementById('resetModal').classList.add('show');}
 function doReset(){localStorage.removeItem(SAVE_KEY);localStorage.removeItem('kebab_v4');localStorage.removeItem('kebab_daily');location.reload();}

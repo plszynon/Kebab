@@ -7,10 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#1a0a00;--panel:#2b1200;--panel2:#3d1a00;--accent:#ff6b00;--accent2:#ffbe00;--red:#e03c00;--text:#ffe8c0;--muted:#a07050;--green:#6fcf45;--border:#5a2e00;--purple:#c060ff;--blue:#40c0ff;}
+body.night{--bg:#05080f;--panel:#0d1220;--panel2:#151c30;--accent:#4488ff;--accent2:#88ccff;--red:#ff4444;--text:#c8d8ff;--muted:#5570a0;--green:#44cc77;--border:#1e2e50;--purple:#aa66ff;--blue:#44ddff;}
+body.night{background-image:radial-gradient(ellipse at 20% 20%,#001030 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,#000820 0%,transparent 60%)!important;}
+body.night h1{text-shadow:0 0 30px #4488ff88,0 4px 0 #001040;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);font-family:'Rubik',sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;background-image:radial-gradient(ellipse at 20% 20%,#3d1500 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,#2a0d00 0%,transparent 60%);}
-h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(--accent2);text-shadow:0 0 30px #ff6b0088,0 4px 0 #7a3000;letter-spacing:2px;margin:14px 0 2px;text-align:center;}
+body{background:var(--bg);font-family:'Rubik',sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;background-image:radial-gradient(ellipse at 20% 20%,#3d1500 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,#2a0d00 0%,transparent 60%);transition:background .4s,color .4s;}
+h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(--accent2);text-shadow:0 0 30px #ff6b0088,0 4px 0 #7a3000;letter-spacing:2px;margin:14px 0 2px;text-align:center;transition:color .4s;}
 .subtitle{color:var(--muted);font-size:.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+/* NIGHT BTN */
+.night-btn{position:fixed;top:12px;right:12px;background:var(--panel);border:2px solid var(--border);border-radius:50%;width:44px;height:44px;font-size:1.3rem;cursor:pointer;z-index:1000;display:flex;align-items:center;justify-content:center;transition:.2s;box-shadow:0 2px 10px #0006;}
+.night-btn:hover{border-color:var(--accent);transform:scale(1.12) rotate(20deg);}
 .tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;justify-content:center;}
 .tab-btn{background:var(--panel);border:2px solid var(--border);border-radius:10px;color:var(--muted);font-family:'Rubik',sans-serif;font-weight:700;font-size:.82rem;padding:6px 14px;cursor:pointer;transition:.15s;letter-spacing:1px;}
 .tab-btn.active{border-color:var(--accent);color:var(--accent2);background:var(--panel2);}
@@ -94,9 +100,7 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 .ranking-table td{padding:10px 10px;border-bottom:1px solid var(--border);font-size:.9rem;}
 .ranking-table tr:hover td{background:var(--panel2);}
 .rank-num{font-weight:800;color:var(--muted);width:36px;}
-.rank-1 .rank-num{color:#ffd700;}
-.rank-2 .rank-num{color:#c0c0c0;}
-.rank-3 .rank-num{color:#cd7f32;}
+.rank-1 .rank-num{color:#ffd700;}.rank-2 .rank-num{color:#c0c0c0;}.rank-3 .rank-num{color:#cd7f32;}
 .rank-name{font-weight:700;}
 .rank-score{color:var(--accent2);font-weight:700;text-align:right;}
 .rank-prestige{color:var(--purple);font-size:.78rem;}
@@ -119,10 +123,34 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#3d1a00;border:2px solid var(--accent2);border-radius:14px;padding:10px 22px;font-weight:700;font-size:.95rem;color:var(--accent2);box-shadow:0 4px 24px #0009;z-index:9999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;text-align:center;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
+/* MAPA POSTĘPU */
+.map-wrap{margin-top:12px;display:flex;flex-direction:column;gap:8px;}
+.map-stage{background:var(--panel);border:2px solid var(--border);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:14px;transition:.3s;position:relative;overflow:hidden;}
+.map-stage.reached{border-color:var(--green);}
+.map-stage.current{border-color:var(--accent2);box-shadow:0 0 20px #ffbe0022;}
+.map-stage.reached::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#0a1a0008,#0a1a0030);pointer-events:none;}
+.map-stage.current::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#1a100008,#1a100030);pointer-events:none;}
+.map-stage-icon{font-size:2rem;flex-shrink:0;position:relative;}
+.map-stage-info{flex:1;position:relative;}
+.map-stage-name{font-weight:800;font-size:.92rem;}
+.map-stage-req{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.map-stage-badge{font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap;position:relative;}
+.map-stage.reached .map-stage-badge{background:#0d3300;color:var(--green);border:1px solid var(--green);}
+.map-stage.current .map-stage-badge{background:#2a1a00;color:var(--accent2);border:1px solid var(--accent2);animation:pulse-border .8s ease-in-out infinite alternate;}
+.map-stage:not(.reached):not(.current) .map-stage-badge{background:var(--panel2);color:var(--muted);border:1px solid var(--border);}
+.map-progress-outer{margin-top:8px;background:var(--panel2);border-radius:4px;height:7px;overflow:hidden;}
+.map-progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s ease;}
+/* WYKRES CPS */
+.chart-box{background:var(--panel);border:2px solid var(--border);border-radius:14px;padding:14px 16px;margin-top:12px;}
+.chart-box-title{font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.chart-inner{position:relative;width:100%;height:120px;}
+canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
 @media(max-width:680px){.main{flex-direction:column;align-items:center;}.buildings-col{flex:unset;width:100%;flex-direction:row;flex-wrap:wrap;}.building-item{flex:0 0 calc(50% - 4px);}.upgrades-col{width:100%;}.clicker-col{width:100%;}}
 </style>
 </head>
 <body>
+
+<button class="night-btn" id="nightBtn" onclick="toggleNight()" title="Tryb nocny">🌙</button>
 
 <h1>🌯 KEBAB KLIKACZ</h1>
 <p class="subtitle">Nakarm cały świat</p>
@@ -138,6 +166,7 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 <div class="tabs">
   <button class="tab-btn active" id="tabBtn-game" onclick="showTab('game',this)">🌯 Gra</button>
   <button class="tab-btn" id="tabBtn-stats" onclick="showTab('stats',this)">📊 Statystyki</button>
+  <button class="tab-btn" id="tabBtn-map" onclick="showTab('map',this)">🗺️ Mapa</button>
   <button class="tab-btn" id="tabBtn-ranking" onclick="showTab('ranking',this)">🏆 Ranking</button>
   <button class="tab-btn" id="tabBtn-log" onclick="showTab('log',this)">📋 Update Log</button>
 </div>
@@ -164,6 +193,11 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
         Za klik: <strong id="clickPowerDisplay" style="color:var(--accent)">1</strong><br>
         Combo: <strong id="comboDisplay" style="color:var(--purple)">×1</strong>
       </div>
+      <!-- MINIATURKA WYKRESU W GRZE -->
+      <div class="chart-box" style="width:100%;">
+        <div class="chart-box-title"><span>📈 Produkcja/s</span><span id="chartCurVal" style="color:var(--accent2);font-size:.8rem">0/s</span></div>
+        <div class="chart-inner"><canvas id="cpsChart"></canvas></div>
+      </div>
       <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:10px 12px;width:100%;">
         <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:6px;">🎯 Dzienne Wyzwanie</div>
         <div id="dailyChallenge">Ładowanie...</div>
@@ -188,6 +222,12 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
   <div class="achievements-grid" id="achGrid"></div>
 </div>
 
+<!-- MAPA POSTĘPU -->
+<div class="tab-panel" id="tab-map">
+  <div class="section-title" style="margin-top:10px;">🗺️ Mapa Postępu Kebaba</div>
+  <div class="map-wrap" id="mapWrap"></div>
+</div>
+
 <!-- RANKING -->
 <div class="tab-panel" id="tab-ranking">
   <div class="section-title" style="margin-top:10px;">🏆 Ranking Graczy</div>
@@ -197,9 +237,7 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
     <button onclick="submitScore()">📤 Wyślij wynik</button>
   </div>
   <table class="ranking-table">
-    <thead><tr>
-      <th>#</th><th>Gracz</th><th>Prestige</th><th style="text-align:right">Kebaby</th>
-    </tr></thead>
+    <thead><tr><th>#</th><th>Gracz</th><th>Prestige</th><th style="text-align:right">Kebaby</th></tr></thead>
     <tbody id="rankingBody"></tbody>
   </table>
 </div>
@@ -208,109 +246,63 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 <div class="tab-panel" id="tab-log">
   <div class="section-title" style="margin-top:10px;">📋 Update Log</div>
   <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
-
     <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v1.8 — Najnowsza</span>
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v1.9 — Najnowsza</span>
+        <span style="font-size:.75rem;color:var(--muted);">2025</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">🌙 Dodano Tryb Nocny (przycisk w rogu)</li>
+        <li style="font-size:.85rem;">🗺️ Nowa zakładka: Mapa Postępu (12 etapów)</li>
+        <li style="font-size:.85rem;">📈 Wykres produkcji/s w czasie rzeczywistym</li>
+        <li style="font-size:.85rem;">🗑️ Naprawiono Reset (własny modal zamiast confirm)</li>
+      </ul>
+    </div>
+    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.8</span>
         <span style="font-size:.75rem;color:var(--muted);">2025</span>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
         <li style="font-size:.85rem;">🏅 Dodano 20 osiągnięć w zakładce Statystyki</li>
         <li style="font-size:.85rem;">🔢 Nowy system liczb do Centyliona (10^303)</li>
-        <li style="font-size:.85rem;">🏆 Naprawiono wysyłanie rankingu online</li>
         <li style="font-size:.85rem;">🎪 3 nowe eventy: Kebab Zombie, Błyskawiczny Kebab, Rajd Kebabiarzy</li>
-        <li style="font-size:.85rem;">⚡ 2 nowe ulepszenia endgame</li>
-        <li style="font-size:.85rem;">🏗️ Nowy budynek: Kebab-Multiwersum</li>
+        <li style="font-size:.85rem;">⚡ 2 nowe ulepszenia endgame + nowy budynek</li>
       </ul>
     </div>
-
     <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.7</span>
         <span style="font-size:.75rem;color:var(--muted);">2025</span>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-        <li style="font-size:.85rem;">🌐 Ranking jest teraz ONLINE (wszyscy gracze!)</li>
-        <li style="font-size:.85rem;">🎯 Dodano Dzienne Wyzwania z nagrodami</li>
-        <li style="font-size:.85rem;">🌪️ Nowy event: Kebab Tornado (×15)</li>
-        <li style="font-size:.85rem;">🔮 Nowy event: Magiczny Sos (×30)</li>
-        <li style="font-size:.85rem;">💥 Nowy event: Wielki Wybuch (×100!)</li>
-        <li style="font-size:.85rem;">🎪 Nowy event: Kebab Cyrk (×7)</li>
+        <li style="font-size:.85rem;">🌐 Ranking ONLINE (wszyscy gracze!)</li>
+        <li style="font-size:.85rem;">🎯 Dzienne Wyzwania z nagrodami</li>
+        <li style="font-size:.85rem;">💥 Nowe eventy: Tornado, Magiczny Sos, Wielki Wybuch, Cyrk</li>
       </ul>
     </div>
-
     <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.5</span>
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.3–1.6</span>
         <span style="font-size:.75rem;color:var(--muted);">2025</span>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-        <li style="font-size:.85rem;">👽 Dodano event "Inwazja Kebabów" (×50)</li>
-        <li style="font-size:.85rem;">🌊 Fala Kebabów, 💫 Złoty Kebab, 🍖 Mięsny Deszcz</li>
-        <li style="font-size:.85rem;">📋 Przycisk Log w górnym menu</li>
+        <li style="font-size:.85rem;">⭐ System Prestige, Statystyki, Ranking, Losowe Wydarzenia</li>
+        <li style="font-size:.85rem;">🛸 Budynki: Satelita, Galaktyka, Wymiar, Wszechświat, Bóg</li>
+        <li style="font-size:.85rem;">👽 Inwazja Kebabów (×50), Fala, Złoty Kebab, Mięsny Deszcz</li>
       </ul>
     </div>
-
     <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.4</span>
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.0–1.2</span>
         <span style="font-size:.75rem;color:var(--muted);">2025</span>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-        <li style="font-size:.85rem;">📋 Dodano zakładkę Update Log</li>
-        <li style="font-size:.85rem;">🎉 Dodano event "Kebab Mania" (×10 za klik)</li>
+        <li style="font-size:.85rem;">🌯 Pierwsza wersja — klikanie kebaba</li>
+        <li style="font-size:.85rem;">🏗️ Budynki, Ulepszenia, Osiągnięcia/Milestones</li>
+        <li style="font-size:.85rem;">💾 Zapis / Autosave / Reset</li>
       </ul>
     </div>
-
-    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.3</span>
-        <span style="font-size:.75rem;color:var(--muted);">2025</span>
-      </div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-        <li style="font-size:.85rem;">⭐ Dodano system Prestige (bonus ×1.5)</li>
-        <li style="font-size:.85rem;">📊 Dodano zakładkę Statystyki</li>
-        <li style="font-size:.85rem;">🏆 Dodano Ranking graczy</li>
-        <li style="font-size:.85rem;">🎲 Dodano losowe wydarzenia</li>
-        <li style="font-size:.85rem;">🛸 Nowe budynki: Satelita i Galaktyka</li>
-      </ul>
-    </div>
-
-    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.2</span>
-        <span style="font-size:.75rem;color:var(--muted);">2025</span>
-      </div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-        <li style="font-size:.85rem;">💾 Dodano zapis/wczytywanie gry</li>
-        <li style="font-size:.85rem;">⏰ Autosave co 30 sekund</li>
-        <li style="font-size:.85rem;">🔄 Przycisk Reset</li>
-      </ul>
-    </div>
-
-    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.1</span>
-        <span style="font-size:.75rem;color:var(--muted);">2025</span>
-      </div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-        <li style="font-size:.85rem;">🏗️ Dodano budynki i ulepszenia</li>
-        <li style="font-size:.85rem;">🎯 Dodano osiągnięcia/milestones</li>
-        <li style="font-size:.85rem;">✨ Animacje i efekty wizualne</li>
-      </ul>
-    </div>
-
-    <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:1rem;">v1.0</span>
-        <span style="font-size:.75rem;color:var(--muted);">2025</span>
-      </div>
-      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
-        <li style="font-size:.85rem;">🌯 Pierwsza wersja gry</li>
-        <li style="font-size:.85rem;">👆 Podstawowe klikanie kebaba</li>
-      </ul>
-    </div>
-
   </div>
 </div>
 
@@ -343,7 +335,20 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 <div class="toast" id="toast"></div>
 
 <script>
-// ============ WIELKIE LICZBY (do Centyliona 10^303) ============
+// ===== TRYB NOCNY =====
+let nightMode=localStorage.getItem('kebab_night')==='1';
+function applyNight(){
+  document.body.classList.toggle('night',nightMode);
+  document.getElementById('nightBtn').textContent=nightMode?'☀️':'🌙';
+}
+function toggleNight(){
+  nightMode=!nightMode;
+  localStorage.setItem('kebab_night',nightMode?'1':'0');
+  applyNight();
+}
+applyNight();
+
+// ===== WIELKIE LICZBY =====
 const BIG_NAMES=[
   [1e3,'K'],[1e6,'M'],[1e9,'B'],[1e12,'T'],[1e15,'Kw'],[1e18,'Kd'],
   [1e21,'Sxt'],[1e24,'Spt'],[1e27,'Okt'],[1e30,'Non'],[1e33,'Dec'],
@@ -353,36 +358,22 @@ const BIG_NAMES=[
   [1e81,'SexVig'],[1e84,'SepVig'],[1e87,'OktVig'],[1e90,'NonVig'],[1e93,'Tri'],
   [1e96,'UnTri'],[1e99,'DuoTri'],[1e100,'Googol'],
 ];
-
-// Używamy BigInt dla ekstremalnych liczb — ale tutaj JS nie sięga centyliona jako float
-// Dlatego używamy prostego systemu notacji naukowej z nazwami
 function fmt(n){
   if(isNaN(n)||n===Infinity)return '∞';
   if(n<0)return '-'+fmt(-n);
   if(n<1000)return Math.floor(n).toString();
-  // Szukamy odpowiedniego przedrostka
   for(let i=BIG_NAMES.length-1;i>=0;i--){
-    if(n>=BIG_NAMES[i][0]){
-      const val=(n/BIG_NAMES[i][0]);
-      return val.toFixed(2)+' '+BIG_NAMES[i][1];
-    }
+    if(n>=BIG_NAMES[i][0]) return (n/BIG_NAMES[i][0]).toFixed(2)+' '+BIG_NAMES[i][1];
   }
-  // Notacja naukowa dla liczb powyżej Googola
   const exp=Math.floor(Math.log10(n));
   const mant=(n/Math.pow(10,exp)).toFixed(2);
-  if(exp<=303){
-    // Centylion = 10^303
-    if(exp>=300)return mant+'e'+exp+' (Centylion!)';
-    return mant+'e'+exp;
-  }
+  if(exp>=300) return mant+'e'+exp+' (Centylion!)';
   return mant+'e'+exp;
 }
+const MAX_KEBABS=1e303;
 
-// MAX liczba to Centylion = 10^303
-const MAX_KEBABS = 1e303;
-
+// ===== STATE =====
 const state={kebabs:0,totalMade:0,clickPower:1,perSecond:0,prestigeLevel:0,prestigeBonus:1,totalClicks:0,totalSpent:0,playTimeSeconds:0,sessionStart:Date.now(),combo:0,comboTimer:0,comboBonus:1,totalEvents:0,achUnlocked:new Set()};
-
 const ORIG_CPS=[0.5,2,8,25,100,500,3000,20000,150000,1000000,8000000,80000000];
 
 const UPGRADES=[
@@ -405,18 +396,18 @@ const UPGRADES=[
 ];
 
 const BUILDINGS=[
-  {id:'b1', name:'Grill',              icon:'🔥', baseCost:10,        owned:0, baseCps:0.5},
-  {id:'b2', name:'Kebabiarnia',        icon:'🏠', baseCost:80,        owned:0, baseCps:2},
-  {id:'b3', name:'Food Truck',         icon:'🚐', baseCost:400,       owned:0, baseCps:8},
-  {id:'b4', name:'Restauracja',        icon:'🏪', baseCost:2000,      owned:0, baseCps:25},
-  {id:'b5', name:'Fabryka',            icon:'🏭', baseCost:10000,     owned:0, baseCps:100},
-  {id:'b6', name:'Kebabplex',          icon:'🌆', baseCost:60000,     owned:0, baseCps:500},
-  {id:'b7', name:'Kebab-Satelita',     icon:'🛸', baseCost:400000,    owned:0, baseCps:3000},
-  {id:'b8', name:'Kebab-Galaktyka',    icon:'🌌', baseCost:3000000,   owned:0, baseCps:20000},
-  {id:'b9', name:'Kebab-Wymiar',       icon:'🌀', baseCost:25000000,  owned:0, baseCps:150000},
-  {id:'b10',name:'Kebab-Wszechświat',  icon:'🌠', baseCost:200000000, owned:0, baseCps:1000000},
-  {id:'b11',name:'Bóg Kebaba',         icon:'👁️', baseCost:2e9,       owned:0, baseCps:8000000},
-  {id:'b12',name:'Kebab-Multiwersum',  icon:'🔮', baseCost:2e13,      owned:0, baseCps:100000000},
+  {id:'b1', name:'Grill',             icon:'🔥', baseCost:10,        owned:0, baseCps:0.5},
+  {id:'b2', name:'Kebabiarnia',       icon:'🏠', baseCost:80,        owned:0, baseCps:2},
+  {id:'b3', name:'Food Truck',        icon:'🚐', baseCost:400,       owned:0, baseCps:8},
+  {id:'b4', name:'Restauracja',       icon:'🏪', baseCost:2000,      owned:0, baseCps:25},
+  {id:'b5', name:'Fabryka',           icon:'🏭', baseCost:10000,     owned:0, baseCps:100},
+  {id:'b6', name:'Kebabplex',         icon:'🌆', baseCost:60000,     owned:0, baseCps:500},
+  {id:'b7', name:'Kebab-Satelita',    icon:'🛸', baseCost:400000,    owned:0, baseCps:3000},
+  {id:'b8', name:'Kebab-Galaktyka',   icon:'🌌', baseCost:3000000,   owned:0, baseCps:20000},
+  {id:'b9', name:'Kebab-Wymiar',      icon:'🌀', baseCost:25000000,  owned:0, baseCps:150000},
+  {id:'b10',name:'Kebab-Wszechświat', icon:'🌠', baseCost:200000000, owned:0, baseCps:1000000},
+  {id:'b11',name:'Bóg Kebaba',        icon:'👁️', baseCost:2e9,       owned:0, baseCps:8000000},
+  {id:'b12',name:'Kebab-Multiwersum', icon:'🔮', baseCost:2e13,      owned:0, baseCps:100000000},
 ];
 
 const MILESTONES=[
@@ -426,100 +417,202 @@ const MILESTONES=[
   {val:1e15,label:'1Kw'},{val:1e18,label:'1Kd'},{val:1e21,label:'1Sxt'},
 ];
 
-// ============ OSIĄGNIĘCIA ============
+// ===== MAPA POSTĘPU =====
+const MAP_STAGES=[
+  {icon:'🔥',name:'Początkujący Grillarz',   req:0,       reqLabel:'Start!',           desc:'Kliknij pierwszego kebaba'},
+  {icon:'🥙',name:'Kebab Amator',             req:100,     reqLabel:'100 kebabów',      desc:'Pierwsze kroki w świecie kebabów'},
+  {icon:'🏠',name:'Właściciel Kebabiarni',    req:1e4,     reqLabel:'10K kebabów',      desc:'Masz swoją pierwszą kebabiarnie'},
+  {icon:'🚐',name:'Szef Food Trucka',         req:1e6,     reqLabel:'1M kebabów',       desc:'Kebab na kółkach!'},
+  {icon:'🏪',name:'Restaurator',              req:1e8,     reqLabel:'100M kebabów',     desc:'Elegancka restauracja kebabowa'},
+  {icon:'🏭',name:'Fabrykant Kebabów',        req:1e10,    reqLabel:'10B kebabów',      desc:'Masowa produkcja kebabów'},
+  {icon:'🌆',name:'Kebab Tycoon',             req:1e12,    reqLabel:'1T kebabów',       desc:'Kontrolujesz cały rynek kebabowy'},
+  {icon:'🛸',name:'Kosmiczny Kebabier',       req:1e15,    reqLabel:'1Kw kebabów',      desc:'Kebaby podbijają kosmos'},
+  {icon:'🌌',name:'Galaktyczny Szef',         req:1e18,    reqLabel:'1Kd kebabów',      desc:'Cała galaktyka smakuje kebabem'},
+  {icon:'🌀',name:'Władca Wymiarów',          req:1e21,    reqLabel:'1Sxt kebabów',     desc:'Kebab przebija bariery wymiarów'},
+  {icon:'👁️',name:'Bóg Kebaba',               req:1e30,    reqLabel:'1Non kebabów',     desc:'Jesteś jedynym prawdziwym bogiem kebabów'},
+  {icon:'🔮',name:'Kebab-Multiwersalny Byt',  req:1e50,    reqLabel:'1e50 kebabów',     desc:'Poza granicami wyobraźni'},
+];
+
+function renderMap(){
+  const wrap=document.getElementById('mapWrap');
+  if(!wrap)return;
+  let currentIdx=0;
+  for(let i=MAP_STAGES.length-1;i>=0;i--){
+    if(state.totalMade>=MAP_STAGES[i].req){currentIdx=i;break;}
+  }
+  wrap.innerHTML=MAP_STAGES.map((s,i)=>{
+    const reached=state.totalMade>=s.req;
+    const isCurrent=i===currentIdx;
+    const isNext=i===currentIdx+1;
+    let cls='map-stage'+(reached&&!isCurrent?' reached':isCurrent?' current':'');
+    let badge=reached&&!isCurrent?'✅ Ukończony':isCurrent?'📍 Tutaj jesteś':'🔒 Zablokowany';
+    let progressHtml='';
+    if(isCurrent&&i+1<MAP_STAGES.length){
+      const next=MAP_STAGES[i+1];
+      const pct=Math.min(100,Math.floor((state.totalMade-s.req)/(next.req-s.req)*100));
+      progressHtml=`<div class="map-progress-outer"><div class="map-progress-fill" style="width:${pct}%"></div></div>
+        <div style="font-size:.68rem;color:var(--muted);margin-top:4px;">Do ${next.name}: ${pct}% (${fmt(state.totalMade)} / ${fmt(next.req)})</div>`;
+    }
+    return `<div class="${cls}">
+      <div class="map-stage-icon">${s.icon}</div>
+      <div class="map-stage-info">
+        <div class="map-stage-name">${i+1}. ${s.name}</div>
+        <div class="map-stage-req">${s.reqLabel} — ${s.desc}</div>
+        ${progressHtml}
+      </div>
+      <div class="map-stage-badge">${badge}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===== WYKRES CPS =====
+const CPS_HISTORY=[];
+const CPS_MAX_POINTS=60;
+let chartCtx=null;
+let chartAnimFrame=null;
+
+function initChart(){
+  const canvas=document.getElementById('cpsChart');
+  if(!canvas)return;
+  canvas.width=canvas.offsetWidth||300;
+  canvas.height=120;
+  chartCtx=canvas.getContext('2d');
+}
+
+function pushCpsPoint(){
+  const cps=state.perSecond*state.prestigeBonus*evCpsMult();
+  CPS_HISTORY.push(cps);
+  if(CPS_HISTORY.length>CPS_MAX_POINTS)CPS_HISTORY.shift();
+  document.getElementById('chartCurVal').textContent=fmt(cps)+'/s';
+  drawChart();
+}
+
+function drawChart(){
+  if(!chartCtx)return;
+  const canvas=chartCtx.canvas;
+  const W=canvas.width=canvas.offsetWidth||300;
+  const H=canvas.height=120;
+  chartCtx.clearRect(0,0,W,H);
+  if(CPS_HISTORY.length<2)return;
+  const maxVal=Math.max(...CPS_HISTORY,1);
+  // background grid
+  chartCtx.strokeStyle='rgba(255,255,255,0.05)';
+  chartCtx.lineWidth=1;
+  for(let i=1;i<4;i++){
+    const y=H-(H*i/4);
+    chartCtx.beginPath();chartCtx.moveTo(0,y);chartCtx.lineTo(W,y);chartCtx.stroke();
+  }
+  // gradient fill
+  const grad=chartCtx.createLinearGradient(0,0,0,H);
+  const accentColor=nightMode?'#4488ff':'#ff6b00';
+  const accent2Color=nightMode?'#88ccff':'#ffbe00';
+  grad.addColorStop(0,accentColor+'88');
+  grad.addColorStop(1,accentColor+'00');
+  const step=W/(CPS_MAX_POINTS-1);
+  chartCtx.beginPath();
+  chartCtx.moveTo(0,H);
+  CPS_HISTORY.forEach((v,i)=>{
+    const x=i*step;
+    const y=H-(v/maxVal)*(H-8)-4;
+    if(i===0)chartCtx.lineTo(x,y);
+    else chartCtx.lineTo(x,y);
+  });
+  chartCtx.lineTo((CPS_HISTORY.length-1)*step,H);
+  chartCtx.closePath();
+  chartCtx.fillStyle=grad;
+  chartCtx.fill();
+  // line
+  chartCtx.beginPath();
+  chartCtx.strokeStyle=accent2Color;
+  chartCtx.lineWidth=2;
+  CPS_HISTORY.forEach((v,i)=>{
+    const x=i*step;
+    const y=H-(v/maxVal)*(H-8)-4;
+    if(i===0)chartCtx.moveTo(x,y);else chartCtx.lineTo(x,y);
+  });
+  chartCtx.stroke();
+  // last point dot
+  const lv=CPS_HISTORY[CPS_HISTORY.length-1];
+  const lx=(CPS_HISTORY.length-1)*step;
+  const ly=H-(lv/maxVal)*(H-8)-4;
+  chartCtx.beginPath();
+  chartCtx.arc(lx,ly,4,0,Math.PI*2);
+  chartCtx.fillStyle=accent2Color;
+  chartCtx.fill();
+}
+
+// ===== OSIĄGNIĘCIA =====
 const ACHIEVEMENTS=[
-  {id:'a1',  name:'Pierwszy Kebab',      icon:'🌯', desc:'Kliknij pierwszego kebaba',          check:()=>state.totalClicks>=1},
-  {id:'a2',  name:'Klikoman',            icon:'👆', desc:'Kliknij 100 razy',                   check:()=>state.totalClicks>=100},
-  {id:'a3',  name:'Klikomania',          icon:'⚡', desc:'Kliknij 1000 razy',                  check:()=>state.totalClicks>=1000},
-  {id:'a4',  name:'Klikoholik',          icon:'🔥', desc:'Kliknij 10 000 razy',                check:()=>state.totalClicks>=10000},
-  {id:'a5',  name:'Milioner',            icon:'💰', desc:'Zdobądź 1 Milion kebabów',           check:()=>state.totalMade>=1e6},
-  {id:'a6',  name:'Miliarder',           icon:'💎', desc:'Zdobądź 1 Miliard kebabów',          check:()=>state.totalMade>=1e9},
-  {id:'a7',  name:'Bilioner',            icon:'🏆', desc:'Zdobądź 1 Bilion kebabów',           check:()=>state.totalMade>=1e12},
-  {id:'a8',  name:'Kwadryliard!',        icon:'🌟', desc:'Zdobądź 1 Kwadryliard kebabów',      check:()=>state.totalMade>=1e15},
-  {id:'a9',  name:'Budowniczy',          icon:'🏗️', desc:'Kup 10 budynków łącznie',            check:()=>BUILDINGS.reduce((s,b)=>s+b.owned,0)>=10},
-  {id:'a10', name:'Architekt Kebaba',    icon:'🏙️', desc:'Kup 50 budynków łącznie',            check:()=>BUILDINGS.reduce((s,b)=>s+b.owned,0)>=50},
-  {id:'a11', name:'Kebab Imperium',      icon:'👑', desc:'Kup 100 budynków łącznie',           check:()=>BUILDINGS.reduce((s,b)=>s+b.owned,0)>=100},
-  {id:'a12', name:'Combo King',          icon:'🔥', desc:'Osiągnij combo ×10',                 check:()=>state.combo>=10},
-  {id:'a13', name:'Combo Bóg',           icon:'⚡', desc:'Osiągnij maksymalne combo ×20',      check:()=>state.combo>=20},
-  {id:'a14', name:'Event Hunter',        icon:'🎪', desc:'Przeżyj 5 wydarzeń',                 check:()=>state.totalEvents>=5},
-  {id:'a15', name:'Event Addict',        icon:'🌪️', desc:'Przeżyj 20 wydarzeń',               check:()=>state.totalEvents>=20},
-  {id:'a16', name:'Prestige I',          icon:'⭐', desc:'Osiągnij Prestige 1',                check:()=>state.prestigeLevel>=1},
-  {id:'a17', name:'Prestige Master',     icon:'🌠', desc:'Osiągnij Prestige 5',                check:()=>state.prestigeLevel>=5},
-  {id:'a18', name:'Kolekcjoner',         icon:'📦', desc:'Kup wszystkie ulepszenia',            check:()=>UPGRADES.every(u=>u.bought)},
-  {id:'a19', name:'Bogaty Kebabidżyn',   icon:'🧞', desc:'Wydaj 1 Miliard kebabów',            check:()=>state.totalSpent>=1e9},
-  {id:'a20', name:'Centylion!',          icon:'🔢', desc:'Zdobądź Googol kebabów (1e100)',      check:()=>state.totalMade>=1e100},
+  {id:'a1',  name:'Pierwszy Kebab',   icon:'🌯', desc:'Kliknij pierwszego kebaba',     check:()=>state.totalClicks>=1},
+  {id:'a2',  name:'Klikoman',         icon:'👆', desc:'Kliknij 100 razy',              check:()=>state.totalClicks>=100},
+  {id:'a3',  name:'Klikomania',       icon:'⚡', desc:'Kliknij 1000 razy',             check:()=>state.totalClicks>=1000},
+  {id:'a4',  name:'Klikoholik',       icon:'🔥', desc:'Kliknij 10 000 razy',           check:()=>state.totalClicks>=10000},
+  {id:'a5',  name:'Milioner',         icon:'💰', desc:'Zdobądź 1 Milion kebabów',      check:()=>state.totalMade>=1e6},
+  {id:'a6',  name:'Miliarder',        icon:'💎', desc:'Zdobądź 1 Miliard kebabów',     check:()=>state.totalMade>=1e9},
+  {id:'a7',  name:'Bilioner',         icon:'🏆', desc:'Zdobądź 1 Bilion kebabów',      check:()=>state.totalMade>=1e12},
+  {id:'a8',  name:'Kwadryliard!',     icon:'🌟', desc:'Zdobądź 1 Kwadryliard',         check:()=>state.totalMade>=1e15},
+  {id:'a9',  name:'Budowniczy',       icon:'🏗️', desc:'Kup 10 budynków łącznie',       check:()=>BUILDINGS.reduce((s,b)=>s+b.owned,0)>=10},
+  {id:'a10', name:'Architekt',        icon:'🏙️', desc:'Kup 50 budynków łącznie',       check:()=>BUILDINGS.reduce((s,b)=>s+b.owned,0)>=50},
+  {id:'a11', name:'Kebab Imperium',   icon:'👑', desc:'Kup 100 budynków łącznie',      check:()=>BUILDINGS.reduce((s,b)=>s+b.owned,0)>=100},
+  {id:'a12', name:'Combo King',       icon:'🔥', desc:'Osiągnij combo ×10',            check:()=>state.combo>=10},
+  {id:'a13', name:'Combo Bóg',        icon:'⚡', desc:'Osiągnij max combo ×20',        check:()=>state.combo>=20},
+  {id:'a14', name:'Event Hunter',     icon:'🎪', desc:'Przeżyj 5 wydarzeń',            check:()=>state.totalEvents>=5},
+  {id:'a15', name:'Event Addict',     icon:'🌪️', desc:'Przeżyj 20 wydarzeń',          check:()=>state.totalEvents>=20},
+  {id:'a16', name:'Prestige I',       icon:'⭐', desc:'Osiągnij Prestige 1',           check:()=>state.prestigeLevel>=1},
+  {id:'a17', name:'Prestige Master',  icon:'🌠', desc:'Osiągnij Prestige 5',           check:()=>state.prestigeLevel>=5},
+  {id:'a18', name:'Kolekcjoner',      icon:'📦', desc:'Kup wszystkie ulepszenia',       check:()=>UPGRADES.every(u=>u.bought)},
+  {id:'a19', name:'Bogaty Kebabidżyn',icon:'🧞', desc:'Wydaj 1 Miliard kebabów',       check:()=>state.totalSpent>=1e9},
+  {id:'a20', name:'Centylion!',       icon:'🔢', desc:'Zdobądź Googol kebabów (1e100)',check:()=>state.totalMade>=1e100},
+  {id:'a21', name:'Nocny Marek',      icon:'🌙', desc:'Włącz tryb nocny',              check:()=>nightMode},
+  {id:'a22', name:'Podróżnik',        icon:'🗺️', desc:'Odwiedź zakładkę Mapa',         check:()=>state.mapVisited||false},
 ];
 
 const EVENTS=[
-  {name:'💰 Kebab Festiwal!',    desc:'×5 za klik 20s',      mult:5,   duration:20, type:'click'},
-  {name:'⚡ Turbo Kebab!',       desc:'×2 wszystko 45s',     mult:2,   duration:45, type:'all'},
-  {name:'🌶️ Chili Boost!',      desc:'×4 produkcja 25s',    mult:4,   duration:25, type:'cps'},
-  {name:'🎉 Kebab Mania!',       desc:'×10 za klik 10s',     mult:10,  duration:10, type:'click'},
-  {name:'👽 Inwazja Kebabów!',   desc:'×50 wszystko 8s',     mult:50,  duration:8,  type:'all'},
-  {name:'🌊 Fala Kebabów!',      desc:'×8 produkcja 30s',    mult:8,   duration:30, type:'cps'},
-  {name:'💫 Złoty Kebab!',       desc:'×20 za klik 15s',     mult:20,  duration:15, type:'click'},
-  {name:'🍖 Mięsny Deszcz!',     desc:'×6 wszystko 20s',     mult:6,   duration:20, type:'all'},
-  {name:'🌪️ Kebab Tornado!',    desc:'×15 produkcja 12s',   mult:15,  duration:12, type:'cps'},
-  {name:'🔮 Magiczny Sos!',      desc:'×30 za klik 7s',      mult:30,  duration:7,  type:'click'},
-  {name:'💥 Wielki Wybuch!',     desc:'×100 wszystko 5s',    mult:100, duration:5,  type:'all'},
-  {name:'🎪 Kebab Cyrk!',        desc:'×7 wszystko 35s',     mult:7,   duration:35, type:'all'},
-  {name:'🧟 Kebab Zombie!',      desc:'×25 produkcja 18s',   mult:25,  duration:18, type:'cps'},
-  {name:'⚡ Błyskawiczny Kebab!',desc:'×40 za klik 6s',      mult:40,  duration:6,  type:'click'},
-  {name:'🏎️ Rajd Kebabiarzy!',  desc:'×12 wszystko 25s',    mult:12,  duration:25, type:'all'},
+  {name:'💰 Kebab Festiwal!',    desc:'×5 za klik 20s',    mult:5,   duration:20, type:'click'},
+  {name:'⚡ Turbo Kebab!',       desc:'×2 wszystko 45s',   mult:2,   duration:45, type:'all'},
+  {name:'🌶️ Chili Boost!',      desc:'×4 produkcja 25s',  mult:4,   duration:25, type:'cps'},
+  {name:'🎉 Kebab Mania!',       desc:'×10 za klik 10s',   mult:10,  duration:10, type:'click'},
+  {name:'👽 Inwazja Kebabów!',   desc:'×50 wszystko 8s',   mult:50,  duration:8,  type:'all'},
+  {name:'🌊 Fala Kebabów!',      desc:'×8 produkcja 30s',  mult:8,   duration:30, type:'cps'},
+  {name:'💫 Złoty Kebab!',       desc:'×20 za klik 15s',   mult:20,  duration:15, type:'click'},
+  {name:'🍖 Mięsny Deszcz!',     desc:'×6 wszystko 20s',   mult:6,   duration:20, type:'all'},
+  {name:'🌪️ Kebab Tornado!',    desc:'×15 produkcja 12s', mult:15,  duration:12, type:'cps'},
+  {name:'🔮 Magiczny Sos!',      desc:'×30 za klik 7s',    mult:30,  duration:7,  type:'click'},
+  {name:'💥 Wielki Wybuch!',     desc:'×100 wszystko 5s',  mult:100, duration:5,  type:'all'},
+  {name:'🎪 Kebab Cyrk!',        desc:'×7 wszystko 35s',   mult:7,   duration:35, type:'all'},
+  {name:'🧟 Kebab Zombie!',      desc:'×25 produkcja 18s', mult:25,  duration:18, type:'cps'},
+  {name:'⚡ Błysk. Kebab!',      desc:'×40 za klik 6s',    mult:40,  duration:6,  type:'click'},
+  {name:'🏎️ Rajd Kebabiarzy!',  desc:'×12 wszystko 25s',  mult:12,  duration:25, type:'all'},
 ];
 
-// DZIENNE WYZWANIE
 const DAILY_CHALLENGES=[
-  {id:'c1', name:'Kliknij 100 razy',      check:()=>state.totalClicks>=100,                          reward:500,   icon:'👆'},
-  {id:'c2', name:'Zdobądź 10 000 kebabów',check:()=>state.totalMade>=10000,                          reward:5000,  icon:'🌯'},
-  {id:'c3', name:'Kup 5 budynków',         check:()=>BUILDINGS.reduce((s,b)=>s+b.owned,0)>=5,        reward:2000,  icon:'🏗️'},
-  {id:'c4', name:'Osiągnij ×5 combo',      check:()=>state.combo>=5,                                  reward:3000,  icon:'🔥'},
-  {id:'c5', name:'Zdobądź 1M kebabów',     check:()=>state.totalMade>=1000000,                        reward:50000, icon:'💎'},
-  {id:'c6', name:'Kliknij 500 razy',       check:()=>state.totalClicks>=500,                          reward:10000, icon:'💥'},
-  {id:'c7', name:'Przeżyj 3 wydarzenia',   check:()=>state.totalEvents>=3,                            reward:8000,  icon:'🎪'},
+  {id:'c1', name:'Kliknij 100 razy',       check:()=>state.totalClicks>=100,                   reward:500,   icon:'👆'},
+  {id:'c2', name:'Zdobądź 10 000 kebabów', check:()=>state.totalMade>=10000,                   reward:5000,  icon:'🌯'},
+  {id:'c3', name:'Kup 5 budynków',          check:()=>BUILDINGS.reduce((s,b)=>s+b.owned,0)>=5, reward:2000,  icon:'🏗️'},
+  {id:'c4', name:'Osiągnij ×5 combo',       check:()=>state.combo>=5,                           reward:3000,  icon:'🔥'},
+  {id:'c5', name:'Zdobądź 1M kebabów',      check:()=>state.totalMade>=1000000,                 reward:50000, icon:'💎'},
+  {id:'c6', name:'Kliknij 500 razy',        check:()=>state.totalClicks>=500,                   reward:10000, icon:'💥'},
+  {id:'c7', name:'Przeżyj 3 wydarzenia',    check:()=>state.totalEvents>=3,                     reward:8000,  icon:'🎪'},
 ];
 
-let dailyChallenge=null;
-let dailyClaimed=false;
-
+let dailyChallenge=null,dailyClaimed=false;
 function initDailyChallenge(){
   const today=new Date().toDateString();
   const saved=JSON.parse(localStorage.getItem('kebab_daily')||'{}');
-  if(saved.date===today){
-    dailyChallenge=DAILY_CHALLENGES.find(c=>c.id===saved.id)||DAILY_CHALLENGES[0];
-    dailyClaimed=saved.claimed||false;
-  } else {
-    dailyChallenge=DAILY_CHALLENGES[Math.floor(Math.random()*DAILY_CHALLENGES.length)];
-    localStorage.setItem('kebab_daily',JSON.stringify({date:today,id:dailyChallenge.id,claimed:false}));
-    dailyClaimed=false;
-  }
+  if(saved.date===today){dailyChallenge=DAILY_CHALLENGES.find(c=>c.id===saved.id)||DAILY_CHALLENGES[0];dailyClaimed=saved.claimed||false;}
+  else{dailyChallenge=DAILY_CHALLENGES[Math.floor(Math.random()*DAILY_CHALLENGES.length)];localStorage.setItem('kebab_daily',JSON.stringify({date:today,id:dailyChallenge.id,claimed:false}));dailyClaimed=false;}
   renderDailyChallenge();
 }
-
 function renderDailyChallenge(){
   const el=document.getElementById('dailyChallenge');
   if(!el||!dailyChallenge)return;
   const done=dailyChallenge.check();
-  el.innerHTML=`
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="font-size:1.8rem">${dailyChallenge.icon}</span>
-      <div style="flex:1">
-        <div style="font-weight:800;font-size:.9rem">${dailyChallenge.name}</div>
-        <div style="font-size:.75rem;color:var(--muted)">Nagroda: ${fmt(dailyChallenge.reward)} 🌯</div>
-      </div>
-      <button onclick="claimDaily()" style="background:${dailyClaimed?'#333':done?'var(--green)':'var(--border)'};border:none;border-radius:8px;color:${done&&!dailyClaimed?'#000':'var(--muted)'};font-family:'Rubik',sans-serif;font-weight:700;font-size:.82rem;padding:6px 12px;cursor:${done&&!dailyClaimed?'pointer':'not-allowed'}">
-        ${dailyClaimed?'✔ Odebrano':done?'🎁 Odbierz!':'🔒 W toku'}
-      </button>
-    </div>`;
+  el.innerHTML=`<div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.8rem">${dailyChallenge.icon}</span><div style="flex:1"><div style="font-weight:800;font-size:.9rem">${dailyChallenge.name}</div><div style="font-size:.75rem;color:var(--muted)">Nagroda: ${fmt(dailyChallenge.reward)} 🌯</div></div><button onclick="claimDaily()" style="background:${dailyClaimed?'#333':done?'var(--green)':'var(--border)'};border:none;border-radius:8px;color:${done&&!dailyClaimed?'#000':'var(--muted)'};font-family:'Rubik',sans-serif;font-weight:700;font-size:.82rem;padding:6px 12px;cursor:${done&&!dailyClaimed?'pointer':'not-allowed'}">${dailyClaimed?'✔ Odebrano':done?'🎁 Odbierz!':'🔒 W toku'}</button></div>`;
 }
-
 function claimDaily(){
   if(!dailyChallenge||dailyClaimed||!dailyChallenge.check())return;
-  state.kebabs+=dailyChallenge.reward;
-  state.totalMade+=dailyChallenge.reward;
-  dailyClaimed=true;
-  const today=new Date().toDateString();
-  localStorage.setItem('kebab_daily',JSON.stringify({date:today,id:dailyChallenge.id,claimed:true}));
+  state.kebabs+=dailyChallenge.reward;state.totalMade+=dailyChallenge.reward;dailyClaimed=true;
+  localStorage.setItem('kebab_daily',JSON.stringify({date:new Date().toDateString(),id:dailyChallenge.id,claimed:true}));
   showToast('🎁 Odebrano nagrodę: +'+fmt(dailyChallenge.reward)+' kebabów!');
   renderCounter();renderDailyChallenge();
 }
@@ -539,6 +632,7 @@ function showTab(id,el){
   el.classList.add('active');
   if(id==='stats'){renderStats();renderAchievements();}
   if(id==='ranking')renderRanking();
+  if(id==='map'){state.mapVisited=true;renderMap();}
 }
 
 function renderUpgrades(){
@@ -551,7 +645,6 @@ function renderUpgrades(){
     list.appendChild(div);
   });
 }
-
 function renderBuildings(){
   const list=document.getElementById('buildingList');list.innerHTML='';
   BUILDINGS.forEach(b=>{
@@ -563,7 +656,6 @@ function renderBuildings(){
     list.appendChild(div);
   });
 }
-
 function renderMilestones(){
   const bar=document.getElementById('milestoneBar');bar.innerHTML='';
   MILESTONES.forEach(m=>{
@@ -572,7 +664,6 @@ function renderMilestones(){
     badge.textContent=m.label;bar.appendChild(badge);
   });
 }
-
 function renderCounter(){
   document.getElementById('counterVal').textContent=fmt(state.kebabs);
   document.getElementById('counterPS').textContent=fmt(state.perSecond*state.prestigeBonus*evCpsMult())+' kebabów/s';
@@ -583,16 +674,11 @@ function renderCounter(){
   cd.textContent='×'+state.combo+' ('+(state.combo>0?'+'+Math.round((comboMult-1)*100)+'%':'0%')+')';
   cd.style.color=state.combo>=10?'#c060ff':state.combo>=5?'#ffbe00':'#a07050';
 }
-
 function renderPrestigeBadge(){
   const badge=document.getElementById('prestigeBadge');
-  if(state.prestigeLevel>0){
-    badge.style.display='block';
-    document.getElementById('prestigeCount').textContent=state.prestigeLevel;
-    document.getElementById('prestigeBonus').textContent=state.prestigeBonus.toFixed(2);
-  } else badge.style.display='none';
+  if(state.prestigeLevel>0){badge.style.display='block';document.getElementById('prestigeCount').textContent=state.prestigeLevel;document.getElementById('prestigeBonus').textContent=state.prestigeBonus.toFixed(2);}
+  else badge.style.display='none';
 }
-
 function renderStats(){
   const elapsed=Math.floor((Date.now()-state.sessionStart)/1000)+state.playTimeSeconds;
   const h=Math.floor(elapsed/3600),m=Math.floor((elapsed%3600)/60),s=elapsed%60;
@@ -609,58 +695,39 @@ function renderStats(){
     {label:'Ulepszenia',val:UPGRADES.filter(u=>u.bought).length+'/'+UPGRADES.length,sub:'kupione'},
     {label:'Osiągnięcia',val:ACHIEVEMENTS.filter(a=>state.achUnlocked.has(a.id)).length+'/'+ACHIEVEMENTS.length,sub:'odblokowane'},
     {label:'Przeżyte eventy',val:state.totalEvents,sub:'wydarzeń'},
-    {label:'Najlepszy budynek',val:BUILDINGS.slice().sort((a,b)=>b.owned-a.owned)[0]?.icon||'-',sub:BUILDINGS.slice().sort((a,b)=>b.owned-a.owned)[0]?.name||'-'},
+    {label:'Etap na mapie',val:MAP_STAGES.filter(s=>state.totalMade>=s.req).length+'/'+MAP_STAGES.length,sub:'ukończonych'},
   ];
   document.getElementById('statsGrid').innerHTML=stats.map(s=>`<div class="stat-card"><div class="stat-card-label">${s.label}</div><div class="stat-card-val">${s.val}</div><div class="stat-card-sub">${s.sub}</div></div>`).join('');
 }
-
 function renderAchievements(){
-  const grid=document.getElementById('achGrid');
-  if(!grid)return;
+  const grid=document.getElementById('achGrid');if(!grid)return;
   grid.innerHTML=ACHIEVEMENTS.map(a=>{
     const unlocked=state.achUnlocked.has(a.id)||a.check();
-    return `<div class="ach-card ${unlocked?'unlocked':'locked-ach'}">
-      <div class="ach-icon">${unlocked?a.icon:'❓'}</div>
-      <div class="ach-name">${unlocked?a.name:'???'}</div>
-      <div class="ach-desc">${unlocked?a.desc:'Zablokowane'}</div>
-    </div>`;
+    return `<div class="ach-card ${unlocked?'unlocked':'locked-ach'}"><div class="ach-icon">${unlocked?a.icon:'❓'}</div><div class="ach-name">${unlocked?a.name:'???'}</div><div class="ach-desc">${unlocked?a.desc:'Zablokowane'}</div></div>`;
   }).join('');
 }
-
 function checkAchievements(){
   ACHIEVEMENTS.forEach(a=>{
-    if(!state.achUnlocked.has(a.id)&&a.check()){
-      state.achUnlocked.add(a.id);
-      showToast('🏅 Osiągnięcie: '+a.name+'!');
-    }
+    if(!state.achUnlocked.has(a.id)&&a.check()){state.achUnlocked.add(a.id);showToast('🏅 Osiągnięcie: '+a.name+'!');}
   });
 }
-
 function render(){renderCounter();renderUpgrades();renderBuildings();renderMilestones();renderPrestigeBadge();}
 
 function buyUpgrade(u){
   if(u.bought||state.kebabs<u.cost)return;
-  state.kebabs-=u.cost;state.totalSpent+=u.cost;
-  u.bought=true;u.apply();
-  showToast('✅ '+u.name);render();
+  state.kebabs-=u.cost;state.totalSpent+=u.cost;u.bought=true;u.apply();showToast('✅ '+u.name);render();
 }
-
 function buyBuilding(b){
-  const cost=buildingCost(b);
-  if(state.kebabs<cost)return;
-  state.kebabs-=cost;state.totalSpent+=cost;
-  b.owned++;recalcCps();render();
+  const cost=buildingCost(b);if(state.kebabs<cost)return;
+  state.kebabs-=cost;state.totalSpent+=cost;b.owned++;recalcCps();render();
 }
 
 const btn=document.getElementById('kebabBtn');
 btn.addEventListener('click',(e)=>{
-  state.combo=Math.min(state.combo+1,20);
-  state.comboTimer=3;
+  state.combo=Math.min(state.combo+1,20);state.comboTimer=3;
   const comboMult=1+((state.combo-1)*0.1*state.comboBonus);
   const power=Math.floor(state.clickPower*state.prestigeBonus*evClickMult()*comboMult);
-  state.kebabs=Math.min(state.kebabs+power,MAX_KEBABS);
-  state.totalMade=Math.min(state.totalMade+power,MAX_KEBABS);
-  state.totalClicks++;
+  state.kebabs=Math.min(state.kebabs+power,MAX_KEBABS);state.totalMade=Math.min(state.totalMade+power,MAX_KEBABS);state.totalClicks++;
   checkMilestones();checkAchievements();
   btn.classList.remove('pop');void btn.offsetWidth;btn.classList.add('pop');
   const floatColor=state.combo>=10?'#c060ff':state.combo>=5?'#ffbe00':'#ff6b00';
@@ -669,45 +736,30 @@ btn.addEventListener('click',(e)=>{
 });
 
 function spawnFloaty(x,y,text,color){
-  const el=document.createElement('div');
-  el.className='floaty';el.textContent=text;
+  const el=document.createElement('div');el.className='floaty';el.textContent=text;
   el.style.left=(x-20+Math.random()*30)+'px';el.style.top=(y-10)+'px';
-  if(color)el.style.color=color;
-  document.body.appendChild(el);setTimeout(()=>el.remove(),900);
+  if(color)el.style.color=color;document.body.appendChild(el);setTimeout(()=>el.remove(),900);
 }
-
 function checkMilestones(){
   MILESTONES.forEach(m=>{
-    if(!reachedMilestones.has(m.val)&&state.totalMade>=m.val){
-      reachedMilestones.add(m.val);
-      showToast('🎉 Milestone: '+m.label+' kebabów!');
-      renderMilestones();
-    }
+    if(!reachedMilestones.has(m.val)&&state.totalMade>=m.val){reachedMilestones.add(m.val);showToast('🎉 Milestone: '+m.label+' kebabów!');renderMilestones();}
   });
 }
-
 function trySpawnEvent(){
   if(currentEvent)return;
   if(Math.random()<0.012){
     const ev=EVENTS[Math.floor(Math.random()*EVENTS.length)];
-    currentEvent={...ev,timeLeft:ev.duration};
-    state.totalEvents++;
+    currentEvent={...ev,timeLeft:ev.duration};state.totalEvents++;
     document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
     document.getElementById('eventBanner').classList.add('active');
-    showToast(ev.name+' '+ev.desc);
-    checkAchievements();
+    showToast(ev.name+' '+ev.desc);checkAchievements();
   }
 }
-
 function tickEvent(dt){
   if(!currentEvent)return;
   currentEvent.timeLeft-=dt;
   document.getElementById('eventBanner').textContent=currentEvent.name+' — '+Math.ceil(currentEvent.timeLeft)+'s';
-  if(currentEvent.timeLeft<=0){
-    currentEvent=null;
-    document.getElementById('eventBanner').classList.remove('active');
-    showToast('Wydarzenie zakończone!');
-  }
+  if(currentEvent.timeLeft<=0){currentEvent=null;document.getElementById('eventBanner').classList.remove('active');showToast('Wydarzenie zakończone!');}
 }
 
 function openPrestige(){
@@ -718,144 +770,87 @@ function openPrestige(){
 }
 function closePrestige(){document.getElementById('prestigeModal').classList.remove('show');}
 function doPrestige(){
-  state.prestigeLevel++;
-  state.prestigeBonus=Math.pow(1.5,state.prestigeLevel);
+  state.prestigeLevel++;state.prestigeBonus=Math.pow(1.5,state.prestigeLevel);
   state.kebabs=0;state.totalMade=0;state.clickPower=1;state.perSecond=0;state.totalClicks=0;state.totalSpent=0;
-  reachedMilestones=new Set();
-  UPGRADES.forEach(u=>u.bought=false);
+  reachedMilestones=new Set();UPGRADES.forEach(u=>u.bought=false);
   BUILDINGS.forEach((b,i)=>{b.owned=0;b.baseCps=ORIG_CPS[i];});
-  recalcCps();closePrestige();saveGame();render();
-  checkAchievements();
+  recalcCps();closePrestige();saveGame();render();checkAchievements();
   showToast('⭐ Prestige '+state.prestigeLevel+'! Bonus: ×'+state.prestigeBonus.toFixed(2));
 }
 
-// ============ ONLINE RANKING — NAPRAWIONY ============
-// BIN_ID z oryginalnego pliku gry (v1.7)
+// ===== RANKING =====
 const BIN_ID='6840a1418561e97a50f3b9a2';
 const BIN_KEY='$2a$10$k8QwXvZ3mN9pL2dR7hY6uOjF4tGcB1sE5nA0iW8qM3oP6xK9rV7l';
 const BIN_URL='https://api.jsonbin.io/v3/b/'+BIN_ID;
-
-function setRankStatus(msg,ok){
-  const el=document.getElementById('rankStatus');
-  if(!el)return;
-  el.innerHTML=`<div class="rank-status ${ok?'ok':'err'}">${msg}</div>`;
-}
-
+function setRankStatus(msg,ok){const el=document.getElementById('rankStatus');if(!el)return;el.innerHTML=`<div class="rank-status ${ok?'ok':'err'}">${msg}</div>`;}
 async function fetchOnlineScores(){
-  const res=await fetch(BIN_URL+'/latest',{
-    headers:{'X-Master-Key':BIN_KEY,'X-Access-Key':BIN_KEY}
-  });
+  const res=await fetch(BIN_URL+'/latest',{headers:{'X-Master-Key':BIN_KEY}});
   if(!res.ok)throw new Error('HTTP '+res.status);
-  const data=await res.json();
-  return data.record?.scores||[];
+  const data=await res.json();return data.record?.scores||[];
 }
-
 async function pushOnlineScores(scores){
-  const res=await fetch(BIN_URL,{
-    method:'PUT',
-    headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY,'X-Access-Key':BIN_KEY},
-    body:JSON.stringify({scores})
-  });
+  const res=await fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':BIN_KEY},body:JSON.stringify({scores})});
   if(!res.ok)throw new Error('HTTP '+res.status);
 }
-
 async function submitScore(){
   const nick=document.getElementById('rankNickInput').value.trim();
   if(!nick){showToast('❌ Wpisz nick!');return;}
-  setRankStatus('⏳ Wysyłanie wyniku...', true);
-  showToast('⏳ Wysyłanie...');
+  setRankStatus('⏳ Wysyłanie...',true);showToast('⏳ Wysyłanie...');
   try{
     const scores=await fetchOnlineScores();
     const ei=scores.findIndex(s=>s.nick===nick);
     const entry={nick,score:Math.floor(state.totalMade),prestige:state.prestigeLevel,date:Date.now()};
-    if(ei>=0){
-      if(entry.score>scores[ei].score)scores[ei]=entry;
-    } else {
-      scores.push(entry);
-    }
+    if(ei>=0){if(entry.score>scores[ei].score)scores[ei]=entry;}else scores.push(entry);
     scores.sort((a,b)=>b.score-a.score);
-    const top=scores.slice(0,50);
-    await pushOnlineScores(top);
+    await pushOnlineScores(scores.slice(0,50));
     localStorage.setItem('kebab_my_nick',nick);
-    setRankStatus('✅ Wynik wysłany pomyślnie!', true);
-    showToast('🏆 Wynik wysłany online!');
-    renderRanking();
-  }catch(e){
-    setRankStatus('❌ Błąd połączenia: '+e.message+'. Spróbuj ponownie.', false);
-    showToast('❌ Błąd wysyłania!');
-    console.error('Ranking error:',e);
-  }
+    setRankStatus('✅ Wynik wysłany!',true);showToast('🏆 Wynik wysłany online!');renderRanking();
+  }catch(e){setRankStatus('❌ Błąd: '+e.message,false);showToast('❌ Błąd wysyłania!');console.error(e);}
 }
-
 async function renderRanking(){
   const myNick=localStorage.getItem('kebab_my_nick')||'';
   document.getElementById('rankNickInput').value=myNick;
   const tbody=document.getElementById('rankingBody');
-  tbody.innerHTML='<tr><td colspan="4" class="no-scores">⏳ Ładowanie rankingu...</td></tr>';
+  tbody.innerHTML='<tr><td colspan="4" class="no-scores">⏳ Ładowanie...</td></tr>';
   try{
     const scores=await fetchOnlineScores();
-    if(!scores.length){
-      tbody.innerHTML='<tr><td colspan="4" class="no-scores">Brak wyników — bądź pierwszy! 🌯</td></tr>';
-      setRankStatus('✅ Połączono z rankingiem online',true);
-      return;
-    }
-    setRankStatus('✅ Ranking załadowany — '+scores.length+' graczy',true);
+    if(!scores.length){tbody.innerHTML='<tr><td colspan="4" class="no-scores">Brak wyników — bądź pierwszy! 🌯</td></tr>';setRankStatus('✅ Połączono',true);return;}
+    setRankStatus('✅ Ranking: '+scores.length+' graczy',true);
     const medals=['🥇','🥈','🥉'];
     tbody.innerHTML=scores.slice(0,50).map((s,i)=>{
       const date=s.date?new Date(s.date).toLocaleDateString('pl'):'';
       const isMe=s.nick===myNick;
-      return `<tr class="${isMe?'rank-me':''} rank-${i+1}">
-        <td class="rank-num">${medals[i]||i+1}</td>
-        <td class="rank-name">${s.nick}${isMe?' 👈':''}<br><span style="font-size:.7rem;color:var(--muted)">${date}</span></td>
-        <td class="rank-prestige">${s.prestige>0?'⭐'.repeat(Math.min(s.prestige,5)):'-'}</td>
-        <td class="rank-score">${fmt(s.score)} 🌯</td>
-      </tr>`;
+      return `<tr class="${isMe?'rank-me':''} rank-${i+1}"><td class="rank-num">${medals[i]||i+1}</td><td class="rank-name">${s.nick}${isMe?' 👈':''}<br><span style="font-size:.7rem;color:var(--muted)">${date}</span></td><td class="rank-prestige">${s.prestige>0?'⭐'.repeat(Math.min(s.prestige,5)):'-'}</td><td class="rank-score">${fmt(s.score)} 🌯</td></tr>`;
     }).join('');
-  }catch(e){
-    tbody.innerHTML='<tr><td colspan="4" class="no-scores">❌ Błąd ładowania rankingu. Sprawdź połączenie.</td></tr>';
-    setRankStatus('❌ Brak połączenia z rankingiem: '+e.message, false);
-    console.error('Ranking fetch error:',e);
-  }
+  }catch(e){tbody.innerHTML='<tr><td colspan="4" class="no-scores">❌ Błąd ładowania rankingu.</td></tr>';setRankStatus('❌ '+e.message,false);console.error(e);}
 }
 
 let toastTimer;
-function showToast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
-}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
 
+// ===== TICK =====
 let last=performance.now();
+let chartTickCounter=0;
 function tick(now){
   const dt=(now-last)/1000;last=now;
   tickEvent(dt);trySpawnEvent();
-  if(state.combo>0){
-    state.comboTimer-=dt;
-    if(state.comboTimer<=0){state.combo=0;renderCounter();}
-  }
+  if(state.combo>0){state.comboTimer-=dt;if(state.comboTimer<=0){state.combo=0;renderCounter();}}
   if(state.perSecond>0){
     const earned=state.perSecond*state.prestigeBonus*evCpsMult()*dt;
-    state.kebabs=Math.min(state.kebabs+earned,MAX_KEBABS);
-    state.totalMade=Math.min(state.totalMade+earned,MAX_KEBABS);
+    state.kebabs=Math.min(state.kebabs+earned,MAX_KEBABS);state.totalMade=Math.min(state.totalMade+earned,MAX_KEBABS);
     checkMilestones();checkAchievements();renderCounter();renderDailyChallenge();
   }
+  // wykres co ~2s
+  chartTickCounter+=dt;
+  if(chartTickCounter>=2){chartTickCounter=0;pushCpsPoint();}
   requestAnimationFrame(tick);
 }
 
+// ===== SAVE/LOAD =====
 const SAVE_KEY='kebab_v5';
 function saveGame(){
-  const data={
-    kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,
-    prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,
-    totalClicks:state.totalClicks,totalSpent:state.totalSpent,
-    playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),
-    totalEvents:state.totalEvents,
-    achUnlocked:[...state.achUnlocked],
-    upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),
-    buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned,baseCps:b.baseCps})),
-    milestones:[...reachedMilestones]
-  };
-  localStorage.setItem(SAVE_KEY,JSON.stringify(data));
-  showToast('💾 Zapisano!');
+  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned,baseCps:b.baseCps})),milestones:[...reachedMilestones]};
+  localStorage.setItem(SAVE_KEY,JSON.stringify(data));showToast('💾 Zapisano!');
 }
 function loadGame(){
   const raw=localStorage.getItem(SAVE_KEY);
@@ -866,35 +861,25 @@ function applyLoad(data){
   if(!data)return;
   state.kebabs=data.kebabs||0;state.totalMade=data.totalMade||0;state.clickPower=data.clickPower||1;
   state.prestigeLevel=data.prestigeLevel||0;state.prestigeBonus=data.prestigeBonus||1;
-  state.totalClicks=data.totalClicks||0;state.totalSpent=data.totalSpent||0;
-  state.playTimeSeconds=data.playTimeSeconds||0;
-  state.comboBonus=data.comboBonus||1;
-  state.totalEvents=data.totalEvents||0;
-  state.achUnlocked=new Set(data.achUnlocked||[]);
-  reachedMilestones=new Set(data.milestones||[]);
+  state.totalClicks=data.totalClicks||0;state.totalSpent=data.totalSpent||0;state.playTimeSeconds=data.playTimeSeconds||0;
+  state.comboBonus=data.comboBonus||1;state.totalEvents=data.totalEvents||0;state.mapVisited=data.mapVisited||false;
+  state.achUnlocked=new Set(data.achUnlocked||[]);reachedMilestones=new Set(data.milestones||[]);
   (data.upgrades||[]).forEach(saved=>{const u=UPGRADES.find(x=>x.id===saved.id);if(u&&saved.bought&&!u.bought){u.bought=true;u.apply();}});
   (data.buildings||[]).forEach(saved=>{const b=BUILDINGS.find(x=>x.id===saved.id);if(b){b.owned=saved.owned||0;if(saved.baseCps)b.baseCps=saved.baseCps;}});
   recalcCps();
 }
-function resetGame(){
-  document.getElementById('resetModal').classList.add('show');
-}
-function doReset(){
-  localStorage.removeItem(SAVE_KEY);
-  localStorage.removeItem('kebab_v4');
-  localStorage.removeItem('kebab_daily');
-  location.reload();
-}
+function resetGame(){document.getElementById('resetModal').classList.add('show');}
+function doReset(){localStorage.removeItem(SAVE_KEY);localStorage.removeItem('kebab_v4');localStorage.removeItem('kebab_daily');location.reload();}
 setInterval(saveGame,30000);
 
 (function autoLoad(){
-  // Próbuj nowy zapis, jeśli nie ma — stary
-  let raw=localStorage.getItem(SAVE_KEY)||localStorage.getItem('kebab_v4');
-  if(!raw)return;
-  try{applyLoad(JSON.parse(raw));}catch(e){}
+  const raw=localStorage.getItem(SAVE_KEY)||localStorage.getItem('kebab_v4');
+  if(!raw)return;try{applyLoad(JSON.parse(raw));}catch(e){}
 })();
+
 render();
 initDailyChallenge();
+initChart();
 requestAnimationFrame(ts=>{last=ts;tick(ts);});
 </script>
 </body>

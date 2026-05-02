@@ -145,6 +145,54 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 .invite-box{background:var(--panel);border:2px solid var(--green);border-radius:14px;padding:14px 16px;margin-top:12px;text-align:center;}
 .invite-link{background:#1a0800;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.8rem;color:var(--text);word-break:break-all;margin:8px 0;display:block;}
 .invite-copy-btn{background:var(--green);border:none;border-radius:8px;color:#000;font-family:'Rubik',sans-serif;font-weight:700;font-size:.85rem;padding:8px 20px;cursor:pointer;}
+/* QUESTY */
+.quest-list{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.quest-item{background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:12px 14px;}
+.quest-item.q-active{border-color:var(--accent);}
+.quest-item.q-done{border-color:var(--green);}
+.quest-item.q-claimed{border-color:var(--muted);opacity:.6;}
+.quest-header{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.quest-icon{font-size:1.6rem;}
+.quest-title{font-weight:800;font-size:.9rem;}
+.quest-chain{font-size:.65rem;color:var(--purple);font-weight:700;}
+.quest-progress-bar{height:7px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:4px 0;}
+.quest-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .4s;}
+.quest-footer{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.quest-reward{font-size:.75rem;color:var(--accent2);font-weight:700;}
+.quest-btn{background:var(--green);border:none;border-radius:7px;color:#000;font-family:'Rubik',sans-serif;font-weight:700;font-size:.75rem;padding:5px 12px;cursor:pointer;}
+.quest-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
+/* SEZON */
+.season-card{background:linear-gradient(135deg,#0a0020,#200010);border:2px solid var(--purple);border-radius:14px;padding:16px;margin-top:12px;}
+.season-progress-track{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.season-tier{display:flex;align-items:center;gap:10px;background:var(--panel);border-radius:10px;padding:8px 12px;border:1.5px solid var(--border);}
+.season-tier.s-done{border-color:var(--green);}
+.season-tier.s-current{border-color:var(--accent2);background:#1a1000;}
+.season-tier-icon{font-size:1.5rem;flex-shrink:0;}
+.season-tier-info{flex:1;}
+.season-tier-name{font-size:.82rem;font-weight:800;}
+.season-tier-req{font-size:.68rem;color:var(--muted);}
+.season-tier-reward{font-size:.72rem;color:var(--accent2);font-weight:700;}
+.season-tier-status{font-size:.72rem;font-weight:700;}
+/* STATYSTYKI GRACZY ONLINE */
+.online-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px;}
+.online-stat-card{background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:12px;text-align:center;}
+.online-stat-val{font-size:1.4rem;font-weight:800;color:var(--accent2);}
+.online-stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-top:3px;}
+.offline-banner{position:fixed;top:0;left:0;right:0;z-index:99998;background:linear-gradient(90deg,#1a1a2e,#16213e);border-bottom:3px solid #444;padding:8px 16px;text-align:center;font-weight:700;font-size:.85rem;color:#aaa;display:none;transition:.3s;}
+.offline-banner.show{display:block;}
+.offline-banner.going-offline{background:linear-gradient(90deg,#2a1500,#1a0a00);border-color:var(--red);color:var(--red);animation:offline-pulse .8s ease-in-out infinite alternate;}
+@keyframes offline-pulse{from{opacity:.7}to{opacity:1}}
+.offline-banner.is-offline{background:#111;border-color:#333;color:#666;}
+/* SEZON */
+.season-banner{background:linear-gradient(135deg,#0a1a3a,#1a0a3a);border:2px solid var(--blue);border-radius:14px;padding:14px 16px;margin-top:12px;text-align:center;}
+.season-timer{font-size:1.3rem;font-weight:800;color:var(--blue);font-variant-numeric:tabular-nums;}
+/* KOLEKCJA */
+
+
+
+
+
+
 .admin-msg{position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#200040,#400010);border-bottom:3px solid var(--purple);padding:14px 20px;display:flex;align-items:center;gap:12px;transform:translateY(-100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
 .admin-msg.show{transform:translateY(0);}
 .admin-msg-icon{font-size:2rem;flex-shrink:0;animation:admin-pulse 1s ease-in-out infinite alternate;}
@@ -252,13 +300,15 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
 <div class="tabs">
   <button class="tab-btn active" id="tabBtn-game" onclick="showTab('game',this)">🌯 Gra</button>
   <button class="tab-btn" id="tabBtn-stats" onclick="showTab('stats',this)">📊 Statystyki</button>
-  <button class="tab-btn" id="tabBtn-map" onclick="showTab('map',this)">🗺️ Mapa</button>
   <button class="tab-btn" id="tabBtn-shop" onclick="showTab('shop',this)">🛒 Sklep</button>
+  <button class="tab-btn" id="tabBtn-map" onclick="showTab('map',this)">🗺️ Mapa</button>
+  <button class="tab-btn" id="tabBtn-quests" onclick="showTab('quests',this)">📜 Questy</button>
   <button class="tab-btn" id="tabBtn-weekly" onclick="showTab('weekly',this)">📅 Misje</button>
+  <button class="tab-btn" id="tabBtn-season" onclick="showTab('season',this)">🌟 Sezon</button>
   <button class="tab-btn" id="tabBtn-tournament" onclick="showTab('tournament',this)">🏆 Turniej</button>
   <button class="tab-btn" id="tabBtn-slot" onclick="showTab('slot',this)">🎰 Slot</button>
-  <button class="tab-btn" id="tabBtn-ranking" onclick="showTab('ranking',this)">🏆 Ranking</button>
-  <button class="tab-btn" id="tabBtn-log" onclick="showTab('log',this)">📋 Update Log</button>
+  <button class="tab-btn" id="tabBtn-ranking" onclick="showTab('ranking',this)">🥇 Ranking</button>
+  <button class="tab-btn" id="tabBtn-log" onclick="showTab('log',this)">📋 Log</button>
 </div>
 
 <div class="milestone-bar" id="milestoneBar"></div>
@@ -357,7 +407,17 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
       <div class="slot-reel" id="reel1">🌯</div>
       <div class="slot-reel" id="reel2">🌯</div>
     </div>
-    <div class="slot-cost" id="slotCostLabel">Koszt: 100 kebabów</div>
+    <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:4px;">
+      <input id="slotCustomCost" type="number" min="1" placeholder="Własna kwota..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.85rem;padding:6px 10px;width:150px;text-align:center;" oninput="updateSlotCostFromInput()">
+      <span style="font-size:.78rem;color:var(--muted)">🌯</span>
+    </div>
+    <div class="slot-cost" id="slotCostLabel">lub wybierz: 
+      <button onclick="slotCostIdx=0;updateSlotCost()" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.72rem;padding:2px 7px;cursor:pointer;margin:2px;">100</button>
+      <button onclick="slotCostIdx=1;updateSlotCost()" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.72rem;padding:2px 7px;cursor:pointer;margin:2px;">1K</button>
+      <button onclick="slotCostIdx=2;updateSlotCost()" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.72rem;padding:2px 7px;cursor:pointer;margin:2px;">10K</button>
+      <button onclick="slotCostIdx=3;updateSlotCost()" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.72rem;padding:2px 7px;cursor:pointer;margin:2px;">100K</button>
+      <button onclick="slotCostIdx=4;updateSlotCost()" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:.72rem;padding:2px 7px;cursor:pointer;margin:2px;">1M</button>
+    </div>
     <div class="slot-result" id="slotResult">Zakręć żeby wygrać!</div>
     <button class="slot-btn" id="slotBtn" onclick="spinSlot()">🎰 ZAKRĘĆ!</button>
     <div style="margin-top:12px;font-size:.72rem;color:var(--muted);">
@@ -370,6 +430,27 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
     <div class="invite-link" id="inviteLink">https://plszynon.github.io/Kebab</div>
     <button class="invite-copy-btn" onclick="copyInvite()">📋 Kopiuj link</button>
     <div style="font-size:.72rem;color:var(--muted);margin-top:8px;" id="inviteCopied"></div>
+  </div>
+</div>
+
+
+
+<!-- QUESTY -->
+<div class="tab-panel" id="tab-quests">
+  <div class="section-title" style="margin-top:10px;">📜 Łańcuchy Questów</div>
+  <p style="font-size:.78rem;color:var(--muted);margin:6px 0 8px;">Ukończ questy w kolejności — każdy odblokowuje następny!</p>
+  <div class="quest-list" id="questList"></div>
+</div>
+
+<!-- SEZON -->
+<div class="tab-panel" id="tab-season">
+  <div class="section-title" style="margin-top:10px;">🌟 Sezon Kebaba</div>
+  <div class="season-card">
+    <div style="text-align:center;font-family:'Rubik Dirt',cursive;color:var(--purple);font-size:1.1rem;">Sezon 1: Początek Legendy</div>
+    <div style="text-align:center;font-size:.78rem;color:var(--muted);margin:4px 0 8px;">Zdobywaj XP klikając i budując!</div>
+    <div style="text-align:center;">XP: <strong id="seasonXpVal" style="color:var(--accent2)">0</strong></div>
+    <div class="quest-progress-bar" style="margin:8px 0;"><div class="quest-progress-fill" id="seasonXpBar" style="width:0%"></div></div>
+    <div class="season-progress-track" id="seasonTrack"></div>
   </div>
 </div>
 
@@ -498,27 +579,77 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   </div>
 </div>
 
-<div class="dev-panel" id="devPanel">
+<div class="dev-panel" id="devPanel" style="max-height:90vh;overflow-y:auto;">
   <div class="dev-panel-title">
     <span>🔧 Dev Panel</span>
     <span onclick="document.getElementById('devPanel').classList.remove('show')" style="cursor:pointer;font-size:1rem;">✕</span>
   </div>
-  <div class="dev-global-only" style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:6px;">⚡ Aktywuj event (dla wszystkich)</div>
+  <div id="devUserLabel" style="font-size:.65rem;color:var(--purple);font-weight:700;text-align:center;margin-bottom:8px;padding:4px;background:#200030;border-radius:6px;">Zalogowany jako: Szymon 👑</div>
+
+  <!-- SEKCJA: EVENTY -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">⚡ Event dla wszystkich</div>
   <select id="devGlobalEventSelect" style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.78rem;padding:6px 8px;width:100%;margin-bottom:5px;"></select>
-  <button class="dev-event-btn dev-global-only" style="width:100%;margin-bottom:4px;" onclick="devTriggerEventGlobal()">📡 Wyślij wszystkim</button>
+  <button class="dev-event-btn dev-global-only" style="width:100%;margin-bottom:8px;background:#200030;border-color:var(--purple);" onclick="devTriggerEventGlobal()">📡 Wyślij wszystkim</button>
   <div id="devEventList" style="display:none;"></div>
-  <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:8px 0 5px;">🔒 Tylko u mnie</div>
+
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">🔒 Event tylko u mnie</div>
   <select id="devLocalEventSelect" style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.78rem;padding:6px 8px;width:100%;margin-bottom:5px;"></select>
-  <div style="display:flex;gap:5px;">
-    <button class="dev-event-btn" style="flex:1;" onclick="devTriggerLocal()">▶ Odpal u mnie</button>
-    <button class="dev-event-btn" style="flex:1;border-color:var(--red);color:var(--red);" onclick="devResetEvent()">⏹ Reset eventu</button>
+  <div style="display:flex;gap:5px;margin-bottom:10px;">
+    <button class="dev-event-btn" style="flex:1;" onclick="devTriggerLocal()">▶ Odpal</button>
+    <button class="dev-event-btn" style="flex:1;border-color:var(--red);color:var(--red);" onclick="devResetEvent()">⏹ Reset</button>
   </div>
-  <div class="dev-global-only" style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:10px 0 6px;">💬 Wyślij dialog do graczy</div>
-  <input class="dev-dialog-input dev-global-only" id="devDialogInput" placeholder="Twoja wiadomość..." maxlength="60">
-  <button class="dev-send-btn dev-global-only" onclick="devSendDialog()">📢 Wyślij wszystkim</button>
-  <div id="devUserLabel" style="font-size:.65rem;color:var(--muted);margin-top:6px;text-align:center;">Zalogowany jako: Szymon 👑</div>
+
+  <!-- SEKCJA: WIADOMOŚĆ -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">💬 Wiadomość do graczy</div>
+  <input class="dev-dialog-input dev-global-only" id="devDialogInput" placeholder="Twoja wiadomość..." maxlength="80" style="margin-bottom:5px;">
+  <button class="dev-send-btn dev-global-only" onclick="devSendDialog()" style="margin-bottom:10px;">📢 Wyślij wszystkim</button>
+
+  <!-- SEKCJA: KEBABY -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">💰 Daj kebaby</div>
+  <div style="display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devGiveKebabs(1e6)">+1M</button>
+    <button class="dev-event-btn" onclick="devGiveKebabs(1e9)">+1B</button>
+    <button class="dev-event-btn" onclick="devGiveKebabs(1e12)">+1T</button>
+    <button class="dev-event-btn" onclick="devGiveKebabs(1e18)">+1Kd</button>
+  </div>
+  <div style="display:flex;gap:5px;margin-bottom:10px;">
+    <input id="devCustomKebabs" type="number" placeholder="Własna ilość..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.78rem;padding:5px 8px;flex:1;">
+    <button class="dev-event-btn" onclick="devGiveKebabsCustom()">Daj</button>
+  </div>
+
+  <!-- SEKCJA: PRESTIGE -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">⭐ Prestige</div>
+  <div style="display:flex;gap:5px;margin-bottom:10px;">
+    <button class="dev-event-btn" onclick="devForcePrestige()">⭐ Wymuś Prestige</button>
+    <button class="dev-event-btn" onclick="devResetPrestige()" style="border-color:var(--red);color:var(--red);">Reset prestige</button>
+  </div>
+
+  <!-- SEKCJA: SEZON XP -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">🌟 Sezon XP</div>
+  <div style="display:flex;gap:5px;margin-bottom:10px;">
+    <button class="dev-event-btn" onclick="devGiveXp(1000)">+1K XP</button>
+    <button class="dev-event-btn" onclick="devGiveXp(10000)">+10K XP</button>
+    <button class="dev-event-btn" onclick="devGiveXp(100000)">+100K XP</button>
+  </div>
+
+  <!-- SEKCJA: OGŁOSZENIE ONLINE -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">📢 Ogłoszenie globalne</div>
+  <input class="dev-dialog-input dev-global-only" id="devAnnInput" placeholder="Ogłoszenie (pojawi się na górze)..." maxlength="100" style="margin-bottom:5px;">
+  <button class="dev-send-btn dev-global-only" onclick="devSendAnnouncement()" style="margin-bottom:10px;background:linear-gradient(90deg,#300050,#500020);">📣 Wyślij ogłoszenie</button>
+
+  <!-- SEKCJA: NARZĘDZIA -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">🛠️ Narzędzia</div>
+  <div style="display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devShowStats()">📊 Info</button>
+    <button class="dev-event-btn" onclick="devClearRanking()" style="border-color:var(--red);color:var(--red);">🗑️ Wyczyść ranking</button>
+  </div>
+  <div style="display:flex;gap:5px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devSetCombo(20)">🔥 Combo MAX</button>
+    <button class="dev-event-btn" onclick="devUnlockAllSkins()">🎨 Odblokuj skórki</button>
+  </div>
 </div>
 <button class="dev-badge" id="devBadge" onclick="document.getElementById('devPanel').classList.toggle('show')" title="Dev Panel">🔧</button>
+<div class="offline-banner" id="offlineBanner">📡 Przechodzisz w tryb offline...</div>
 <div class="admin-msg" id="adminMsg">
   <div class="admin-msg-icon">👑</div>
   <div class="admin-msg-body">
@@ -552,6 +683,15 @@ const BIG_NAMES=[
   [1e81,'SexVig'],[1e84,'SepVig'],[1e87,'OktVig'],[1e90,'NonVig'],[1e93,'Tri'],
   [1e96,'UnTri'],[1e99,'DuoTri'],[1e100,'Googol'],[1e120,'Cent.'],[1e150,'Milicent.'],[1e200,'Dwucent.'],[1e250,'Trzcent.'],[1e300,'Kwadryt.'],
 ];
+// 1 cln = 10^303
+function toCln(n){
+  if(n<1e300)return null;
+  // How many centylions
+  const clns=n/1e303;
+  if(clns<1)return null;
+  return clns.toFixed(2)+' cln';
+}
+
 function fmt(n){
   if(isNaN(n)||n===Infinity)return '∞';
   if(n<0)return '-'+fmt(-n);
@@ -726,6 +866,64 @@ function updateDevPanelForUser(){
   if(lbl)lbl.textContent='Zalogowany jako: '+(devUser==='szymon'?'Szymon 👑':'Piotr 👋');
 }
 
+// ===== DEV FUNCTIONS =====
+function devGiveKebabs(amount){
+  state.kebabs+=amount;state.totalMade+=amount;
+  showToast('💰 Dev: +'+fmt(amount)+' kebabów!');
+  renderCounter();renderUpgrades();renderBuildings();
+}
+function devGiveKebabsCustom(){
+  const val=Number(document.getElementById('devCustomKebabs').value);
+  if(!val||val<=0){showToast('❌ Wpisz liczbę!');return;}
+  devGiveKebabs(val);
+  document.getElementById('devCustomKebabs').value='';
+}
+function devForcePrestige(){
+  state.prestigeLevel++;
+  state.prestigeBonus=Math.pow(1.5,state.prestigeLevel)*(1+state.prestigeLevel*0.1);
+  showToast('⭐ Dev: Prestige '+state.prestigeLevel+'!');
+  renderPrestigeBadge();render();
+}
+function devResetPrestige(){
+  state.prestigeLevel=0;state.prestigeBonus=1;
+  showToast('⭐ Dev: Prestige zresetowany!');
+  renderPrestigeBadge();render();
+}
+function devGiveXp(amount){
+  addSeasonXp(amount);
+  showToast('🌟 Dev: +'+fmt(amount)+' XP!');
+}
+function devSetCombo(val){
+  state.combo=val;state.comboTimer=999;
+  showToast('🔥 Dev: Combo ×'+val+'!');
+  renderCounter();
+}
+function devUnlockAllSkins(){
+  SKINS.forEach(s=>unlockedSkins.add(s.id));
+  showToast('🎨 Dev: Wszystkie skórki odblokowane!');
+  if(document.getElementById('tab-shop').classList.contains('active'))renderShop();
+}
+function devShowStats(){
+  showToast('💾 Kebaby: '+fmt(state.kebabs)+' | CPS: '+fmt(state.perSecond)+' | Prestige: '+state.prestigeLevel);
+}
+async function devClearRanking(){
+  if(!confirm('Na pewno wyczyścić ranking?'))return;
+  try{
+    await fbSet('/scores',null);
+    showToast('🗑️ Ranking wyczyszczony!');
+  }catch(e){showToast('❌ Błąd: '+e.message);}
+}
+async function devSendAnnouncement(){
+  const msg=document.getElementById('devAnnInput').value.trim();
+  if(!msg)return;
+  document.getElementById('devAnnInput').value='';
+  try{
+    await fbSet('/announcement',{msg,ts:Date.now(),sender:devUser});
+    showToast('📣 Ogłoszenie wysłane!');
+    showAdminMsg('[OGŁOSZENIE] '+msg);
+  }catch(e){showToast('❌ Błąd: '+e.message);}
+}
+
 function buildDevEventList(){
   const opts=EVENTS.map((ev,i)=>`<option value="${i}">${ev.name} ${ev.desc}</option>`).join('');
   const g=document.getElementById('devGlobalEventSelect');
@@ -819,6 +1017,13 @@ async function checkDevDialogs(){
     if(dmsg&&dmsg.ts>lastMsgTs&&dmsg.ts>(Date.now()-300000)){
       localStorage.setItem('kebab_last_msg',String(dmsg.ts));
       showAdminMsg(dmsg.msg);
+    }
+    // Sprawdź ogłoszenie
+    const ann=await fbGet('/announcement').catch(()=>null);
+    const lastAnnTs=parseInt(localStorage.getItem('kebab_last_ann')||'0');
+    if(ann&&ann.ts>lastAnnTs&&ann.ts>(Date.now()-600000)){
+      localStorage.setItem('kebab_last_ann',String(ann.ts));
+      showAdminMsg('[📣 OGŁOSZENIE] '+ann.msg);
     }
   }catch(e){}
 }
@@ -991,6 +1196,8 @@ function showTab(id,el){
   if(id==='weekly')renderWeekly();
   if(id==='tournament')renderTournament();
   if(id==='slot')updateSlotCost();
+  if(id==='quests')renderQuests();
+  if(id==='season')renderSeason();
 }
 
 function renderUpgrades(){
@@ -1023,7 +1230,8 @@ function renderMilestones(){
   });
 }
 function renderCounter(){
-  document.getElementById('counterVal').textContent=fmt(state.kebabs);
+  const clnVal=toCln(state.kebabs);
+  document.getElementById('counterVal').textContent=clnVal||fmt(state.kebabs);
   document.getElementById('counterPS').textContent=fmt(state.perSecond*state.prestigeBonus*evCpsMult())+' kebabów/s';
   document.getElementById('totalMade').textContent=fmt(state.totalMade);
   const comboMult=1+((state.combo-1)*0.1*state.comboBonus);
@@ -1085,11 +1293,11 @@ function render(){renderCounter();renderUpgrades();renderBuildings();renderMiles
 
 function buyUpgrade(u){
   if(u.bought||state.kebabs<u.cost)return;
-  state.kebabs-=u.cost;state.totalSpent+=u.cost;u.bought=true;u.apply();showToast('✅ '+u.name);render();
+  state.kebabs-=u.cost;state.totalSpent+=u.cost;u.bought=true;u.apply();showToast('✅ '+u.name);render();addSeasonXp(10);
 }
 function buyBuilding(b){
   const cost=buildingCost(b);if(state.kebabs<cost)return;
-  state.kebabs-=cost;state.totalSpent+=cost;b.owned++;recalcCps();render();
+  state.kebabs-=cost;state.totalSpent+=cost;b.owned++;recalcCps();render();addSeasonXp(5);
 }
 
 const btn=document.getElementById('kebabBtn');
@@ -1098,6 +1306,7 @@ btn.addEventListener('click',(e)=>{
   const comboMult=1+((state.combo-1)*0.1*state.comboBonus);
   const power=Math.floor(state.clickPower*state.prestigeBonus*evClickMult()*comboMult);
   state.kebabs=Math.min(state.kebabs+power,MAX_KEBABS);state.totalMade=Math.min(state.totalMade+power,MAX_KEBABS);state.totalClicks++;
+  if(state.totalClicks%50===0)addSeasonXp(1);
   checkMilestones();checkAchievements();
   btn.classList.remove('pop');void btn.offsetWidth;btn.classList.add('pop');
   const floatColor=state.combo>=10?'#c060ff':state.combo>=5?'#ffbe00':'#ff6b00';
@@ -1392,16 +1601,57 @@ function claimWeekly(id,reward){
   renderWeekly();renderCounter();
 }
 
+// ===== OFFLINE DETECTION =====
+let offlineTimer=null;
+let isOffline=false;
+
+window.addEventListener('online',()=>{
+  isOffline=false;
+  clearTimeout(offlineTimer);
+  const b=document.getElementById('offlineBanner');
+  b.className='offline-banner';b.style.display='none';
+  showToast('✅ Połączono z internetem!');
+});
+
+window.addEventListener('offline',()=>{
+  isOffline=true;
+  const b=document.getElementById('offlineBanner');
+  b.textContent='📡 Przechodzisz w tryb offline...';
+  b.className='offline-banner going-offline show';
+  clearTimeout(offlineTimer);
+  offlineTimer=setTimeout(()=>{
+    b.textContent='❌ Jesteś offline — ranking i eventy niedostępne';
+    b.className='offline-banner is-offline show';
+  },3000);
+});
+
+// Check on load
+if(!navigator.onLine){
+  isOffline=true;
+  setTimeout(()=>{
+    const b=document.getElementById('offlineBanner');
+    b.textContent='❌ Jesteś offline — ranking i eventy niedostępne';
+    b.className='offline-banner is-offline show';
+  },500);
+}
+
 // ===== SLOT MACHINE =====
 const SLOT_SYMBOLS=['🌯','🥩','🌶️','⭐','🔥','💎','🌟','👑'];
 const SLOT_COSTS=[100,1000,10000,100000,1000000];
 let slotSpinning=false;
 let slotCostIdx=0;
 
-function slotCost(){return SLOT_COSTS[Math.min(slotCostIdx,SLOT_COSTS.length-1)];}
-
+function slotCost(){
+  const inp=document.getElementById('slotCustomCost');
+  if(inp&&inp.value&&Number(inp.value)>0)return Number(inp.value);
+  return SLOT_COSTS[Math.min(slotCostIdx,SLOT_COSTS.length-1)];
+}
+function updateSlotCostFromInput(){
+  // custom input overrides preset
+}
 function updateSlotCost(){
-  document.getElementById('slotCostLabel').textContent='Koszt: '+fmt(slotCost())+' kebabów';
+  const inp=document.getElementById('slotCustomCost');
+  if(inp)inp.value='';
 }
 
 function spinSlot(){
@@ -1544,13 +1794,165 @@ function copyInvite(){
   });
 }
 
+
+// ===== ŁAŃCUCHY QUESTÓW =====
+const QUEST_CHAINS=[
+  {
+    id:'chain1',name:'Droga Kebabiarza',icon:'🌯',
+    quests:[
+      {title:'Pierwszy krok',    desc:'Kliknij 10 razy',          req:10,   type:'clicks', reward:200},
+      {title:'Regularny klient', desc:'Zdobądź 1000 kebabów',      req:1e3,  type:'made',   reward:2000},
+      {title:'Własna kebabiarnia',desc:'Kup 3 budynki',            req:3,    type:'bld',    reward:10000},
+      {title:'Kebab Baron',      desc:'Zdobądź 1M kebabów',        req:1e6,  type:'made',   reward:500000},
+      {title:'Kebab Król',       desc:'Zdobądź 1B kebabów',        req:1e9,  type:'made',   reward:1e8},
+    ]
+  },
+  {
+    id:'chain2',name:'Ścieżka Klikacza',icon:'👆',
+    quests:[
+      {title:'Klikacz Amator',   desc:'Kliknij 50 razy',           req:50,   type:'clicks', reward:500},
+      {title:'Klikacz Pro',      desc:'Kliknij 500 razy',          req:500,  type:'clicks', reward:5000},
+      {title:'Klikacz Mistrz',   desc:'Kliknij 5000 razy',         req:5000, type:'clicks', reward:100000},
+      {title:'Klikacz Legenda',  desc:'Kliknij 50000 razy',        req:5e4,  type:'clicks', reward:5e6},
+    ]
+  },
+  {
+    id:'chain3',name:'Imperium Budowlane',icon:'🏗️',
+    quests:[
+      {title:'Mały budowlaniec', desc:'Kup 5 budynków',            req:5,    type:'bld',    reward:3000},
+      {title:'Średni budowlaniec',desc:'Kup 20 budynków',          req:20,   type:'bld',    reward:50000},
+      {title:'Wielki budowlaniec',desc:'Kup 50 budynków',          req:50,   type:'bld',    reward:500000},
+      {title:'Architekt Kebaba', desc:'Kup 100 budynków',          req:100,  type:'bld',    reward:1e7},
+    ]
+  },
+];
+
+let questProgress={};
+
+function getQuestVal(type){
+  switch(type){
+    case 'clicks': return state.totalClicks;
+    case 'made':   return state.totalMade;
+    case 'bld':    return BUILDINGS.reduce((s,b)=>s+b.owned,0);
+    default:       return 0;
+  }
+}
+
+function renderQuests(){
+  const list=document.getElementById('questList');
+  if(!list)return;
+  list.innerHTML=QUEST_CHAINS.map(chain=>{
+    const saved=questProgress[chain.id]||{step:0,claimed:[]};
+    const step=saved.step||0;
+    const claimed=saved.claimed||[];
+    return `<div style="margin-bottom:4px;">
+      <div style="font-family:'Rubik Dirt',cursive;color:var(--accent);font-size:.9rem;margin-bottom:6px;">${chain.icon} ${chain.name}</div>
+      ${chain.quests.map((q,i)=>{
+        const isClaimed=claimed.includes(i);
+        const isActive=i===step&&!isClaimed;
+        const isLocked=i>step||isClaimed;
+        const val=getQuestVal(q.type);
+        const pct=Math.min(100,Math.floor((val/q.req)*100));
+        const done=val>=q.req;
+        return `<div class="quest-item ${isClaimed?'q-claimed':isActive?'q-active':''}">
+          <div class="quest-header">
+            <div class="quest-icon">${isClaimed?'✅':isActive?'▶':i<step?'✅':'🔒'}</div>
+            <div>
+              <div class="quest-title">${q.title}</div>
+              <div class="quest-chain">${chain.name} — ${i+1}/${chain.quests.length}</div>
+            </div>
+          </div>
+          <div style="font-size:.78rem;color:var(--muted);">${q.desc}</div>
+          ${isActive?`<div class="quest-progress-bar"><div class="quest-progress-fill" style="width:${pct}%"></div></div>
+          <div style="font-size:.68rem;color:var(--muted);">${fmt(val)} / ${fmt(q.req)} (${pct}%)</div>`:''}
+          <div class="quest-footer">
+            <div class="quest-reward">🎁 ${fmt(q.reward)} kebabów</div>
+            <button class="quest-btn" ${(!done||!isActive)?'disabled':''} onclick="claimQuest('${chain.id}',${i},${q.reward})">
+              ${isClaimed?'✔ Odebrano':done&&isActive?'Odbierz!':'🔒'}
+            </button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+function claimQuest(chainId,idx,reward){
+  const chain=QUEST_CHAINS.find(c=>c.id===chainId);
+  if(!chain)return;
+  const q=chain.quests[idx];
+  if(getQuestVal(q.type)<q.req)return;
+  if(!questProgress[chainId])questProgress[chainId]={step:0,claimed:[]};
+  if(questProgress[chainId].claimed.includes(idx))return;
+  questProgress[chainId].claimed.push(idx);
+  questProgress[chainId].step=idx+1;
+  state.kebabs+=reward;state.totalMade+=reward;
+  showToast('📜 Quest: '+q.title+'! +'+fmt(reward)+' kebabów!');
+  renderQuests();renderCounter();
+  addSeasonXp(Math.floor(reward/100));
+}
+
+// ===== SEZON =====
+const SEASON_TIERS=[
+  {name:'Nowicjusz',      icon:'🌱', xp:0,      reward:'500 kebabów',       rewardFn:()=>{state.kebabs+=500;state.totalMade+=500;}},
+  {name:'Adept',          icon:'🥙', xp:500,    reward:'5K kebabów',         rewardFn:()=>{state.kebabs+=5000;state.totalMade+=5000;}},
+  {name:'Kebab Uczeń',    icon:'🔥', xp:2000,   reward:'50K kebabów',        rewardFn:()=>{state.kebabs+=50000;state.totalMade+=50000;}},
+  {name:'Kebab Wojownik', icon:'⚔️', xp:5000,   reward:'+500K kebabów',       rewardFn:()=>{state.kebabs+=500000;state.totalMade+=500000;}},
+  {name:'Kebab Mistrz',   icon:'🏆', xp:10000,  reward:'500K kebabów',       rewardFn:()=>{state.kebabs+=500000;state.totalMade+=500000;}},
+  {name:'Kebab Legenda',  icon:'💎', xp:25000,  reward:'Skórka Legendy 🦁',  rewardFn:()=>{unlockedSkins.add('s_legend');}},
+  {name:'Kebab Bóg',      icon:'👑', xp:50000,  reward:'×2 prestige bonus',  rewardFn:()=>{state.prestigeBonus*=2;}},
+  {name:'CENTYLION',      icon:'♾️', xp:100000, reward:'Tytuł Centyliona!',  rewardFn:()=>{showToast('🎊 Jesteś Centylionem!');}},
+];
+
+let seasonXp=0;
+let seasonClaimed=new Set();
+
+function addSeasonXp(xp){
+  seasonXp+=xp;
+  // Check new tiers
+  SEASON_TIERS.forEach((tier,i)=>{
+    if(seasonXp>=tier.xp&&!seasonClaimed.has(i)&&i>0){
+      seasonClaimed.add(i);
+      tier.rewardFn();
+      showToast('🌟 Nowy tier sezonu: '+tier.name+'! '+tier.reward);
+    }
+  });
+  if(document.getElementById('tab-season').classList.contains('active'))renderSeason();
+}
+
+function renderSeason(){
+  const xpVal=document.getElementById('seasonXpVal');
+  const xpBar=document.getElementById('seasonXpBar');
+  const track=document.getElementById('seasonTrack');
+  if(!xpVal||!track)return;
+  xpVal.textContent=fmt(seasonXp)+' XP';
+  const maxXp=SEASON_TIERS[SEASON_TIERS.length-1].xp;
+  if(xpBar)xpBar.style.width=Math.min(100,(seasonXp/maxXp)*100)+'%';
+  let currentTierIdx=0;
+  for(let i=SEASON_TIERS.length-1;i>=0;i--){if(seasonXp>=SEASON_TIERS[i].xp){currentTierIdx=i;break;}}
+  track.innerHTML=SEASON_TIERS.map((tier,i)=>{
+    const done=seasonXp>=tier.xp;
+    const isCurrent=i===currentTierIdx;
+    return `<div class="season-tier ${done?'s-done':''} ${isCurrent?'s-current':''}">
+      <div class="season-tier-icon">${tier.icon}</div>
+      <div class="season-tier-info">
+        <div class="season-tier-name">${tier.name}</div>
+        <div class="season-tier-req">${fmt(tier.xp)} XP</div>
+        <div class="season-tier-reward">🎁 ${tier.reward}</div>
+      </div>
+      <div class="season-tier-status" style="color:${done?'var(--green)':'var(--muted)'}">${done?'✅':'🔒'}</div>
+    </div>`;
+  }).join('');
+}
+
 const SAVE_KEY='kebab_v5';
 function saveGame(){
-  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned,baseCps:b.baseCps})),milestones:[...reachedMilestones],unlockedSkins:[...unlockedSkins],activeSkin};
+  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,lastOnline:Date.now(),achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned})),milestones:[...reachedMilestones],unlockedSkins:[...unlockedSkins],activeSkin,questProgress,seasonXp,seasonClaimed:[...seasonClaimed]};
   localStorage.setItem(SAVE_KEY,JSON.stringify(data));
   // Zapisz aktywny dev event osobno
-  if(currentEvent&&currentEvent.permanent){
-    localStorage.setItem('kebab_dev_event_active',JSON.stringify({name:currentEvent.name,desc:currentEvent.desc,mult:currentEvent.mult,type:currentEvent.type,permanent:true,ts:currentEvent.ts||Date.now(),active:true}));
+  if(devEventActive&&currentEvent&&currentEvent.permanent){
+    if(!currentEvent.ts)currentEvent.ts=Date.now();
+    localStorage.setItem('kebab_dev_event_active',JSON.stringify({name:currentEvent.name,desc:currentEvent.desc,mult:currentEvent.mult,type:currentEvent.type,permanent:true,ts:currentEvent.ts,active:true}));
   } else if(!devEventActive){
     localStorage.removeItem('kebab_dev_event_active');
   }
@@ -1573,12 +1975,36 @@ function applyLoad(data){
   (data.upgrades||[]).forEach(saved=>{const u=UPGRADES.find(x=>x.id===saved.id);if(u&&saved.bought&&!u.bought){u.bought=true;u.apply();}});
   (data.buildings||[]).forEach(saved=>{const b=BUILDINGS.find(x=>x.id===saved.id);if(b)b.owned=saved.owned||0;});
   recalcCps();
+  // Bonus za czas offline (max 4h)
+  if(data.lastOnline){
+    const offSec=Math.min((Date.now()-data.lastOnline)/1000, 4*3600);
+    if(offSec>60){
+      const earned=state.perSecond*state.prestigeBonus*offSec*0.5; // 50% offline rate
+      if(earned>0){
+        state.kebabs+=earned;state.totalMade+=earned;
+        setTimeout(()=>showToast('💤 Offline bonus: +'+fmt(earned)+' kebabów! ('+Math.floor(offSec/60)+'min)'),500);
+      }
+    }
+  }
   if(data.unlockedSkins)unlockedSkins=new Set(data.unlockedSkins);
   if(data.activeSkin){activeSkin=data.activeSkin;const sk=SKINS.find(s=>s.id===activeSkin);if(sk)document.getElementById('kebabBtn').textContent=sk.icon;}
+  if(data.questProgress)questProgress=data.questProgress;
+  if(data.seasonXp)seasonXp=data.seasonXp;
+  if(data.seasonClaimed)seasonClaimed=new Set(data.seasonClaimed);
 }
 function resetGame(){document.getElementById('resetModal').classList.add('show');}
 function doReset(){localStorage.removeItem(SAVE_KEY);localStorage.removeItem('kebab_v4');localStorage.removeItem('kebab_daily');location.reload();}
-setInterval(saveGame,30000);
+setInterval(()=>{
+  // Silent autosave
+  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned})),milestones:[...reachedMilestones],unlockedSkins:[...unlockedSkins],activeSkin};
+  localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+  if(devEventActive&&currentEvent&&currentEvent.permanent){
+    if(!currentEvent.ts)currentEvent.ts=Date.now();
+    localStorage.setItem('kebab_dev_event_active',JSON.stringify({name:currentEvent.name,desc:currentEvent.desc,mult:currentEvent.mult,type:currentEvent.type,permanent:true,ts:currentEvent.ts,active:true}));
+  } else if(!devEventActive){
+    localStorage.removeItem('kebab_dev_event_active');
+  }
+},30000);
 
 // Przywróć dev session
 (function restoreDevSession(){

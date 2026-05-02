@@ -292,6 +292,27 @@ body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
 .god-badge{position:fixed;top:62px;right:12px;background:linear-gradient(135deg,#300050,#500010);border:2px solid #ffbe00;border-radius:12px;padding:5px 10px;font-size:.72rem;font-weight:800;color:#ffbe00;z-index:999;display:none;animation:god-pulse .6s ease-in-out infinite alternate;box-shadow:0 0 20px #ffbe0044;}
 .god-badge.show{display:block;}
 @keyframes god-pulse{from{box-shadow:0 0 10px #ffbe0044}to{box-shadow:0 0 30px #c060ffaa,0 0 60px #ffbe0066}}
+/* STREAK SYSTEM */
+.streak-badge{background:linear-gradient(135deg,#2a0000,#1a0020);border:2px solid var(--red);border-radius:10px;padding:6px 12px;text-align:center;width:100%;}
+.streak-fire{font-size:1.4rem;}
+.streak-count{font-size:1.1rem;font-weight:800;color:var(--accent2);}
+.streak-label{font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+/* KEBAB BANK */
+.bank-box{background:linear-gradient(135deg,#0a1a00,#1a0a00);border:2px solid var(--accent2);border-radius:14px;padding:14px 16px;margin-top:12px;}
+.bank-stat{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:.85rem;}
+.bank-stat:last-child{border-bottom:none;}
+.bank-stat-val{font-weight:800;color:var(--accent2);}
+.bank-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.bank-btn{background:var(--panel2);border:1.5px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:.15s;font-family:'Rubik',sans-serif;}
+.bank-btn:hover{border-color:var(--accent);background:var(--panel);}
+.bank-btn-icon{font-size:1.5rem;margin-bottom:3px;}
+.bank-btn-label{font-size:.75rem;font-weight:700;color:var(--text);}
+.bank-btn-desc{font-size:.65rem;color:var(--muted);margin-top:1px;}
+/* AUKCJA */
+.auction-item{background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;margin-top:8px;position:relative;overflow:hidden;}
+.auction-item.hot{border-color:var(--accent2);}
+.auction-timer-badge{position:absolute;top:6px;right:8px;font-size:.68rem;font-weight:800;color:var(--accent2);background:#1a1000;border:1px solid var(--accent2);border-radius:6px;padding:1px 6px;}
+.auction-item.hot .auction-timer-badge{animation:pulse-border .5s ease-in-out infinite alternate;}
 /* FURY METER */
 .fury-wrap{width:100%;padding:0 2px;}
 .fury-label{display:flex;justify-content:space-between;align-items:center;font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;}
@@ -369,6 +390,8 @@ body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
   <button class="tab-btn" id="tabBtn-ranking" onclick="showTab('ranking',this)">🥇 Ranking</button>
   <button class="tab-btn" id="tabBtn-log" onclick="showTab('log',this)">📋 Log</button>
   <button class="tab-btn" id="tabBtn-codes" onclick="showTab('codes',this)">🎁 Kody</button>
+  <button class="tab-btn" id="tabBtn-bank" onclick="showTab('bank',this)">🏦 Bank</button>
+  <button class="tab-btn" id="tabBtn-auction" onclick="showTab('auction',this)">⚡ Aukcja</button>
 </div>
 
 <div class="milestone-bar" id="milestoneBar"></div>
@@ -388,6 +411,11 @@ body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
           <div id="prestigeProgressBar" style="height:100%;background:linear-gradient(90deg,var(--purple),var(--accent2));border-radius:4px;transition:width .5s;width:0%"></div>
         </div>
         <div id="prestigeProgressLabel" style="font-size:.62rem;color:#c080ff;margin-top:2px;"></div>
+      </div>
+      <div class="streak-badge" id="streakBadge" style="display:none;">
+        <span class="streak-fire" id="streakFire">🔥</span>
+        <span class="streak-count" id="streakCount">0</span>
+        <span class="streak-label"> dzień z rzędu!</span>
       </div>
       <div class="event-banner" id="eventBanner">Wydarzenie!</div>
       <div class="kebab-wrap">
@@ -666,6 +694,35 @@ body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
   </div>
 </div>
 
+<!-- BANK -->
+<div class="tab-panel" id="tab-bank">
+  <div class="section-title" style="margin-top:10px;">🏦 Kebab Bank</div>
+  <p style="font-size:.78rem;color:var(--muted);margin:6px 0 10px;">Deponuj kebaby żeby zarabiać odsetki, lub weź pożyczkę!</p>
+  <div class="bank-box">
+    <div class="bank-stat"><span>💰 Depozyt</span><span class="bank-stat-val" id="bankDeposit">0</span></div>
+    <div class="bank-stat"><span>📈 Odsetki (co 60s)</span><span class="bank-stat-val">+2%</span></div>
+    <div class="bank-stat"><span>💸 Pożyczka</span><span class="bank-stat-val" id="bankLoan">0</span></div>
+    <div class="bank-stat"><span>⏰ Spłata za</span><span class="bank-stat-val" id="bankLoanTimer">—</span></div>
+    <div class="bank-actions">
+      <div class="bank-btn" onclick="bankDeposit10()"><div class="bank-btn-icon">💰</div><div class="bank-btn-label">Wpłać 10%</div><div class="bank-btn-desc">swoich kebabów</div></div>
+      <div class="bank-btn" onclick="bankWithdraw()"><div class="bank-btn-icon">💵</div><div class="bank-btn-label">Wypłać</div><div class="bank-btn-desc">wszystko z banku</div></div>
+      <div class="bank-btn" onclick="bankTakeLoan()"><div class="bank-btn-icon">🤝</div><div class="bank-btn-label">Pożyczka</div><div class="bank-btn-desc">50% depozytu, +20%</div></div>
+      <div class="bank-btn" onclick="bankRepayLoan()"><div class="bank-btn-icon">✅</div><div class="bank-btn-label">Spłać</div><div class="bank-btn-desc">oddaj pożyczkę</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- AUKCJA -->
+<div class="tab-panel" id="tab-auction">
+  <div class="section-title" style="margin-top:10px;">⚡ Aukcja Budynków</div>
+  <p style="font-size:.78rem;color:var(--muted);margin:6px 0 4px;">Przecenione budynki przez ograniczony czas! Odświeża się co 3 minuty.</p>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+    <span id="auctionTimer" style="font-size:.82rem;font-weight:800;color:var(--accent2);">⏰ Odświeżenie za: —</span>
+    <button onclick="renderAuction()" style="background:var(--panel2);border:1px solid var(--border);border-radius:7px;color:var(--muted);font-size:.75rem;padding:4px 10px;cursor:pointer;font-family:'Rubik',sans-serif;">🔄 Odśwież</button>
+  </div>
+  <div id="auctionList"></div>
+</div>
+
 <!-- RESET MODAL -->
 <div class="modal-overlay" id="resetModal">
   <div class="modal">
@@ -776,6 +833,96 @@ body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
     <button class="dev-event-btn" onclick="devSendGlobalCombo()" style="border-color:var(--accent2);color:var(--accent2);">🔥 Combo all</button>
     <button class="dev-event-btn" onclick="devClearRanking()" style="border-color:var(--red);color:var(--red);">🗑️ Ranking</button>
   </div>
+  <!-- OP SEKCJA -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);margin:6px 0 4px;border-top:1px solid var(--border);padding-top:6px;">💀 KEBABY</div>
+  <div style="display:flex;gap:3px;margin-bottom:3px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devGiveAll()" style="border-color:#ffd700;color:#ffd700;">♾️ MAX</button>
+    <button class="dev-event-btn" onclick="devGive1Cln()">+1 CLN</button>
+    <button class="dev-event-btn" onclick="devMultiplyKebabs(10)">×10</button>
+    <button class="dev-event-btn" onclick="devMultiplyKebabs(1000)">×1000</button>
+  </div>
+  <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devHalfKebabs()" style="border-color:var(--red);color:var(--red);">÷2</button>
+    <button class="dev-event-btn" onclick="devResetKebabs()" style="border-color:var(--red);color:var(--red);">Reset</button>
+    <button class="dev-event-btn" onclick="devAutoClick(1000)">🖱️ ×1000</button>
+    <button class="dev-event-btn" onclick="devMaxClickPower()">⚡ MAX klik</button>
+  </div>
+
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);margin:4px 0 3px;border-top:1px solid var(--border);padding-top:4px;">🏗️ BUDYNKI / CPS</div>
+  <div style="display:flex;gap:3px;margin-bottom:3px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devOwnedPlus(10)">+10</button>
+    <button class="dev-event-btn" onclick="devOwnedPlus(100)">+100</button>
+    <button class="dev-event-btn" onclick="devCpsBoost(10)">CPS ×10</button>
+    <button class="dev-event-btn" onclick="devCpsBoost(1000)">CPS ×1K</button>
+  </div>
+  <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devInstantMax()">⚡ MAX all</button>
+    <button class="dev-event-btn" onclick="devOwnedReset()" style="border-color:var(--red);color:var(--red);">Reset bud.</button>
+    <button class="dev-event-btn" onclick="devResetCps()" style="border-color:var(--red);color:var(--red);">Reset CPS</button>
+  </div>
+
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);margin:4px 0 3px;border-top:1px solid var(--border);padding-top:4px;">⭐ PRESTIGE</div>
+  <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devPrestigePlus5()">+5 lvl</button>
+    <button class="dev-event-btn" onclick="devPrestigeBonus(2)">Bonus ×2</button>
+    <button class="dev-event-btn" onclick="devPrestigeBonus(10)">Bonus ×10</button>
+    <button class="dev-event-btn" onclick="devResetPrestige()" style="border-color:var(--red);color:var(--red);">Reset</button>
+  </div>
+
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);margin:4px 0 3px;border-top:1px solid var(--border);padding-top:4px;">⚡ EVENTY</div>
+  <div style="display:flex;gap:3px;margin-bottom:3px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devSendCentylionBurst()" style="border-color:var(--purple);color:var(--purple);">💥 BURST all</button>
+    <button class="dev-event-btn" onclick="devSendGlobalGod()" style="border-color:#ffd700;color:#ffd700;">👑 GOD all</button>
+  </div>
+  <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devStopAllEvents()" style="border-color:var(--red);color:var(--red);">⏹ Stop local</button>
+    <button class="dev-event-btn" onclick="devGlobalStopEvent()" style="border-color:var(--red);color:var(--red);">⏹ Stop all</button>
+  </div>
+
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);margin:4px 0 3px;border-top:1px solid var(--border);padding-top:4px;">🔥 COMBO / FURY</div>
+  <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devComboMax()">🔥 MAX combo</button>
+    <button class="dev-event-btn" onclick="devComboReset()">Reset combo</button>
+    <button class="dev-event-btn" onclick="devFuryMax()">🔥 MAX fury</button>
+  </div>
+
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);margin:4px 0 3px;border-top:1px solid var(--border);padding-top:4px;">🏦 BANK / AUKCJA</div>
+  <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devBankFill()" style="border-color:var(--green);color:var(--green);">🏦 Fill</button>
+    <button class="dev-event-btn" onclick="devBankDouble()">×2 depozyt</button>
+    <button class="dev-event-btn" onclick="devMaxBank()">MAX bank</button>
+    <button class="dev-event-btn" onclick="devBankClear()" style="border-color:var(--red);color:var(--red);">Clear</button>
+  </div>
+  <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devAutoSlot(5)">🎰 Slot ×5</button>
+    <button class="dev-event-btn" onclick="devAutoSlot(20)">🎰 Slot ×20</button>
+    <button class="dev-event-btn" onclick="devAutoAuction()" id="devAutoAucBtn">⚡ Auto-auk.</button>
+  </div>
+
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);margin:4px 0 3px;border-top:1px solid var(--border);padding-top:4px;">🌟 SEZON / STREAK / MISJE</div>
+  <div style="display:flex;gap:3px;margin-bottom:3px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devSeasonMax()">🌟 MAX XP</button>
+    <button class="dev-event-btn" onclick="devSeasonReset()" style="border-color:var(--red);color:var(--red);">Reset</button>
+    <button class="dev-event-btn" onclick="devStreakBoost()">🔥 +7 dni</button>
+    <button class="dev-event-btn" onclick="devStreakReset()" style="border-color:var(--red);color:var(--red);">Reset streak</button>
+  </div>
+  <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devCompleteWeekly()">📅 Misje</button>
+    <button class="dev-event-btn" onclick="devResetWeekly()" style="border-color:var(--red);color:var(--red);">Reset misji</button>
+    <button class="dev-event-btn" onclick="devWinTournament()">🏆 Wygraj turniej</button>
+  </div>
+
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);margin:4px 0 3px;border-top:1px solid var(--border);padding-top:4px;">🛠️ NARZĘDZIA</div>
+  <div style="display:flex;gap:3px;margin-bottom:3px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devGodMode()" style="border-color:#ffd700;color:#ffd700;">👑 GOD</button>
+    <button class="dev-event-btn" onclick="devFreezeTime()" id="devFreezeBtn" style="border-color:var(--blue);color:var(--blue);">❄️ Freeze</button>
+    <button class="dev-event-btn" onclick="devPlayerSnapshot()">👥 Gracze</button>
+  </div>
+  <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devUnlockAllSkins()">🎨 Skórki</button>
+    <button class="dev-event-btn" onclick="devUnlockAllAch?.()">🏅 Osiągnięcia</button>
+    <button class="dev-event-btn" onclick="devGenerateCode()">🎁 Kod</button>
+  </div>
   <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;">
     <button class="dev-event-btn" onclick="devResetQuests()">🔄 Reset questów</button>
     <button class="dev-event-btn" onclick="devGiveAllSeason()">🌟 MAX Sezon</button>
@@ -870,6 +1017,9 @@ body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
     <div class="admin-msg-from">Wiadomość od Admina</div>
     <div class="admin-msg-text" id="adminMsgText"></div>
   </div>
+</div>
+  <div style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;margin:4px 0;" id="secretAchTitle">Sekretne osiągnięcie!</div>
+  <div style="font-size:.8rem;color:var(--muted);" id="secretAchDesc"></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -1182,6 +1332,59 @@ async function refreshOnlineCount(){
     document.getElementById('devOnlineCount').textContent=active+' '+(active===1?'gracz':'graczy')+' (ostatnie 2min)';
   }catch(e){document.getElementById('devOnlineCount').textContent='Brak danych';}
 }
+let devFrozen=false;
+let devAutoAuctionActive=false;
+
+function devGodMode(){
+  // Max everything locally
+  state.clickPower*=1000;
+  BUILDINGS.forEach(b=>b.baseCps*=1000);
+  recalcCps();render();
+  showToast('👑 DEV GOD MODE! ×1000 wszystko!');
+}
+function devInstantMax(){
+  // Buy all upgrades, max all buildings x50
+  UPGRADES.forEach(u=>{if(!u.bought){u.bought=true;u.apply();}});
+  BUILDINGS.forEach(b=>{b.owned+=50;});
+  recalcCps();render();
+  showToast('⚡ INSTANT MAX! +50 budynków, wszystkie ulepszenia!');
+}
+function devCentylion(){
+  const amount=1e100;
+  state.kebabs+=amount;state.totalMade+=amount;
+  renderCounter();renderUpgrades();renderBuildings();
+  showToast('♾️ CENTYLION ADDED! +1e100 kebabów!');
+}
+let devFreezeInterval=null;
+function devFreezeTime(){
+  devFrozen=!devFrozen;
+  document.getElementById('devFreezeBtn').textContent=devFrozen?'▶️ Odmroź':'❄️ Zamroź czas';
+  document.getElementById('devFreezeBtn').style.borderColor=devFrozen?'var(--red)':'var(--blue)';
+  document.getElementById('devFreezeBtn').style.color=devFrozen?'var(--red)':'var(--blue)';
+  showToast(devFrozen?'❄️ Czas zatrzymany!':'▶️ Czas wznowiony!');
+}
+async function devSendGlobalGod(){
+  const ev={name:'👑 GOD MODE dla wszystkich!',desc:'×1000 wszystko 30s',mult:1000,type:'all',permanent:false,duration:30,ts:Date.now(),active:true};
+  currentEvent={...ev,timeLeft:30};
+  document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
+  document.getElementById('eventBanner').classList.add('active');
+  try{
+    await fbSet('/devEvent',ev);
+    showToast('👑 GOD MODE wysłany do wszystkich!');
+  }catch(e){showToast('👑 Lokalnie OK');}
+}
+function devMaxBank(){
+  const amount=state.kebabs*0.9;
+  if(amount<1){showToast('❌ Za mało kebabów!');return;}
+  state.kebabs-=amount;bankDeposited+=amount;
+  showToast('🏦 MAX Bank: +'+fmt(amount)+' w depozycie!');
+  renderBank();renderCounter();
+}
+function devAutoAuction(){
+  devAutoAuctionActive=!devAutoAuctionActive;
+  showToast(devAutoAuctionActive?'⚡ Auto-aukcja ON — kupuję automatycznie!':'⚡ Auto-aukcja OFF');
+}
+
 function devGiveXpCustom(){
   const raw=document.getElementById('devXpInput')?.value;
   const val=parseDevNum(raw||'');
@@ -1293,6 +1496,135 @@ async function devToggleEventBlock(){
   try{
     await fbSet('/devBlockEvents',{blocked:eventsBlocked,ts:Date.now()});
     showToast(eventsBlocked?'🔕 Eventy losowe zablokowane dla wszystkich!':'✅ Eventy odblokowane!');
+  }catch(e){showToast('❌ '+e.message);}
+}
+
+// ===== NOWE DEV FUNKCJE =====
+
+// KEBABY
+function devGive1Cln(){state.kebabs+=1e303;state.totalMade+=1e303;renderCounter();showToast('♾️ +1 Centylion!');}
+function devGiveAll(){state.kebabs=1e303;state.totalMade=1e303;renderCounter();showToast('♾️ MAX kebabów!');}
+function devHalfKebabs(){state.kebabs=Math.floor(state.kebabs/2);renderCounter();showToast('✂️ Kebaby podzielone na pół!');}
+function devResetKebabs(){state.kebabs=0;renderCounter();showToast('🔄 Kebaby zresetowane!');}
+function devMultiplyKebabs(x){state.kebabs*=x;state.totalMade+=state.kebabs;renderCounter();showToast('×'+x+' Kebabów!');}
+
+// KLIKNIĘCIA
+function devMaxClickPower(){state.clickPower=1e50;render();showToast('⚡ Click Power = 1e50!');}
+function devResetClickPower(){state.clickPower=1;render();showToast('🔄 Click Power zresetowany!');}
+function devAutoClick(times){
+  let i=0;
+  const iv=setInterval(()=>{
+    if(i++>=times){clearInterval(iv);showToast('✅ Auto-klik zakończony!');return;}
+    const power=Math.floor(state.clickPower*state.prestigeBonus);
+    state.kebabs+=power;state.totalMade+=power;state.totalClicks++;
+  },10);
+  showToast('🖱️ Auto-klik x'+times+'...');
+}
+
+// BUDYNKI I ULEPSZENIA
+function devOwnedPlus(n){BUILDINGS.forEach(b=>{b.owned+=n;});recalcCps();render();showToast('🏗️ +'+n+' każdego budynku!');}
+function devOwnedReset(){BUILDINGS.forEach(b=>{b.owned=0;});recalcCps();render();showToast('🏗️ Budynki zresetowane!');}
+function devCpsBoost(mult){BUILDINGS.forEach(b=>{b.baseCps*=mult;});recalcCps();render();showToast('🏭 CPS ×'+mult+'!');}
+function devResetCps(){BUILDINGS.forEach((b,i)=>{b.baseCps=ORIG_CPS[i];});recalcCps();render();showToast('🏭 CPS zresetowany!');}
+
+// PRESTIGE
+function devPrestigePlus5(){for(let i=0;i<5;i++){state.prestigeLevel++;state.prestigeBonus=Math.pow(1.5,state.prestigeLevel)*(1+state.prestigeLevel*0.1);}renderPrestigeBadge();render();showToast('⭐ +5 Prestige! (poziom '+state.prestigeLevel+')');}
+function devPrestigeBonus(mult){state.prestigeBonus*=mult;renderPrestigeBadge();render();showToast('⭐ Prestige bonus ×'+mult+'!');}
+
+// EVENTS
+function devStopAllEvents(){currentEvent=null;devEventActive=false;document.getElementById('eventBanner').classList.remove('active');localStorage.removeItem('kebab_dev_event_active');showToast('⏹ Wszystkie eventy zatrzymane!');}
+async function devGlobalStopEvent(){
+  await devResetEvent();
+  showToast('⏹ Event globalnie zatrzymany!');
+}
+async function devSendCentylionBurst(){
+  const ev=EVENTS.find(e=>e.name.includes('CENTYLION'))||EVENTS[EVENTS.length-1];
+  currentEvent={...ev,timeLeft:Infinity,permanent:true};
+  devEventActive=true;
+  document.getElementById('eventBanner').textContent=ev.name+' ♾️';
+  document.getElementById('eventBanner').classList.add('active');
+  try{await fbSet('/devEvent',{...ev,permanent:true,ts:Date.now(),active:true});showToast('💥 CENTYLION BURST dla wszystkich!');}
+  catch(e){showToast('💥 Lokalnie OK');}
+}
+
+// BANK
+function devBankFill(){bankDeposited=state.kebabs;state.kebabs=0;renderBank();renderCounter();showToast('🏦 Cały majątek w banku!');}
+function devBankClear(){bankDeposited=0;bankLoanAmount=0;renderBank();showToast('🏦 Bank wyczyszczony!');}
+function devBankDouble(){bankDeposited*=2;renderBank();showToast('🏦 Depozyt ×2!');}
+
+// SLOT
+function devAutoSlot(n){
+  let i=0;
+  const iv=setInterval(()=>{
+    if(i++>=n){clearInterval(iv);showToast('🎰 Auto-slot ×'+n+' zakończony!');return;}
+    if(slotSpinning)return;
+    const cost=slotCost();
+    if(state.kebabs<cost){clearInterval(iv);showToast('❌ Za mało kebabów!');return;}
+    spinSlot();
+  },600);
+  showToast('🎰 Auto-slot x'+n+'...');
+}
+
+// TURNIEJ
+async function devWinTournament(){
+  const nick=localStorage.getItem('kebab_my_nick')||'Admin';
+  const def=getTournamentDef();
+  const slotId='t'+Math.floor(Date.now()/(6*3600*1000));
+  const key=nick.replace(/[^a-zA-Z0-9_]/g,'_');
+  try{
+    await fbSet('/tournament/'+slotId+'/'+key,{nick,score:1e100,date:Date.now()});
+    showToast('🏆 Dev: Wygrany turniej!');
+    renderTournament();
+  }catch(e){showToast('❌ '+e.message);}
+}
+
+// SEZON
+function devSeasonReset(){seasonXp=0;seasonClaimed=new Set();renderSeason();showToast('🌟 Sezon zresetowany!');}
+function devSeasonMax(){addSeasonXp(1000000);showToast('🌟 Sezon MAX!');}
+
+// COMBO
+function devComboMax(){state.combo=20;state.comboTimer=9999;renderCounter();showToast('🔥 Combo ×20 PERMANENTNY!');}
+function devComboReset(){state.combo=0;state.comboTimer=0;renderCounter();showToast('🔄 Combo zresetowane!');}
+
+// MISJE
+function devCompleteWeekly(){
+  const ws=getWeekStart();
+  const missions=getWeeklyMissions();
+  const raw={weekStart:ws,claimed:{}};
+  missions.forEach(m=>{raw.claimed[m.id]=true;state.kebabs+=m.reward;state.totalMade+=m.reward;});
+  localStorage.setItem('kebab_weekly',JSON.stringify(raw));
+  showToast('📅 Misje tygodniowe ukończone!');renderCounter();
+}
+function devResetWeekly(){localStorage.removeItem('kebab_weekly');showToast('📅 Misje tygodniowe zresetowane!');}
+
+// FURY (jeśli istnieje)
+function devFuryMax(){if(typeof furyLevel!=='undefined'){furyLevel=100;if(typeof renderFury==='function')renderFury();showToast('🔥 FURY MAX!');}}
+
+// GLOBALNE WIADOMOŚCI
+async function devGlobalMessage(msg){
+  try{await fbSet('/devmsg',{msg:'👑 Admin: '+msg,ts:Date.now()});showToast('📢 Wiadomość: '+msg);}
+  catch(e){showToast('❌ '+e.message);}
+}
+
+// STREAK
+function devStreakBoost(){loginStreak+=7;streakBonus=1+(loginStreak-1)*0.05;localStorage.setItem('kebab_streak',loginStreak);document.getElementById('streakBadge').style.display='block';document.getElementById('streakCount').textContent=loginStreak;showToast('🔥 Streak +7 dni! Bonus: +'+Math.round((streakBonus-1)*100)+'%');}
+function devStreakReset(){loginStreak=0;streakBonus=1;localStorage.removeItem('kebab_streak');document.getElementById('streakBadge').style.display='none';showToast('🔄 Streak zresetowany!');}
+
+// NOWE KODY
+function devGenerateCode(){
+  const codes=['KEBABGOD','CENTYLION','DEVMODE','FURYBLAST','BANKRICH'];
+  const code=codes[Math.floor(Math.random()*codes.length)]+Math.floor(Math.random()*9999);
+  showToast('🎁 Kod: '+code);navigator.clipboard?.writeText(code);
+}
+
+// SNAPSHOT GRACZY
+async function devPlayerSnapshot(){
+  try{
+    const scores=await fbGet('/scores');
+    if(!scores){showToast('Brak graczy!');return;}
+    const count=Object.keys(scores).length;
+    const top=Object.values(scores).sort((a,b)=>b.score-a.score)[0];
+    showToast('👥 Graczy: '+count+' | #1: '+(top?.nick||'?')+' ('+fmt(top?.score||0)+')');
   }catch(e){showToast('❌ '+e.message);}
 }
 
@@ -1863,6 +2195,8 @@ function showTab(id,el){
   if(id==='weekly')renderWeekly();
   if(id==='tournament')renderTournament();
   if(id==='slot')updateSlotCost();
+  if(id==='bank')renderBank();
+  if(id==='auction'){if(auctionItems.length===0)generateAuction();renderAuction();}
   if(id==='quests')renderQuests();
   if(id==='season')renderSeason();
   if(id==='codes')renderUsedCodes();
@@ -1900,7 +2234,7 @@ function renderMilestones(){
 function renderCounter(){
   const clnVal=toCln(state.kebabs);
   document.getElementById('counterVal').textContent=clnVal||fmt(state.kebabs);
-  document.getElementById('counterPS').textContent=fmt(state.perSecond*state.prestigeBonus*evCpsMult())+' kebabów/s';
+  document.getElementById('counterPS').textContent=fmt(state.perSecond*state.prestigeBonus*evCpsMult()*streakBonus)+' kebabów/s';
   document.getElementById('totalMade').textContent=fmt(state.totalMade);
   const comboMult=1+((state.combo-1)*0.1*state.comboBonus);
   document.getElementById('clickPowerDisplay').textContent=fmt(Math.floor(state.clickPower*state.prestigeBonus*evClickMult()*(state.combo>0?comboMult:1)));
@@ -1965,7 +2299,7 @@ function buyUpgrade(u){
 }
 function buyBuilding(b){
   const cost=buildingCost(b);if(state.kebabs<cost)return;
-  state.kebabs-=cost;state.totalSpent+=cost;b.owned++;recalcCps();render();addSeasonXp(5);
+  state.kebabs-=cost;state.totalSpent+=cost;state.lastSpendTime=Date.now();state.noSpendTimer=0;b.owned++;recalcCps();render();addSeasonXp(5);
 }
 
 const btn=document.getElementById('kebabBtn');
@@ -2123,6 +2457,7 @@ let popupQuestStart=0;
 let devEventActive=false;
 function tick(now){
   const dt=(now-last)/1000;last=now;
+  if(devFrozen){requestAnimationFrame(tick);return;} // czas zamrożony
   tickEvent(dt);trySpawnEvent();
   if(state.combo>0){state.comboTimer-=dt;if(state.comboTimer<=0){state.combo=0;renderCounter();}}
   if(state.perSecond>0){
@@ -2139,6 +2474,15 @@ function tick(now){
   popupQuestTimer+=dt;
   if(popupQuestTimer>=300){popupQuestTimer=0;spawnPopupQuest();}
   tickPopupQuest(dt);
+  tickBank(dt);
+  tickAuction(dt);
+  // Track no-spend timer
+  if(!state.noSpendTimer)state.noSpendTimer=0;
+  if(state.lastSpendTime&&Date.now()-state.lastSpendTime>0)state.noSpendTimer+=dt;
+  // Track clicks in 10s window
+  if(!state.clicksLast10s)state.clicksLast10s=0;
+  if(!state.clickWindow)state.clickWindow=[];
+  // Secret ach check every 5s
   requestAnimationFrame(tick);
 }
 
@@ -2349,6 +2693,7 @@ function spinSlot(){
   slotSpinning=true;
   document.getElementById('slotBtn').disabled=true;
   if(activePopupQuest&&activePopupQuest.type==='slot_spin'){popupQuestProgress=1;}
+  if(!state.slotSpins)state.slotSpins=0;state.slotSpins++;
   document.getElementById('slotResult').textContent='🎰 Kręci się...';
   const reels=[0,1,2].map(i=>document.getElementById('reel'+i));
   reels.forEach(r=>r.classList.add('spin'));
@@ -2737,9 +3082,168 @@ function claimPopupQuest(){
 // Hook clicks for popup quest
 const origKebabBtn=document.getElementById('kebabBtn');
 
+// ===== KEBAB BANK =====
+let bankDeposited=0;
+let bankLoanAmount=0;
+let bankLoanTs=0;
+let bankInterestTimer=0;
+
+function bankDeposit10(){
+  const amount=Math.floor(state.kebabs*0.1);
+  if(amount<1){showToast('❌ Za mało kebabów!');return;}
+  state.kebabs-=amount;bankDeposited+=amount;
+  showToast('🏦 Wpłacono: '+fmt(amount)+' kebabów!');
+  renderBank();renderCounter();
+}
+function bankWithdraw(){
+  if(bankDeposited<=0){showToast('❌ Brak depozytu!');return;}
+  state.kebabs+=bankDeposited;state.totalMade+=bankDeposited;
+  showToast('💵 Wypłacono: '+fmt(bankDeposited)+' kebabów!');
+  bankDeposited=0;renderBank();renderCounter();
+}
+function bankTakeLoan(){
+  if(bankLoanAmount>0){showToast('❌ Spłać najpierw poprzednią pożyczkę!');return;}
+  if(bankDeposited<=0){showToast('❌ Najpierw wpłać depozyt!');return;}
+  bankLoanAmount=Math.floor(bankDeposited*0.5*1.2); // 20% odsetki
+  bankLoanTs=Date.now();
+  state.kebabs+=Math.floor(bankDeposited*0.5);
+  state.totalMade+=Math.floor(bankDeposited*0.5);
+  showToast('🤝 Pożyczka: +'+fmt(Math.floor(bankDeposited*0.5))+' (spłata: '+fmt(bankLoanAmount)+')');
+  renderBank();renderCounter();
+}
+function bankRepayLoan(){
+  if(bankLoanAmount<=0){showToast('❌ Brak pożyczki!');return;}
+  if(state.kebabs<bankLoanAmount){showToast('❌ Za mało kebabów na spłatę!');return;}
+  state.kebabs-=bankLoanAmount;bankLoanAmount=0;bankLoanTs=0;
+  showToast('✅ Pożyczka spłacona!');
+  renderBank();renderCounter();
+}
+function tickBank(dt){
+  if(bankDeposited<=0)return;
+  bankInterestTimer+=dt;
+  if(bankInterestTimer>=60){
+    bankInterestTimer=0;
+    const interest=Math.floor(bankDeposited*0.02);
+    bankDeposited+=interest;
+    showToast('📈 Odsetki bankowe: +'+fmt(interest)+' kebabów!');
+    renderBank();
+  }
+}
+function renderBank(){
+  const dep=document.getElementById('bankDeposit');
+  const loan=document.getElementById('bankLoan');
+  const timer=document.getElementById('bankLoanTimer');
+  if(dep)dep.textContent=fmt(bankDeposited)+' 🌯';
+  if(loan)loan.textContent=bankLoanAmount>0?fmt(bankLoanAmount)+' 🌯':'Brak';
+  if(timer&&bankLoanAmount>0){
+    const elapsed=Math.floor((Date.now()-bankLoanTs)/1000);
+    timer.textContent=elapsed+'s temu wzięta';
+  } else if(timer){timer.textContent='—';}
+}
+
+// ===== AUKCJA BUDYNKÓW =====
+let auctionItems=[];
+let auctionRefreshTimer=0;
+let auctionTimeLeft=180;
+
+function generateAuction(){
+  auctionTimeLeft=180;
+  const shuffled=[...BUILDINGS].sort(()=>Math.random()-0.5);
+  auctionItems=shuffled.slice(0,3).map(b=>{
+    const disc=0.3+Math.random()*0.5; // 30-80% zniżki
+    const orig=buildingCost(b);
+    return {id:b.id,name:b.name,icon:b.icon,origCost:orig,discount:disc,saleCost:Math.floor(orig*(1-disc))};
+  });
+}
+
+function renderAuction(){
+  const list=document.getElementById('auctionList');
+  const timerEl=document.getElementById('auctionTimer');
+  if(!list)return;
+  if(timerEl)timerEl.textContent='⏰ Odświeżenie za: '+Math.ceil(auctionTimeLeft)+'s';
+  if(auctionItems.length===0)generateAuction();
+  list.innerHTML=auctionItems.map((item,i)=>{
+    const disc=Math.round(item.discount*100);
+    const canBuy=state.kebabs>=item.saleCost;
+    const hot=disc>=60;
+    return `<div class="auction-item ${hot?'hot':''}">
+      <div style="font-size:2rem;flex-shrink:0;">${item.icon}</div>
+      <div style="flex:1;">
+        <div style="font-weight:800;font-size:.9rem;">${item.name}</div>
+        <div style="font-size:.72rem;color:var(--muted);text-decoration:line-through;">${fmt(item.origCost)} 🌯</div>
+        <div style="font-size:.9rem;font-weight:800;color:var(--green);">${fmt(item.saleCost)} 🌯 <span style="color:var(--accent2);font-size:.75rem;">-${disc}%</span></div>
+      </div>
+      <div class="auction-timer-badge">${hot?'🔥 HOT':'⚡'}</div>
+      <button onclick="buyAuction(${i})" style="background:${canBuy?'var(--green)':'var(--border)'};border:none;border-radius:8px;color:${canBuy?'#000':'var(--muted)'};font-family:'Rubik',sans-serif;font-weight:700;font-size:.78rem;padding:7px 12px;cursor:${canBuy?'pointer':'not-allowed'};">
+        ${canBuy?'Kup!':'Za mało'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function buyAuction(idx){
+  const item=auctionItems[idx];
+  if(!item||state.kebabs<item.saleCost)return;
+  const b=BUILDINGS.find(b=>b.id===item.id);
+  if(!b)return;
+  state.kebabs-=item.saleCost;state.totalSpent+=item.saleCost;
+  b.owned++;recalcCps();
+  auctionItems.splice(idx,1);
+  if(!state.auctionBought)state.auctionBought=0;state.auctionBought++;
+  showToast('⚡ Kupiono: '+item.icon+' '+item.name+'!');
+  renderAuction();render();
+}
+
+function tickAuction(dt){
+  // Auto-aukcja dla admina
+  if(devAutoAuctionActive&&auctionItems.length>0){
+    auctionItems.forEach((_,i)=>{
+      if(auctionItems[i]&&state.kebabs>=auctionItems[i].saleCost)buyAuction(i);
+    });
+  }
+  if(!document.getElementById('tab-auction').classList.contains('active'))return;
+  auctionTimeLeft-=dt;
+  if(auctionTimeLeft<=0){generateAuction();}
+  renderAuction();
+}
+
+// ===== STREAK SYSTEM =====
+let loginStreak=0;
+let streakBonus=1;
+
+function checkStreak(){
+  const today=new Date().toDateString();
+  const lastLogin=localStorage.getItem('kebab_last_login');
+  const streak=parseInt(localStorage.getItem('kebab_streak')||'0');
+  if(!lastLogin){
+    loginStreak=1;
+  } else {
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    if(lastLogin===yesterday){
+      loginStreak=streak+1;
+    } else if(lastLogin===today){
+      loginStreak=streak;
+    } else {
+      loginStreak=1; // reset
+    }
+  }
+  localStorage.setItem('kebab_last_login',today);
+  localStorage.setItem('kebab_streak',loginStreak);
+  streakBonus=1+(loginStreak-1)*0.05; // +5% za każdy dzień
+  if(loginStreak>1){
+    const badge=document.getElementById('streakBadge');
+    const count=document.getElementById('streakCount');
+    const fire=document.getElementById('streakFire');
+    if(badge)badge.style.display='block';
+    if(count)count.textContent=loginStreak;
+    if(fire)fire.textContent=loginStreak>=7?'🔥🔥':loginStreak>=3?'🔥':'⭐';
+    if(loginStreak>1)setTimeout(()=>showToast('🔥 '+loginStreak+' dni z rzędu! Bonus: +'+Math.round((streakBonus-1)*100)+'% do wszystkiego!'),1000);
+  }
+}
+
 const SAVE_KEY='kebab_v5';
 function saveGame(){
-  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,lastOnline:Date.now(),achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned})),milestones:[...reachedMilestones],unlockedSkins:[...unlockedSkins],activeSkin,questProgress,seasonXp,seasonClaimed:[...seasonClaimed]};
+  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,lastOnline:Date.now(),achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned})),milestones:[...reachedMilestones],bankDeposited,bankLoanAmount,bankLoanTs,slotSpins:state.slotSpins||0,auctionBought:state.auctionBought||0,unlockedSkins:[...unlockedSkins],activeSkin,questProgress,seasonXp,seasonClaimed:[...seasonClaimed]};
   localStorage.setItem(SAVE_KEY,JSON.stringify(data));
   // Zapisz aktywny dev event osobno
   if(devEventActive&&currentEvent&&currentEvent.permanent){
@@ -2783,6 +3287,11 @@ function applyLoad(data){
   if(data.questProgress)questProgress=data.questProgress;
   if(data.seasonXp)seasonXp=data.seasonXp;
   if(data.seasonClaimed)seasonClaimed=new Set(data.seasonClaimed);
+  if(data.bankDeposited)bankDeposited=data.bankDeposited;
+  if(data.bankLoanAmount)bankLoanAmount=data.bankLoanAmount;
+  if(data.bankLoanTs)bankLoanTs=data.bankLoanTs;
+  if(data.slotSpins)state.slotSpins=data.slotSpins;
+  if(data.auctionBought)state.auctionBought=data.auctionBought;
 }
 function resetGame(){document.getElementById('resetModal').classList.add('show');}
 function doReset(){localStorage.removeItem(SAVE_KEY);localStorage.removeItem('kebab_v4');localStorage.removeItem('kebab_daily');location.reload();}
@@ -2826,6 +3335,7 @@ setInterval(()=>{
 
 render();
 initDailyChallenge();
+checkStreak();
 initChart();
 requestAnimationFrame(ts=>{last=ts;tick(ts);});
 </script>

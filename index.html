@@ -701,14 +701,15 @@ async function devSendDialog(){
   const msg=document.getElementById('devDialogInput').value.trim();
   if(!msg)return;
   document.getElementById('devDialogInput').value='';
-  const entry={msg:'👑 Szymon: '+msg,ts:Date.now()};
-  showToast('📢 Wysyłanie wiadomości...');
+  const sender=devUser==='piotr'?'Piotr 👋':'Szymon 👑';
+  const entry={msg:'['+sender+']: '+msg,ts:Date.now()};
+  showToast('📢 Wysyłanie...');
   try{
     await fbSet('/devmsg',entry);
-    showToast('📢 Wiadomość wysłana do wszystkich graczy!');
+    showToast('📢 Wiadomość wysłana! Gracze zobaczą za max 15s');
   }catch(e){
-    showToast('❌ Błąd wysyłania: '+e.message);
-    console.error(e);
+    showToast('❌ Błąd: '+e.message);
+    console.error('devSendDialog error:',e);
   }
 }
 
@@ -951,6 +952,7 @@ function renderCounter(){
   cd.textContent='×'+state.combo+' ('+(state.combo>0?'+'+Math.round((comboMult-1)*100)+'%':'0%')+')';
   cd.style.color=state.combo>=10?'#c060ff':state.combo>=5?'#ffbe00':'#a07050';
 }
+function prestigeThreshold(){return Math.floor(100000*Math.pow(10,state.prestigeLevel));}
 function renderPrestigeBadge(){
   const badge=document.getElementById('prestigeBadge');
   if(state.prestigeLevel>0){
@@ -965,7 +967,7 @@ function renderPrestigeBadge(){
   const lbl=document.getElementById('prestigeProgressLabel');
   if(bar)bar.style.width=pct.toFixed(1)+'%';
   if(lbl)lbl.textContent='Do prestige: '+pct.toFixed(1)+'% ('+fmt(state.totalMade)+' / '+fmt(threshold)+')';
-  badge.style.display='block';
+  if(state.prestigeLevel===0)badge.style.display='block';
 }
 function renderStats(){
   const elapsed=Math.floor((Date.now()-state.sessionStart)/1000)+state.playTimeSeconds;
@@ -1313,7 +1315,9 @@ function applyLoad(data){
   state.comboBonus=data.comboBonus||1;state.totalEvents=data.totalEvents||0;state.mapVisited=data.mapVisited||false;
   state.achUnlocked=new Set(data.achUnlocked||[]);reachedMilestones=new Set(data.milestones||[]);
   (data.upgrades||[]).forEach(saved=>{const u=UPGRADES.find(x=>x.id===saved.id);if(u&&saved.bought&&!u.bought){u.bought=true;u.apply();}});
-  (data.buildings||[]).forEach(saved=>{const b=BUILDINGS.find(x=>x.id===saved.id);if(b){b.owned=saved.owned||0;if(saved.baseCps)b.baseCps=saved.baseCps;}});
+  // Reset baseCps to original values first
+  BUILDINGS.forEach((b,i)=>{b.baseCps=ORIG_CPS[i];b.owned=0;});
+  (data.buildings||[]).forEach(saved=>{const b=BUILDINGS.find(x=>x.id===saved.id);if(b)b.owned=saved.owned||0;});
   recalcCps();
   if(data.unlockedSkins)unlockedSkins=new Set(data.unlockedSkins);
   if(data.activeSkin){activeSkin=data.activeSkin;const sk=SKINS.find(s=>s.id===activeSkin);if(sk)document.getElementById('kebabBtn').textContent=sk.icon;}

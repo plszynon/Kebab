@@ -155,6 +155,17 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
 .shop-cost{font-size:.8rem;color:var(--accent2);font-weight:700;}
 .shop-cost.bought-label{color:var(--green);}
 .shop-cost.active-label{color:var(--accent2);}
+.weekly-wrap{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.weekly-item{background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.weekly-item.w-done{border-color:var(--green);}
+.weekly-item.w-claimed{border-color:var(--muted);opacity:.5;}
+.weekly-icon{font-size:1.8rem;flex-shrink:0;}
+.weekly-info{flex:1;}
+.weekly-name{font-weight:800;font-size:.9rem;}
+.weekly-desc{font-size:.73rem;color:var(--muted);margin-top:2px;}
+.weekly-reward{font-size:.78rem;color:var(--accent2);font-weight:700;margin-top:2px;}
+.weekly-btn{background:var(--green);border:none;border-radius:8px;color:#000;font-family:'Rubik',sans-serif;font-weight:700;font-size:.8rem;padding:7px 12px;cursor:pointer;white-space:nowrap;}
+.weekly-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
 .pw-modal{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:20000;}
 .pw-modal.show{display:flex;}
 .pw-box{background:var(--panel);border:3px solid var(--purple);border-radius:18px;padding:24px;max-width:320px;width:90%;text-align:center;}
@@ -212,6 +223,7 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <button class="tab-btn" id="tabBtn-stats" onclick="showTab('stats',this)">📊 Statystyki</button>
   <button class="tab-btn" id="tabBtn-map" onclick="showTab('map',this)">🗺️ Mapa</button>
   <button class="tab-btn" id="tabBtn-shop" onclick="showTab('shop',this)">🛒 Sklep</button>
+  <button class="tab-btn" id="tabBtn-weekly" onclick="showTab('weekly',this)">📅 Misje</button>
   <button class="tab-btn" id="tabBtn-ranking" onclick="showTab('ranking',this)">🏆 Ranking</button>
   <button class="tab-btn" id="tabBtn-log" onclick="showTab('log',this)">📋 Update Log</button>
 </div>
@@ -227,7 +239,13 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
         <div class="counter-val" id="counterVal">0</div>
         <div class="counter-ps" id="counterPS">0 kebabów/s</div>
       </div>
-      <div class="prestige-badge" id="prestigeBadge" style="display:none">⭐ Prestige <span id="prestigeCount">0</span> | ×<span id="prestigeBonus">1</span></div>
+      <div class="prestige-badge" id="prestigeBadge" style="display:none">
+        ⭐ Prestige <span id="prestigeCount">0</span> | ×<span id="prestigeBonus">1</span>
+        <div style="margin-top:5px;background:#1a0030;border-radius:4px;height:6px;overflow:hidden;">
+          <div id="prestigeProgressBar" style="height:100%;background:linear-gradient(90deg,var(--purple),var(--accent2));border-radius:4px;transition:width .5s;width:0%"></div>
+        </div>
+        <div id="prestigeProgressLabel" style="font-size:.62rem;color:#c080ff;margin-top:2px;"></div>
+      </div>
       <div class="event-banner" id="eventBanner">Wydarzenie!</div>
       <div class="kebab-wrap">
         <div class="glow-ring"></div>
@@ -280,6 +298,13 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <div class="shop-grid" id="shopGrid"></div>
 </div>
 
+<!-- MISJE TYGODNIOWE -->
+<div class="tab-panel" id="tab-weekly">
+  <div class="section-title" style="margin-top:10px;">📅 Misje Tygodniowe</div>
+  <p style="font-size:.78rem;color:var(--muted);margin:6px 0 4px;" id="weeklyResetInfo"></p>
+  <div class="weekly-wrap" id="weeklyWrap"></div>
+</div>
+
 <!-- RANKING -->
 <div class="tab-panel" id="tab-ranking">
   <div class="section-title" style="margin-top:10px;">🏆 Ranking Graczy</div>
@@ -300,7 +325,7 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
     <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v2.1 — Najnowsza</span>
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v2.2 — Najnowsza</span>
         <span style="font-size:.75rem;color:var(--muted);">2025</span>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
@@ -312,10 +337,11 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
         <li style="font-size:.85rem;">🌯 NOWY MEGA-EVENT: CENTYLION BURST!!! (×1000 wszystko 3s)</li>
         <li style="font-size:.85rem;">🔢 Centylion (10^303) jako prawdziwy limit gry + rozbudowana skala</li>
         <li style="font-size:.85rem;">🛒 Sklep skórek — 9 wygląd kebaba do odblokowania</li>
+        <li style="font-size:.85rem;">📅 Misje Tygodniowe — 3 losowe misje co tydzień z nagrodami</li>
         <li style="font-size:.85rem;">👨‍🍳 Szef Kebaba — losowe wiadomości co 18s</li>
         <li style="font-size:.85rem;">📊 Pasek postępu do następnego budynku</li>
         <li style="font-size:.85rem;">🏅 Licznik rekordowego CPS</li>
-        <li style="font-size:.85rem;">🔧 DEV — eventy na żądanie + dialogi</li>
+        <li style="font-size:.85rem;">🔧 Sekretny Dev Panel — eventy na żądanie + dialogi dla graczy</li>
       </ul>
     </div>
     <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;">
@@ -382,9 +408,10 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
 <div class="modal-overlay" id="prestigeModal">
   <div class="modal">
     <h2>⭐ PRESTIGE</h2>
-    <p>Zresetujesz postęp, ale zdobędziesz <strong style="color:var(--purple)">trwały bonus ×1.5</strong> do wszystkich kebabów.<br><br>
+    <p>Zresetujesz postęp, ale zdobędziesz <strong style="color:var(--purple)">trwały bonus</strong> do wszystkich kebabów.<br><br>
     Obecny mnożnik: <strong id="modalCurrentBonus" style="color:var(--purple)">×1</strong><br>
-    Po prestige: <strong id="modalNextBonus" style="color:var(--accent2)">×1.5</strong></p>
+    Po prestige: <strong id="modalNextBonus" style="color:var(--accent2)">×?</strong><br>
+    Wymagane: <strong id="modalThreshold" style="color:var(--accent)">100K</strong></p>
     <div class="modal-btns">
       <button class="btn-confirm" onclick="doPrestige()">⭐ Tak!</button>
       <button class="btn-cancel" onclick="closePrestige()">Anuluj</button>
@@ -408,9 +435,9 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
     <span>🔧 Dev Panel</span>
     <span onclick="document.getElementById('devPanel').classList.remove('show')" style="cursor:pointer;font-size:1rem;">✕</span>
   </div>
-  <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:6px;">⚡ Aktywuj event (dla wszystkich)</div>
+  <div class="dev-global-only" style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:6px;">⚡ Aktywuj event (dla wszystkich)</div>
   <select id="devGlobalEventSelect" style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.78rem;padding:6px 8px;width:100%;margin-bottom:5px;"></select>
-  <button class="dev-event-btn" style="width:100%;margin-bottom:4px;" onclick="devTriggerEventGlobal()">📡 Wyślij wszystkim</button>
+  <button class="dev-event-btn dev-global-only" style="width:100%;margin-bottom:4px;" onclick="devTriggerEventGlobal()">📡 Wyślij wszystkim</button>
   <div id="devEventList" style="display:none;"></div>
   <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:8px 0 5px;">🔒 Tylko u mnie</div>
   <select id="devLocalEventSelect" style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.78rem;padding:6px 8px;width:100%;margin-bottom:5px;"></select>
@@ -418,10 +445,10 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
     <button class="dev-event-btn" style="flex:1;" onclick="devTriggerLocal()">▶ Odpal u mnie</button>
     <button class="dev-event-btn" style="flex:1;border-color:var(--red);color:var(--red);" onclick="devResetEvent()">⏹ Reset eventu</button>
   </div>
-  <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:10px 0 6px;">💬 Wyślij dialog do graczy</div>
-  <input class="dev-dialog-input" id="devDialogInput" placeholder="Twoja wiadomość..." maxlength="60">
-  <button class="dev-send-btn" onclick="devSendDialog()">📢 Wyślij wszystkim</button>
-  <div style="font-size:.65rem;color:var(--muted);margin-top:6px;text-align:center;">Zalogowany jako: Szymon 👑</div>
+  <div class="dev-global-only" style="font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:10px 0 6px;">💬 Wyślij dialog do graczy</div>
+  <input class="dev-dialog-input dev-global-only" id="devDialogInput" placeholder="Twoja wiadomość..." maxlength="60">
+  <button class="dev-send-btn dev-global-only" onclick="devSendDialog()">📢 Wyślij wszystkim</button>
+  <div id="devUserLabel" style="font-size:.65rem;color:var(--muted);margin-top:6px;text-align:center;">Zalogowany jako: Szymon 👑</div>
 </div>
 <button class="dev-badge" id="devBadge" onclick="document.getElementById('devPanel').classList.toggle('show')" title="Dev Panel">🔧</button>
 <div class="toast" id="toast"></div>
@@ -580,22 +607,46 @@ function closePwModal(){document.getElementById('pwModal').classList.remove('sho
 document.addEventListener('keydown',(e)=>{
   if(document.getElementById('pwModal').classList.contains('show')&&e.key==='Enter')checkPw();
 });
+const DEV_PASSWORD_2='23082015';
+let devUser='';
 function checkPw(){
   const val=document.getElementById('pwInput').value;
   if(val===DEV_PASSWORD){
+    devUser='szymon';
     closePwModal();
     if(!devMode){
       devMode=true;
       document.getElementById('devBadge').classList.add('show');
       buildDevEventList();
-      showToast('🔧 Dev Mode aktywny! Witaj, Szefie Szymonie! 👑');
+      showToast('🔧 Dev Mode aktywny! Witaj, Szymonie! 👑');
+      updateDevPanelForUser();
+    } else {
+      document.getElementById('devPanel').classList.toggle('show');
+      updateDevPanelForUser();
+    }
+  } else if(val===DEV_PASSWORD_2){
+    devUser='piotr';
+    closePwModal();
+    if(!devMode){
+      devMode=true;
+      document.getElementById('devBadge').classList.add('show');
+      buildDevEventList();
+      showToast('🔧 Dev Mode aktywny! Witaj, Piotrze! 👋');
     } else {
       document.getElementById('devPanel').classList.toggle('show');
     }
+    // Ukryj globalny send i wiadomości dla Piotra
+    updateDevPanelForUser();
   } else {
     document.getElementById('pwError').textContent='❌ Złe hasło!';
     document.getElementById('pwInput').value='';
   }
+}
+function updateDevPanelForUser(){
+  // Obaj mają pełny dostęp
+  document.querySelectorAll('.dev-global-only').forEach(el=>{el.style.display='';});
+  const lbl=document.getElementById('devUserLabel');
+  if(lbl)lbl.textContent='Zalogowany jako: '+(devUser==='szymon'?'Szymon 👑':'Piotr 👋');
 }
 
 function buildDevEventList(){
@@ -610,6 +661,7 @@ function devTriggerLocal(){
   const sel=document.getElementById('devLocalEventSelect');
   if(!sel)return;
   const ev=EVENTS[parseInt(sel.value)];
+  devEventActive=true;
   currentEvent={...ev,timeLeft:Infinity,permanent:true};
   document.getElementById('eventBanner').textContent=ev.name+' ♾️ (stały)';
   document.getElementById('eventBanner').classList.add('active');
@@ -617,6 +669,7 @@ function devTriggerLocal(){
 }
 
 async function devResetEvent(){
+  devEventActive=false;
   currentEvent=null;
   document.getElementById('eventBanner').classList.remove('active');
   showToast('⏹ Event zatrzymany!');
@@ -638,6 +691,7 @@ async function devTriggerEventGlobal(){
   checkAchievements();
   showToast('📡 Wysyłanie eventu...');
   try{
+    devEventActive=true;
     await fbSet('/devEvent',{name:ev.name,desc:ev.desc,mult:ev.mult,type:ev.type,permanent:true,ts:Date.now(),active:true});
     showToast('📡 Event wysłany do wszystkich: '+ev.name);
   }catch(e){showToast('📡 Lokalnie OK, błąd: '+e.message);console.error(e);}
@@ -663,23 +717,28 @@ async function checkDevDialogs(){
   try{
     const ev=await fbGet('/devEvent').catch(()=>null);
     if(ev){
+      const lastSeen=parseInt(localStorage.getItem('kebab_last_event_ts')||'0');
       if(ev.active===false){
         // Admin zresetował event
-        if(currentEvent&&currentEvent.permanent){
-          currentEvent=null;
-          document.getElementById('eventBanner').classList.remove('active');
-        }
-      } else if(ev.active!==false&&ev.permanent&&!currentEvent){
-        // Stały event od admina — włącz
+        devEventActive=false;
+        currentEvent=null;
+        document.getElementById('eventBanner').classList.remove('active');
+        localStorage.setItem('kebab_last_event_ts','0');
+      } else if(ev.active!==false&&ev.permanent&&ev.ts&&ev.ts!==lastSeen){
+        // Nowy stały event od admina — zawsze zastąp aktualny
+        localStorage.setItem('kebab_last_event_ts',ev.ts);
+        devEventActive=true;
         currentEvent={...ev,timeLeft:Infinity,permanent:true};
         document.getElementById('eventBanner').textContent=ev.name+' ♾️';
         document.getElementById('eventBanner').classList.add('active');
         showToast('📡 Event od admina: '+ev.name);
       }
     }
-    // Sprawdź wiadomość
+    // Sprawdź wiadomość — nie powtarzaj
     const dmsg=await fbGet('/devmsg').catch(()=>null);
-    if(dmsg&&dmsg.ts>(Date.now()-120000)){
+    const lastMsgTs=parseInt(localStorage.getItem('kebab_last_msg')||'0');
+    if(dmsg&&dmsg.ts>lastMsgTs&&dmsg.ts>(Date.now()-300000)){
+      localStorage.setItem('kebab_last_msg',dmsg.ts);
       showToast('📢 '+dmsg.msg);
     }
   }catch(e){}
@@ -850,6 +909,7 @@ function showTab(id,el){
   if(id==='ranking')renderRanking();
   if(id==='map'){state.mapVisited=true;renderMap();}
   if(id==='shop')renderShop();
+  if(id==='weekly')renderWeekly();
 }
 
 function renderUpgrades(){
@@ -893,8 +953,19 @@ function renderCounter(){
 }
 function renderPrestigeBadge(){
   const badge=document.getElementById('prestigeBadge');
-  if(state.prestigeLevel>0){badge.style.display='block';document.getElementById('prestigeCount').textContent=state.prestigeLevel;document.getElementById('prestigeBonus').textContent=state.prestigeBonus.toFixed(2);}
-  else badge.style.display='none';
+  if(state.prestigeLevel>0){
+    badge.style.display='block';
+    document.getElementById('prestigeCount').textContent=state.prestigeLevel;
+    document.getElementById('prestigeBonus').textContent=state.prestigeBonus.toFixed(2);
+  } else badge.style.display='none';
+  // Pasek postępu do następnego prestige
+  const threshold=prestigeThreshold();
+  const pct=Math.min(100,(state.totalMade/threshold)*100);
+  const bar=document.getElementById('prestigeProgressBar');
+  const lbl=document.getElementById('prestigeProgressLabel');
+  if(bar)bar.style.width=pct.toFixed(1)+'%';
+  if(lbl)lbl.textContent='Do prestige: '+pct.toFixed(1)+'% ('+fmt(state.totalMade)+' / '+fmt(threshold)+')';
+  badge.style.display='block';
 }
 function renderStats(){
   const elapsed=Math.floor((Date.now()-state.sessionStart)/1000)+state.playTimeSeconds;
@@ -963,7 +1034,8 @@ function checkMilestones(){
   });
 }
 function trySpawnEvent(){
-  if(currentEvent)return;
+  if(currentEvent)return; // już jest aktywny (dev lub losowy)
+  if(devEventActive)return; // blokuj losowe gdy dev event aktywny
   if(Math.random()<0.012){
     const ev=EVENTS[Math.floor(Math.random()*EVENTS.length)];
     currentEvent={...ev,timeLeft:ev.duration};state.totalEvents++;
@@ -986,12 +1058,15 @@ function tickEvent(dt){
 function openPrestige(){
   if(state.totalMade<100000){showToast('❌ Potrzebujesz 100 000 kebabów!');return;}
   document.getElementById('modalCurrentBonus').textContent='×'+state.prestigeBonus.toFixed(2);
-  document.getElementById('modalNextBonus').textContent='×'+Math.pow(1.5,state.prestigeLevel+1).toFixed(2);
+  const nextLvl=state.prestigeLevel+1;
+  const nextBonus=(Math.pow(1.5,nextLvl)*(1+nextLvl*0.1)).toFixed(2);
+  document.getElementById('modalNextBonus').textContent='×'+nextBonus;
+  document.getElementById('modalThreshold').textContent=fmt(threshold);
   document.getElementById('prestigeModal').classList.add('show');
 }
 function closePrestige(){document.getElementById('prestigeModal').classList.remove('show');}
 function doPrestige(){
-  state.prestigeLevel++;state.prestigeBonus=Math.pow(1.5,state.prestigeLevel);
+  state.prestigeLevel++;state.prestigeBonus=Math.pow(1.5,state.prestigeLevel)*(1+state.prestigeLevel*0.1);
   state.kebabs=0;state.totalMade=0;state.clickPower=1;state.perSecond=0;state.totalClicks=0;state.totalSpent=0;
   reachedMilestones=new Set();UPGRADES.forEach(u=>u.bought=false);
   BUILDINGS.forEach((b,i)=>{b.owned=0;b.baseCps=ORIG_CPS[i];});
@@ -1056,6 +1131,7 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 let last=performance.now();
 let chartTickCounter=0;
 let devTimer=0;
+let devEventActive=false;
 function tick(now){
   const dt=(now-last)/1000;last=now;
   tickEvent(dt);trySpawnEvent();
@@ -1123,6 +1199,100 @@ function buySkin(id){
   document.getElementById('kebabBtn').textContent=skin.icon;
   showToast('🎉 Odblokowano: '+skin.name+'!');
   renderShop();renderCounter();
+}
+
+// ===== MISJE TYGODNIOWE =====
+const WEEKLY_POOL=[
+  {id:'w1', name:'Kebab Masowy',      icon:'🌯', desc:'Zdobądź 100M kebabów',         req:1e8,   type:'made',   reward:500000},
+  {id:'w2', name:'Klikoholik',        icon:'👆', desc:'Kliknij 5000 razy',            req:5000,  type:'clicks', reward:200000},
+  {id:'w3', name:'Budowniczy Tytanu', icon:'🏗️', desc:'Kup 30 budynków łącznie',      req:30,    type:'bld',    reward:1000000},
+  {id:'w4', name:'Event Łowca',       icon:'🎪', desc:'Przeżyj 10 wydarzeń',          req:10,    type:'events', reward:750000},
+  {id:'w5', name:'Prestige Guru',     icon:'⭐', desc:'Osiągnij Prestige 2',          req:2,     type:'prest',  reward:2000000},
+  {id:'w6', name:'Miliarder Kebaba',  icon:'💎', desc:'Zdobądź 1 Miliard kebabów',    req:1e9,   type:'made',   reward:3000000},
+  {id:'w7', name:'Combo Legenda',     icon:'🔥', desc:'Osiągnij combo ×15',           req:15,    type:'combo',  reward:500000},
+  {id:'w8', name:'Sklep Mistrz',      icon:'🛒', desc:'Odblokuj 3 skórki',            req:3,     type:'skins',  reward:1500000},
+  {id:'w9', name:'Wydawca',           icon:'💸', desc:'Wydaj 50M kebabów',            req:5e7,   type:'spent',  reward:800000},
+  {id:'w10',name:'Nocny Gracz',       icon:'🌙', desc:'Włącz tryb nocny',             req:1,     type:'night',  reward:100000},
+];
+
+function getWeekStart(){
+  const now=new Date();
+  const day=now.getDay()||7;
+  const mon=new Date(now);
+  mon.setHours(0,0,0,0);
+  mon.setDate(now.getDate()-(day-1));
+  return mon.getTime();
+}
+
+function getWeeklyMissions(){
+  const ws=getWeekStart();
+  // Wybierz 3 misje deterministycznie na podstawie tygodnia
+  const seed=Math.floor(ws/604800000);
+  const shuffled=[...WEEKLY_POOL].sort((a,b)=>{
+    const ha=(a.id+seed)%17, hb=(b.id+seed)%17;
+    return ha-hb;
+  });
+  return shuffled.slice(0,3);
+}
+
+function checkWeeklyProgress(m){
+  switch(m.type){
+    case 'made':   return state.totalMade>=m.req;
+    case 'clicks': return state.totalClicks>=m.req;
+    case 'bld':    return BUILDINGS.reduce((s,b)=>s+b.owned,0)>=m.req;
+    case 'events': return state.totalEvents>=m.req;
+    case 'prest':  return state.prestigeLevel>=m.req;
+    case 'combo':  return state.combo>=m.req;
+    case 'skins':  return unlockedSkins.size>=m.req;
+    case 'spent':  return state.totalSpent>=m.req;
+    case 'night':  return nightMode;
+    default:       return false;
+  }
+}
+
+function renderWeekly(){
+  const wrap=document.getElementById('weeklyWrap');
+  const info=document.getElementById('weeklyResetInfo');
+  if(!wrap)return;
+  const ws=getWeekStart();
+  const nextReset=new Date(ws+7*24*3600*1000);
+  const diff=nextReset-Date.now();
+  const dd=Math.floor(diff/86400000),hh=Math.floor((diff%86400000)/3600000);
+  if(info)info.textContent=`Reset za ${dd}d ${hh}h — w poniedziałek`;
+  const missions=getWeeklyMissions();
+  const saved=JSON.parse(localStorage.getItem('kebab_weekly')||'{}');
+  if(saved.weekStart!==ws){
+    localStorage.setItem('kebab_weekly',JSON.stringify({weekStart:ws,claimed:{}}));
+  }
+  const claimed=(JSON.parse(localStorage.getItem('kebab_weekly')||'{}')).claimed||{};
+  wrap.innerHTML=missions.map(m=>{
+    const done=checkWeeklyProgress(m);
+    const isClaimed=!!claimed[m.id];
+    return `<div class="weekly-item ${isClaimed?'w-claimed':done?'w-done':''}">
+      <div class="weekly-icon">${m.icon}</div>
+      <div class="weekly-info">
+        <div class="weekly-name">${m.name}</div>
+        <div class="weekly-desc">${m.desc}</div>
+        <div class="weekly-reward">🎁 Nagroda: ${fmt(m.reward)} kebabów</div>
+      </div>
+      <button class="weekly-btn" ${(!done||isClaimed)?'disabled':''} onclick="claimWeekly('${m.id}',${m.reward})">
+        ${isClaimed?'✔':done?'Odbierz':'🔒'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+function claimWeekly(id,reward){
+  const ws=getWeekStart();
+  const raw=JSON.parse(localStorage.getItem('kebab_weekly')||'{}');
+  if(raw.claimed&&raw.claimed[id])return;
+  raw.claimed=raw.claimed||{};
+  raw.claimed[id]=true;
+  raw.weekStart=ws;
+  localStorage.setItem('kebab_weekly',JSON.stringify(raw));
+  state.kebabs+=reward;state.totalMade+=reward;
+  showToast('🎁 Misja tygodniowa! +'+fmt(reward)+' kebabów!');
+  renderWeekly();renderCounter();
 }
 
 const SAVE_KEY='kebab_v5';

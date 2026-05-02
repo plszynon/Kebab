@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kebab Klikacz</title>
+<title>plszynon.github.io/Kebab</title>
 <link href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Rubik:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#1a0a00;--panel:#2b1200;--panel2:#3d1a00;--accent:#ff6b00;--accent2:#ffbe00;--red:#e03c00;--text:#ffe8c0;--muted:#a07050;--green:#6fcf45;--border:#5a2e00;--purple:#c060ff;--blue:#40c0ff;}
@@ -284,6 +284,28 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
 .dev-send-btn:hover{background:#9944dd;}
 .dev-badge{position:fixed;bottom:24px;right:12px;background:var(--panel);border:2px solid var(--purple);border-radius:50%;width:44px;height:44px;font-size:1.3rem;cursor:pointer;z-index:5001;display:none;align-items:center;justify-content:center;box-shadow:0 2px 10px #0006;}
 .dev-badge.show{display:flex;}
+/* TRYB BOGA */
+body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
+@keyframes god-bg{from{filter:brightness(1) hue-rotate(0deg)}to{filter:brightness(1.15) hue-rotate(30deg)}}
+.god-mode h1{animation:god-title 0.8s ease-in-out infinite alternate;}
+@keyframes god-title{from{text-shadow:0 0 30px #ff6b0088,0 4px 0 #7a3000}to{text-shadow:0 0 60px #ffbe00,0 0 120px #c060ff,0 4px 0 #000}}
+.god-badge{position:fixed;top:62px;right:12px;background:linear-gradient(135deg,#300050,#500010);border:2px solid #ffbe00;border-radius:12px;padding:5px 10px;font-size:.72rem;font-weight:800;color:#ffbe00;z-index:999;display:none;animation:god-pulse .6s ease-in-out infinite alternate;box-shadow:0 0 20px #ffbe0044;}
+.god-badge.show{display:block;}
+@keyframes god-pulse{from{box-shadow:0 0 10px #ffbe0044}to{box-shadow:0 0 30px #c060ffaa,0 0 60px #ffbe0066}}
+/* FURY METER */
+.fury-wrap{width:100%;padding:0 2px;}
+.fury-label{display:flex;justify-content:space-between;align-items:center;font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;}
+.fury-label .fury-val{font-weight:800;color:var(--accent2);}
+.fury-bar-outer{height:14px;background:var(--panel2);border-radius:7px;overflow:hidden;border:1.5px solid var(--border);position:relative;}
+.fury-bar-fill{height:100%;border-radius:7px;background:linear-gradient(90deg,#ff3300,#ff6b00,#ffbe00);transition:width .2s;position:relative;}
+.fury-bar-fill.ready{background:linear-gradient(90deg,#c060ff,#ffbe00,#ff6b00);animation:fury-ready .4s ease-in-out infinite alternate;}
+@keyframes fury-ready{from{filter:brightness(1)}to{filter:brightness(1.5) drop-shadow(0 0 8px #ffbe00)}}
+.fury-blast-btn{width:100%;background:linear-gradient(135deg,#400000,#600040);border:2px solid var(--red);border-radius:10px;color:var(--red);font-family:'Rubik',sans-serif;font-weight:800;font-size:.85rem;padding:8px;cursor:pointer;margin-top:6px;display:none;animation:blast-pulse .5s ease-in-out infinite alternate;}
+.fury-blast-btn.show{display:block;}
+@keyframes blast-pulse{from{border-color:var(--red);color:var(--red);box-shadow:0 0 10px #e03c0066}to{border-color:#ff80ff;color:#ff80ff;box-shadow:0 0 30px #c060ff88}}
+/* PARTICLES */
+.particle{position:fixed;pointer-events:none;font-size:1.5rem;animation:particle-burst .8s ease forwards;z-index:9990;}
+@keyframes particle-burst{0%{transform:scale(1) translate(0,0);opacity:1}100%{transform:scale(0.3) translate(var(--tx),var(--ty));opacity:0}}
 
 @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
@@ -298,10 +320,27 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
 
 
 @media(max-width:680px){.main{flex-direction:column;align-items:center;}.buildings-col{flex:unset;width:100%;flex-direction:row;flex-wrap:wrap;}.building-item{flex:0 0 calc(50% - 4px);}.upgrades-col{width:100%;}.clicker-col{width:100%;}}
+/* SHARE MODAL */
+.share-modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:20000;}
+.share-modal.show{display:flex;}
+.share-box{background:var(--panel);border:3px solid var(--green);border-radius:20px;padding:26px;max-width:380px;width:92%;text-align:center;box-shadow:0 8px 40px #00aa4444;}
+.share-box h3{font-family:'Rubik Dirt',cursive;color:var(--green);font-size:1.3rem;margin-bottom:6px;}
+.share-box p{font-size:.8rem;color:var(--muted);margin-bottom:14px;}
+.share-link-box{background:#0a1a00;border:2px solid var(--green);border-radius:10px;padding:10px 14px;font-size:.88rem;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:14px;word-break:break-all;user-select:all;cursor:text;}
+.share-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:10px;}
+.share-action-btn{border:none;border-radius:10px;font-family:'Rubik',sans-serif;font-weight:800;font-size:.85rem;padding:10px 18px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s;}
+.share-action-btn:hover{transform:translateY(-2px);filter:brightness(1.15);}
+.share-copy{background:linear-gradient(135deg,var(--green),#44ff88);color:#000;}
+.share-native{background:linear-gradient(135deg,var(--blue),#88ddff);color:#000;}
+.share-close{background:none;border:2px solid var(--border);border-radius:10px;color:var(--muted);font-family:'Rubik',sans-serif;font-size:.8rem;padding:7px 18px;cursor:pointer;width:100%;}
+.share-close:hover{border-color:var(--red);color:var(--red);}
+.share-copied{font-size:.78rem;color:var(--green);min-height:20px;margin-top:-4px;margin-bottom:6px;font-weight:700;}
+.share-score-badge{background:linear-gradient(135deg,#200030,#003020);border:1.5px solid var(--accent2);border-radius:10px;padding:8px 14px;font-size:.78rem;color:var(--accent2);margin-bottom:12px;}
 </style>
 </head>
 <body>
 
+<div class="god-badge" id="godBadge">⚡ TRYB BOGA AKTYWNY</div>
 <button class="night-btn" id="nightBtn" onclick="toggleNight()" title="Tryb nocny">🌙</button>
 
 <h1>🌯 KEBAB KLIKACZ</h1>
@@ -314,6 +353,7 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <button class="save-btn prestige" onclick="openPrestige()">⭐ Prestige</button>
   <button class="save-btn" style="border-color:var(--blue);color:var(--blue);" onclick="document.getElementById('tabBtn-log').click()">📋 Log</button>
   <button class="save-btn" style="border-color:var(--purple);color:var(--purple);" onclick="openPwModal()">🔧 Dev</button>
+  <button class="save-btn" style="border-color:var(--green);color:var(--green);" onclick="openShareModal()">🔗 Udostępnij</button>
 </div>
 
 <div class="tabs">
@@ -328,6 +368,7 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <button class="tab-btn" id="tabBtn-slot" onclick="showTab('slot',this)">🎰 Slot</button>
   <button class="tab-btn" id="tabBtn-ranking" onclick="showTab('ranking',this)">🥇 Ranking</button>
   <button class="tab-btn" id="tabBtn-log" onclick="showTab('log',this)">📋 Log</button>
+  <button class="tab-btn" id="tabBtn-codes" onclick="showTab('codes',this)">🎁 Kody</button>
 </div>
 
 <div class="milestone-bar" id="milestoneBar"></div>
@@ -357,6 +398,14 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
         Łącznie: <strong id="totalMade" style="color:var(--accent2)">0</strong><br>
         Za klik: <strong id="clickPowerDisplay" style="color:var(--accent)">1</strong><br>
         Combo: <strong id="comboDisplay" style="color:var(--purple)">×1</strong>
+      </div>
+      <!-- FURY METER -->
+      <div class="counter-box" style="padding:10px 12px;width:100%;">
+        <div class="fury-wrap">
+          <div class="fury-label"><span>🔥 FURY METER</span><span class="fury-val"><span id="furyVal">0</span>/100</span></div>
+          <div class="fury-bar-outer"><div class="fury-bar-fill" id="furyBar" style="width:0%"></div></div>
+          <button class="fury-blast-btn" id="furyBlastBtn" onclick="furyBlast()">💥 KEBAB BLAST! 💥</button>
+        </div>
       </div>
       <!-- MINIATURKA WYKRESU W GRZE -->
       <div class="chart-box" style="width:100%;">
@@ -443,13 +492,6 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
       3× 💎 = ×1000 | 3× 🌟 = ×500 | 3× 🔥 = ×100 | 3× takie same = ×10 | 2× takie same = ×2
     </div>
   </div>
-  <div class="invite-box">
-    <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:8px;">🤝 Zaproś znajomych</div>
-    <div style="font-size:.82rem;color:var(--muted);margin-bottom:8px;">Podziel się linkiem do gry!</div>
-    <div class="invite-link" id="inviteLink">https://plszynon.github.io/Kebab</div>
-    <button class="invite-copy-btn" onclick="copyInvite()">📋 Kopiuj link</button>
-    <div style="font-size:.72rem;color:var(--muted);margin-top:8px;" id="inviteCopied"></div>
-  </div>
 </div>
 
 
@@ -493,7 +535,33 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
     <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v2.2 — Najnowsza</span>
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v2.4 — Najnowsza</span>
+        <span style="font-size:.75rem;color:var(--muted);">2026</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">🔱 Dev Panel: TRYB BOGA — auto-klik, ×1,000,000 klik, ×10,000 CPS, wszystko odblokowane!</li>
+        <li style="font-size:.85rem;">💥 Fury Meter — klikaj szybko, ładuj pasek i odpałaj KEBAB BLAST z efektem cząsteczek!</li>
+        <li style="font-size:.85rem;">🔱 Nowy budynek: Kebab BÓSTWO (1e18/s, koszt 2e35)</li>
+        <li style="font-size:.85rem;">🌈 Nowy budynek: Omnikebab Omega (1e25/s, koszt 2e50)</li>
+        <li style="font-size:.85rem;">🚀 Nowe ulepszenia OP: Fury Mastery, Kosmiczny Szpikulec, ULTRAKEBAB MAX (×1000 wszystko!)</li>
+      </ul>
+    </div>
+    <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v2.3</span>
+        <span style="font-size:.75rem;color:var(--muted);">2026</span>
+      </div>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
+        <li style="font-size:.85rem;">🎁 Nowa zakładka: Kody Promocyjne — wpisz kod i odbierz nagrody!</li>
+        <li style="font-size:.85rem;">🔧 Dev Panel: Speed Boost (×2/×5/×10/×100 CPS), ustaw dokładną liczbę kebabów</li>
+        <li style="font-size:.85rem;">🏅 Dev Panel: Unlock/Reset osiągnięć jednym kliknięciem</li>
+        <li style="font-size:.85rem;">📡 Dev Panel: Globalny kod promocyjny przez Firebase</li>
+        <li style="font-size:.85rem;">📸 Dev Panel: Snapshot stanu gry w czasie rzeczywistym</li>
+      </ul>
+    </div>
+    <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:12px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;">v2.2</span>
         <span style="font-size:.75rem;color:var(--muted);">2025</span>
       </div>
       <ul style="list-style:none;display:flex;flex-direction:column;gap:5px;">
@@ -557,6 +625,44 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
         <li style="font-size:.85rem;">💾 Zapis / Autosave / Reset</li>
       </ul>
     </div>
+  </div>
+</div>
+
+<!-- KODY PROMOCYJNE -->
+<div class="tab-panel" id="tab-codes">
+  <div class="section-title" style="margin-top:10px;">🎁 Kody Promocyjne</div>
+  <p style="font-size:.78rem;color:var(--muted);margin:8px 0 4px;">Wpisz kod aby otrzymać nagrodę! Każdy kod działa tylko raz.</p>
+  <div style="background:var(--panel);border:2px solid var(--accent2);border-radius:14px;padding:16px;margin-top:10px;">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <input id="codeInput" style="background:#1a0800;border:2px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.95rem;padding:9px 14px;flex:1;min-width:140px;letter-spacing:2px;" placeholder="WPISZ KOD..." maxlength="20" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')redeemCode()">
+      <button onclick="redeemCode()" style="background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;color:#000;font-family:'Rubik',sans-serif;font-weight:800;font-size:.9rem;padding:9px 20px;cursor:pointer;">🎁 Użyj</button>
+    </div>
+    <div id="codeResult" style="margin-top:10px;min-height:24px;font-size:.85rem;font-weight:700;"></div>
+  </div>
+  <div style="margin-top:16px;">
+    <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px;">📋 Użyte kody</div>
+    <div id="usedCodesList" style="display:flex;flex-direction:column;gap:6px;"></div>
+    <div id="noCodesUsed" style="color:var(--muted);font-size:.82rem;">Brak użytych kodów.</div>
+  </div>
+  <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px;margin-top:16px;">
+    <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px;">💡 Skąd brać kody?</div>
+    <div style="font-size:.82rem;color:var(--text);line-height:1.6;">Kody pojawiają się podczas specjalnych eventów. Śledź aktualizacje w zakładce <strong style="color:var(--accent2)">📋 Log</strong>!</div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="share-modal" id="shareModal">
+  <div class="share-box">
+    <h3>🔗 Udostępnij grę!</h3>
+    <p>Pokaż znajomym najlepszą grę o kebabbach 🌯</p>
+    <div class="share-score-badge" id="shareScoreBadge">🌯 Mój wynik: <strong id="shareScore">0</strong> kebabów | ⭐ Prestige <span id="sharePrestige">0</span></div>
+    <div class="share-link-box" id="shareLinkBox">plszynon.github.io/Kebab</div>
+    <div class="share-btns">
+      <button class="share-action-btn share-copy" onclick="shareModalCopy()">📋 Kopiuj link</button>
+      <button class="share-action-btn share-native" id="shareNativeBtn" onclick="shareNative()" style="display:none;">📤 Udostępnij</button>
+    </div>
+    <div class="share-copied" id="shareCopied"></div>
+    <button class="share-close" onclick="closeShareModal()">✕ Zamknij</button>
   </div>
 </div>
 
@@ -652,6 +758,7 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
 
   <!-- SEKCJA: NARZĘDZIA -->
   <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">🛠️ Narzędzia</div>
+  <button id="devGodModeBtn" class="dev-event-btn" onclick="devToggleGodMode();event.stopPropagation();" style="width:100%;margin-bottom:8px;padding:10px;font-size:.88rem;font-weight:800;background:linear-gradient(135deg,#200030,#300010);border-color:var(--accent2);color:var(--accent2);letter-spacing:1px;">🔱 TRYB BOGA</button>
   <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;">
     <button class="dev-event-btn" onclick="devShowStats()">📊 Info</button>
     <button class="dev-event-btn" onclick="devSetCombo(20)">🔥 Combo×20</button>
@@ -701,6 +808,44 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <div style="display:flex;gap:4px;margin-bottom:4px;">
     <button class="dev-event-btn" id="devBlockEvBtn" onclick="devToggleEventBlock()" style="width:100%;">🔕 Zablokuj eventy</button>
   </div>
+
+  <!-- USTAW KEBABY DOKŁADNIE -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;margin-top:8px;">🎯 Ustaw kebaby (dokładna wartość)</div>
+  <div style="display:flex;gap:4px;margin-bottom:8px;">
+    <input id="devSetKebabsInput" placeholder="np. 1m, 999k..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.75rem;padding:4px 7px;flex:1;">
+    <button class="dev-event-btn" onclick="devSetKebabsExact()" style="background:#1a1500;border-color:var(--accent2);color:var(--accent2);padding:4px 8px;">✅</button>
+  </div>
+
+  <!-- SPEED BOOST -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">⚡ Speed Boost (mnożnik CPS)</div>
+  <div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devSpeedBoost(2)" style="flex:1;font-size:.7rem;">×2</button>
+    <button class="dev-event-btn" onclick="devSpeedBoost(5)" style="flex:1;font-size:.7rem;">×5</button>
+    <button class="dev-event-btn" onclick="devSpeedBoost(10)" style="flex:1;font-size:.7rem;">×10</button>
+    <button class="dev-event-btn" onclick="devSpeedBoost(100)" style="flex:1;font-size:.7rem;border-color:var(--accent2);color:var(--accent2);">×100</button>
+    <button class="dev-event-btn" onclick="devResetSpeed()" style="flex:1;font-size:.7rem;border-color:var(--red);color:var(--red);">↺ Reset</button>
+  </div>
+
+  <!-- OSIĄGNIĘCIA -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">🏅 Osiągnięcia</div>
+  <div style="display:flex;gap:4px;margin-bottom:8px;">
+    <button class="dev-event-btn" onclick="devUnlockAllAch()" style="flex:1;font-size:.7rem;border-color:var(--green);color:var(--green);">✅ Odblokuj wszystkie</button>
+    <button class="dev-event-btn" onclick="devResetAch()" style="flex:1;font-size:.7rem;border-color:var(--red);color:var(--red);">🗑️ Reset</button>
+  </div>
+
+  <!-- DODAJ GLOBALNY KOD -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">🎁 Globalny kod promocyjny</div>
+  <input id="devCodeNameInput" placeholder="Kod (np. KEBAB100)" style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.73rem;padding:4px 7px;width:100%;margin-bottom:4px;text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
+  <div style="display:flex;gap:4px;margin-bottom:4px;">
+    <input id="devCodeRewardInput" placeholder="Nagroda (5m, 1b...)" style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.73rem;padding:4px 7px;flex:1;">
+    <input id="devCodeDescInput" placeholder="Opis..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.73rem;padding:4px 7px;flex:1;">
+  </div>
+  <button class="dev-event-btn" onclick="devAddGlobalCode()" style="width:100%;margin-bottom:8px;background:#001a00;border-color:var(--green);color:var(--green);">📡 Wyślij kod do Firebase</button>
+
+  <!-- SNAPSHOT STANU GRY -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">🔍 Snapshot stanu gry</div>
+  <div id="devSnapshot" style="background:#1a0800;border-radius:8px;padding:6px 8px;font-size:.65rem;color:var(--muted);margin-bottom:4px;line-height:1.7;word-break:break-all;">—</div>
+  <button class="dev-event-btn" onclick="devRefreshSnapshot()" style="width:100%;margin-bottom:4px;">📸 Odśwież snapshot</button>
 </div>
 <div class="popup-quest" id="popupQuest">
   <div class="popup-quest-header">
@@ -717,7 +862,7 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
     <button class="popup-quest-btn" id="pqBtn" onclick="claimPopupQuest()" disabled>🔒</button>
   </div>
 </div>
-<button class="dev-badge" id="devBadge" onclick="document.getElementById('devPanel').classList.toggle('show')" title="Dev Panel">🔧</button>
+<button class="dev-badge" id="devBadge" onclick="const p=document.getElementById('devPanel');p.classList.contains('show')?p.classList.remove('show'):p.classList.add('show');" title="Dev Panel">🔧</button>
 <div class="offline-banner" id="offlineBanner">📡 Przechodzisz w tryb offline...</div>
 <div class="admin-msg" id="adminMsg">
   <div class="admin-msg-icon">👑</div>
@@ -777,7 +922,7 @@ const MAX_KEBABS=1e303;
 
 // ===== STATE =====
 const state={kebabs:0,totalMade:0,clickPower:1,perSecond:0,prestigeLevel:0,prestigeBonus:1,totalClicks:0,totalSpent:0,playTimeSeconds:0,sessionStart:Date.now(),combo:0,comboTimer:0,comboBonus:1,totalEvents:0,achUnlocked:new Set()};
-const ORIG_CPS=[0.5,2,8,25,100,500,3000,20000,150000,1000000,8000000,80000000,5000000000,1e13];
+const ORIG_CPS=[0.5,2,8,25,100,500,3000,20000,150000,1000000,8000000,80000000,5000000000,1e13,1e18,1e25];
 
 const UPGRADES=[
   {id:'u1', name:'Lepszy szamszir',    icon:'🔪', desc:'+1 kebab za klik',    cost:15,        bought:false, apply:()=>{state.clickPower+=1;}},
@@ -796,6 +941,9 @@ const UPGRADES=[
   {id:'u14',name:'Wieczny Kebab',      icon:'♾️', desc:'+5000 za klik',       cost:50000000,  bought:false, apply:()=>{state.clickPower+=5000;}},
   {id:'u15',name:'Kwantowy Grill',     icon:'⚛️', desc:'×20 produkcja/s',     cost:500000000, bought:false, apply:()=>{BUILDINGS.forEach(b=>b.baseCps*=20);recalcCps();}},
   {id:'u16',name:'Boski Szpikulec',    icon:'🌟', desc:'×50 za klik',         cost:1e10,      bought:false, apply:()=>{state.clickPower*=50;}},
+  {id:'u17',name:'Fury Mastery',       icon:'🔥', desc:'Fury Blast daje ×10 więcej', cost:1e13, bought:false, apply:()=>{state.furyMult=(state.furyMult||1)*10;}},
+  {id:'u18',name:'Kosmiczny Szpikulec',icon:'🚀', desc:'×100 produkcja/s',     cost:1e14,      bought:false, apply:()=>{BUILDINGS.forEach(b=>b.baseCps*=100);recalcCps();}},
+  {id:'u19',name:'ULTRAKEBAB MAX',     icon:'💎', desc:'×1000 za klik i CPS',  cost:1e18,      bought:false, apply:()=>{state.clickPower*=1000;BUILDINGS.forEach(b=>b.baseCps*=1000);recalcCps();}},
 ];
 
 const BUILDINGS=[
@@ -813,6 +961,8 @@ const BUILDINGS=[
   {id:'b12',name:'Kebab-Multiwersum', icon:'🔮', baseCost:2e13,      owned:0, baseCps:100000000},
   {id:'b13',name:'Centylion Kuchnia',  icon:'♾️', baseCost:2e18,      owned:0, baseCps:5000000000},
   {id:'b14',name:'Kebab Singularity',  icon:'🌀', baseCost:2e25,      owned:0, baseCps:1e13},
+  {id:'b15',name:'Kebab BÓSTWO',       icon:'🔱', baseCost:2e35,      owned:0, baseCps:1e18},
+  {id:'b16',name:'Omnikebab Omega',    icon:'🌈', baseCost:2e50,      owned:0, baseCps:1e25},
 ];
 
 const MILESTONES=[
@@ -1232,6 +1382,251 @@ async function devSendDialog(){
   }
 }
 
+// ===== FURY METER =====
+let furyLevel=0;
+const FURY_MAX=100;
+let furyMult=1; // boosted by upgrade u17
+state.furyMult=1;
+function furyCharge(amount){
+  furyLevel=Math.min(furyLevel+amount,FURY_MAX);
+  renderFury();
+}
+function renderFury(){
+  const bar=document.getElementById('furyBar');
+  const val=document.getElementById('furyVal');
+  const btn=document.getElementById('furyBlastBtn');
+  if(!bar)return;
+  const pct=furyLevel/FURY_MAX*100;
+  bar.style.width=pct+'%';
+  if(val)val.textContent=Math.floor(furyLevel);
+  if(furyLevel>=FURY_MAX){
+    bar.classList.add('ready');
+    if(btn)btn.classList.add('show');
+  } else {
+    bar.classList.remove('ready');
+    if(btn)btn.classList.remove('show');
+  }
+}
+function furyBlast(){
+  if(furyLevel<FURY_MAX)return;
+  furyLevel=0;renderFury();
+  // Blast = 30s produkcji + klik power * 500, skaluje z upgrade
+  const mult=(state.furyMult||1)*(state.prestigeBonus);
+  const blastAmt=Math.floor((state.perSecond*30+state.clickPower*500)*mult*evCpsMult());
+  state.kebabs=Math.min(state.kebabs+blastAmt,MAX_KEBABS);
+  state.totalMade=Math.min(state.totalMade+blastAmt,MAX_KEBABS);
+  addSeasonXp(50);
+  // PARTICLE EXPLOSION
+  spawnBlastParticles();
+  showToast('💥 KEBAB BLAST! +'+fmt(blastAmt)+' kebabów!');
+  renderCounter();renderUpgrades();renderBuildings();
+  checkMilestones();checkAchievements();
+}
+function spawnBlastParticles(){
+  const emojis=['🌯','🔥','💥','⭐','🌟','💎','✨','🎆'];
+  for(let i=0;i<28;i++){
+    const el=document.createElement('div');
+    el.className='particle';
+    el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    const cx=window.innerWidth/2;
+    const cy=window.innerHeight/2;
+    el.style.left=cx+'px';
+    el.style.top=cy+'px';
+    const angle=Math.random()*Math.PI*2;
+    const dist=100+Math.random()*280;
+    el.style.setProperty('--tx',(Math.cos(angle)*dist)+'px');
+    el.style.setProperty('--ty',(Math.sin(angle)*dist)+'px');
+    el.style.animationDuration=(0.5+Math.random()*0.6)+'s';
+    el.style.fontSize=(1+Math.random()*2)+'rem';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1100);
+  }
+  // Flash effect
+  const flash=document.createElement('div');
+  flash.style.cssText='position:fixed;inset:0;background:radial-gradient(circle,#ffbe0066,transparent 70%);z-index:9989;pointer-events:none;animation:flash-out .5s ease forwards;';
+  const style=document.createElement('style');
+  style.textContent='@keyframes flash-out{from{opacity:1}to{opacity:0}}';
+  document.head.appendChild(style);
+  document.body.appendChild(flash);
+  setTimeout(()=>{flash.remove();},500);
+}
+
+// ===== TRYB BOGA =====
+let godModeActive=false;
+let godAutoClickInterval=null;
+let godOrigClickPower=null;
+function devToggleGodMode(){
+  godModeActive=!godModeActive;
+  const btn=document.getElementById('devGodModeBtn');
+  const badge=document.getElementById('godBadge');
+  if(godModeActive){
+    // Save original click power
+    godOrigClickPower=state.clickPower;
+    // Give insane multipliers
+    state.clickPower=state.clickPower*1e6;
+    devSpeedMultiplier=10000;
+    // Auto-click every 50ms
+    godAutoClickInterval=setInterval(()=>{
+      if(!godModeActive)return;
+      const power=Math.floor(state.clickPower*state.prestigeBonus*evClickMult());
+      state.kebabs=Math.min(state.kebabs+power,MAX_KEBABS);
+      state.totalMade=Math.min(state.totalMade+power,MAX_KEBABS);
+      state.totalClicks++;
+      furyCharge(5);
+      renderCounter();
+    },50);
+    document.body.classList.add('god-mode');
+    if(badge)badge.classList.add('show');
+    if(btn){btn.textContent='🔱 WYŁĄCZ TRYB BOGA';btn.style.borderColor='var(--red)';btn.style.color='var(--red)';}
+    // Buy all upgrades and give max buildings
+    UPGRADES.forEach(u=>{if(!u.bought){u.bought=true;u.apply();}});
+    BUILDINGS.forEach(b=>{b.owned=Math.max(b.owned,50);});
+    recalcCps();
+    showToast('🔱 TRYB BOGA AKTYWNY! Wszystko ×1,000,000!');
+  } else {
+    // Restore
+    if(godOrigClickPower!==null)state.clickPower=godOrigClickPower;
+    devSpeedMultiplier=1;
+    clearInterval(godAutoClickInterval);
+    godAutoClickInterval=null;
+    document.body.classList.remove('god-mode');
+    if(badge)badge.classList.remove('show');
+    if(btn){btn.textContent='🔱 TRYB BOGA';btn.style.borderColor='var(--accent2)';btn.style.color='var(--accent2)';}
+    recalcCps();
+    showToast('🔱 Tryb Boga wyłączony.');
+  }
+  render();
+  // Upewnij się że dev panel zostaje otwarty
+  document.getElementById('devPanel').classList.add('show');
+}
+
+// ===== NOWE DEV FUNKCJE =====
+let devSpeedMultiplier=1;
+function devSetKebabsExact(){
+  const raw=document.getElementById('devSetKebabsInput').value;
+  const val=parseDevNum(raw||'');
+  if(!val||val<=0){showToast('Wpisz np. 1m, 999k');return;}
+  state.kebabs=val;
+  document.getElementById('devSetKebabsInput').value='';
+  showToast('Dev: Kebaby ustawione na '+fmt(val)+'!');
+  renderCounter();renderUpgrades();renderBuildings();
+}
+function devSpeedBoost(mult){
+  devSpeedMultiplier=mult;
+  showToast('Dev: Speed x'+mult+' (mnoznik tiku)!');
+}
+function devResetSpeed(){
+  devSpeedMultiplier=1;
+  showToast('Dev: Speed zresetowany!');
+}
+function devUnlockAllAch(){
+  if(typeof ACHIEVEMENTS!=='undefined'){
+    ACHIEVEMENTS.forEach(a=>state.achUnlocked.add(a.id));
+    showToast('Dev: Wszystkie osiagniecia odblokowane!');
+    if(document.getElementById('tab-stats').classList.contains('active'))renderAchievements();
+  }
+}
+function devResetAch(){
+  state.achUnlocked=new Set();
+  showToast('Dev: Osiagniecia zresetowane!');
+  if(document.getElementById('tab-stats').classList.contains('active'))renderAchievements();
+}
+async function devAddGlobalCode(){
+  const code=document.getElementById('devCodeNameInput').value.trim().toUpperCase();
+  const rawReward=document.getElementById('devCodeRewardInput').value.trim();
+  const desc=document.getElementById('devCodeDescInput').value.trim()||'Kod promocyjny';
+  if(!code){showToast('Wpisz nazwe kodu!');return;}
+  const reward=parseDevNum(rawReward);
+  if(!reward||reward<=0){showToast('Wpisz nagrode np. 5m');return;}
+  document.getElementById('devCodeNameInput').value='';
+  document.getElementById('devCodeRewardInput').value='';
+  document.getElementById('devCodeDescInput').value='';
+  const codeData={reward,desc,ts:Date.now(),active:true};
+  try{
+    await fbSet('/codes/'+code,codeData);
+    showToast('Kod '+code+' ('+fmt(reward)+') wyslany!');
+  }catch(e){
+    const lc=JSON.parse(localStorage.getItem('kebab_dev_codes')||'{}');
+    lc[code]=codeData;
+    localStorage.setItem('kebab_dev_codes',JSON.stringify(lc));
+    showToast('Kod '+code+' dodany lokalnie!');
+  }
+}
+function devRefreshSnapshot(){
+  const el=document.getElementById('devSnapshot');
+  if(!el)return;
+  const built=BUILDINGS.filter(b=>b.owned>0).map(b=>b.name[0]+'x'+b.owned).join(' ');
+  const upg=UPGRADES.filter(u=>u.bought).length;
+  el.innerHTML=
+    'Kebaby: <b style="color:var(--accent2)">'+fmt(state.kebabs)+'</b><br>'+
+    'CPS: <b style="color:var(--accent2)">'+fmt(state.perSecond)+'</b>'+(devSpeedMultiplier>1?' <span style="color:var(--accent)">x'+devSpeedMultiplier+'</span>':'')+' /s<br>'+
+    'Klik: <b style="color:var(--accent2)">'+fmt(state.clickPower)+'</b><br>'+
+    'Prestige: <b style="color:var(--purple)">'+state.prestigeLevel+'</b> (x'+state.prestigeBonus.toFixed(2)+')<br>'+
+    'Budynki: '+(built||'brak')+'<br>'+
+    'Ulepszenia: '+upg+'/'+UPGRADES.length+'<br>'+
+    'Osiagniecia: '+state.achUnlocked.size;
+}
+
+// ===== KODY PROMOCYJNE =====
+const PROMO_CODES={
+  'KEBAB2025':{reward:1e6,desc:'Kod startowy - 1 Milion kebabów!'},
+  'ZFIRYBOGA':{reward:5e7,desc:'Tajny kod - 50 Milionów kebabów!'},
+  'PRESTIGE':{reward:0,type:'prestige',desc:'Darmowy Prestige!'},
+  'COMBO99':{reward:0,type:'combo',combo:10,desc:'Combo x10 przez 60s!'},
+  'SZEFKEBAB':{reward:1e9,desc:'Kod Szefa - 1 Miliard kebabów!'},
+  'NOCNYGRACZ':{reward:2e8,desc:'Dla nocnych graczy - 200 Milionów!'},
+};
+let usedCodes=new Set(JSON.parse(localStorage.getItem('kebab_used_codes')||'[]'));
+
+function renderUsedCodes(){
+  const list=document.getElementById('usedCodesList');
+  const noEl=document.getElementById('noCodesUsed');
+  if(!list)return;
+  if(usedCodes.size===0){list.innerHTML='';if(noEl)noEl.style.display='';return;}
+  if(noEl)noEl.style.display='none';
+  list.innerHTML=[...usedCodes].map(c=>
+    '<div style="background:var(--panel);border:1.5px solid var(--green);border-radius:8px;padding:7px 12px;display:flex;align-items:center;gap:8px;">'+
+    '<span style="font-size:1rem;">&#10003;</span>'+
+    '<span style="font-weight:700;font-size:.82rem;color:var(--green);">'+c+'</span>'+
+    '<span style="font-size:.72rem;color:var(--muted);margin-left:auto;">Uzyte</span></div>'
+  ).join('');
+}
+
+async function redeemCode(){
+  const inp=document.getElementById('codeInput');
+  const res=document.getElementById('codeResult');
+  const code=inp.value.trim().toUpperCase();
+  if(!code){res.innerHTML='<span style="color:var(--red)">Wpisz kod!</span>';return;}
+  if(usedCodes.has(code)){res.innerHTML='<span style="color:var(--red)">Ten kod juz zostal uzyty!</span>';return;}
+  let codeData=PROMO_CODES[code]||null;
+  if(!codeData){
+    try{const fb=await fbGet('/codes/'+code).catch(()=>null);if(fb&&fb.active)codeData=fb;}catch(e){}
+    if(!codeData){const lc=JSON.parse(localStorage.getItem('kebab_dev_codes')||'{}');if(lc[code]&&lc[code].active)codeData=lc[code];}
+  }
+  if(!codeData){res.innerHTML='<span style="color:var(--red)">Nieznany kod. Sprobuj ponownie!</span>';inp.value='';return;}
+  usedCodes.add(code);
+  localStorage.setItem('kebab_used_codes',JSON.stringify([...usedCodes]));
+  inp.value='';
+  if(codeData.type==='prestige'){
+    state.prestigeLevel++;
+    state.prestigeBonus=Math.pow(1.5,state.prestigeLevel)*(1+state.prestigeLevel*0.1);
+    res.innerHTML='<span style="color:var(--purple)">Kod aktywowany! Darmowy Prestige (Poziom '+state.prestigeLevel+')!</span>';
+    renderPrestigeBadge();
+  }else if(codeData.type==='combo'){
+    const c=codeData.combo||5;
+    state.combo=c;state.comboTimer=60;
+    res.innerHTML='<span style="color:var(--accent2)">Kod aktywowany! Combo x'+c+' przez 60s!</span>';
+    renderCounter();
+  }else{
+    const amt=codeData.reward||0;
+    state.kebabs+=amt;state.totalMade+=amt;
+    res.innerHTML='<span style="color:var(--green)">Kod aktywowany! +'+fmt(amt)+' kebabów!<br><small style="color:var(--muted)">'+( codeData.desc||'')+'</small></span>';
+    renderCounter();renderUpgrades();renderBuildings();
+  }
+  renderUsedCodes();
+  showToast('Kod '+code+' aktywowany!');
+}
+
 // Sprawdź online dialogi od Szefa (co 18s)
 async function checkDevDialogs(){
   try{
@@ -1470,6 +1865,7 @@ function showTab(id,el){
   if(id==='slot')updateSlotCost();
   if(id==='quests')renderQuests();
   if(id==='season')renderSeason();
+  if(id==='codes')renderUsedCodes();
 }
 
 function renderUpgrades(){
@@ -1581,6 +1977,7 @@ btn.addEventListener('click',(e)=>{
   clicksThisPopup++;
   if(activePopupQuest&&activePopupQuest.type==='slot_spin'){}  // slot tracked separately
   if(state.totalClicks%50===0)addSeasonXp(1);
+  furyCharge(1+(state.combo>5?1:0)+(godModeActive?5:0));
   checkMilestones();checkAchievements();
   btn.classList.remove('pop');void btn.offsetWidth;btn.classList.add('pop');
   const floatColor=state.combo>=10?'#c060ff':state.combo>=5?'#ffbe00':'#ff6b00';
@@ -1729,7 +2126,7 @@ function tick(now){
   tickEvent(dt);trySpawnEvent();
   if(state.combo>0){state.comboTimer-=dt;if(state.comboTimer<=0){state.combo=0;renderCounter();}}
   if(state.perSecond>0){
-    const earned=state.perSecond*state.prestigeBonus*evCpsMult()*dt;
+    const earned=state.perSecond*state.prestigeBonus*evCpsMult()*(typeof devSpeedMultiplier!=='undefined'?devSpeedMultiplier:1)*dt;
     state.kebabs=Math.min(state.kebabs+earned,MAX_KEBABS);state.totalMade=Math.min(state.totalMade+earned,MAX_KEBABS);
     checkMilestones();checkAchievements();renderCounter();renderDailyChallenge();
   }
@@ -2072,18 +2469,55 @@ async function submitTournament(){
 function copyInvite(){
   const link='https://plszynon.github.io/Kebab';
   navigator.clipboard.writeText(link).then(()=>{
-    document.getElementById('inviteCopied').textContent='✅ Skopiowano!';
-    setTimeout(()=>document.getElementById('inviteCopied').textContent='',2000);
+    document.getElementById('inviteCopied')&&(document.getElementById('inviteCopied').textContent='✅ Skopiowano!');
+    setTimeout(()=>{const el=document.getElementById('inviteCopied');if(el)el.textContent='';},2000);
+  }).catch(()=>{});
+}
+
+// ===== SHARE MODAL =====
+function openShareModal(){
+  const link='https://plszynon.github.io/Kebab';
+  document.getElementById('shareLinkBox').textContent=link;
+  document.getElementById('shareScore').textContent=fmt(state.totalMade);
+  document.getElementById('sharePrestige').textContent=state.prestigeLevel;
+  document.getElementById('shareCopied').textContent='';
+  // Show native share if supported
+  if(navigator.share){
+    document.getElementById('shareNativeBtn').style.display='';
+  }
+  document.getElementById('shareModal').classList.add('show');
+}
+function closeShareModal(){
+  document.getElementById('shareModal').classList.remove('show');
+}
+function shareModalCopy(){
+  const link='https://plszynon.github.io/Kebab';
+  const text='Gram w Kebab Klikacz i mam już '+fmt(state.totalMade)+' kebabów! Sprawdź: '+link;
+  navigator.clipboard.writeText(link).then(()=>{
+    document.getElementById('shareCopied').textContent='✅ Link skopiowany!';
+    setTimeout(()=>{document.getElementById('shareCopied').textContent='';},2500);
   }).catch(()=>{
-    // Fallback
-    const el=document.getElementById('inviteLink');
-    const range=document.createRange();range.selectNode(el);
+    // fallback select
+    const el=document.getElementById('shareLinkBox');
+    const range=document.createRange();range.selectNodeContents(el);
     window.getSelection().removeAllRanges();window.getSelection().addRange(range);
     document.execCommand('copy');
-    document.getElementById('inviteCopied').textContent='✅ Skopiowano!';
-    setTimeout(()=>document.getElementById('inviteCopied').textContent='',2000);
+    document.getElementById('shareCopied').textContent='✅ Zaznaczono — Ctrl+C!';
+    setTimeout(()=>{document.getElementById('shareCopied').textContent='';},2500);
   });
 }
+function shareNative(){
+  const link='https://plszynon.github.io/Kebab';
+  navigator.share({
+    title:'Kebab Klikacz',
+    text:'Gram w Kebab Klikacz i mam już '+fmt(state.totalMade)+' kebabów! 🌯',
+    url:link
+  }).catch(()=>{});
+}
+// Close share modal on backdrop click
+document.getElementById('shareModal').addEventListener('click',function(e){
+  if(e.target===this)closeShareModal();
+});
 
 
 // ===== ŁAŃCUCHY QUESTÓW =====

@@ -173,6 +173,25 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 .season-tier-req{font-size:.68rem;color:var(--muted);}
 .season-tier-reward{font-size:.72rem;color:var(--accent2);font-weight:700;}
 .season-tier-status{font-size:.72rem;font-weight:700;}
+/* POPUP QUEST */
+
+
+
+100%{transform:translateX(-100%)}}
+
+.popup-quest{position:fixed;bottom:80px;left:12px;background:linear-gradient(135deg,#1a0030,#300010);border:2px solid var(--accent2);border-radius:14px;padding:12px 14px;max-width:220px;z-index:8000;display:none;box-shadow:0 4px 20px #0009;animation:fadein .3s ease;}
+.popup-quest.show{display:block;}
+.popup-quest-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.popup-quest-icon{font-size:1.5rem;}
+.popup-quest-title{font-weight:800;font-size:.82rem;color:var(--accent2);}
+.popup-quest-desc{font-size:.72rem;color:var(--muted);margin-bottom:6px;}
+.popup-quest-progress{height:6px;background:var(--panel2);border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.popup-quest-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .3s;}
+.popup-quest-footer{display:flex;justify-content:space-between;align-items:center;}
+.popup-quest-reward{font-size:.7rem;color:var(--accent2);font-weight:700;}
+.popup-quest-timer{font-size:.68rem;color:var(--muted);}
+.popup-quest-btn{background:var(--accent2);border:none;border-radius:6px;color:#000;font-family:'Rubik',sans-serif;font-weight:700;font-size:.72rem;padding:4px 10px;cursor:pointer;}
+.popup-quest-btn:disabled{background:var(--border);color:var(--muted);}
 /* STATYSTYKI GRACZY ONLINE */
 .online-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px;}
 .online-stat-card{background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:12px;text-align:center;}
@@ -579,7 +598,7 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   </div>
 </div>
 
-<div class="dev-panel" id="devPanel" style="max-height:90vh;overflow-y:auto;">
+<div class="dev-panel" id="devPanel" style="max-height:85vh;overflow-y:auto;width:255px;">
   <div class="dev-panel-title">
     <span>🔧 Dev Panel</span>
     <span onclick="document.getElementById('devPanel').classList.remove('show')" style="cursor:pointer;font-size:1rem;">✕</span>
@@ -605,47 +624,97 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <button class="dev-send-btn dev-global-only" onclick="devSendDialog()" style="margin-bottom:10px;">📢 Wyślij wszystkim</button>
 
   <!-- SEKCJA: KEBABY -->
-  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">💰 Daj kebaby</div>
-  <div style="display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap;">
-    <button class="dev-event-btn" onclick="devGiveKebabs(1e6)">+1M</button>
-    <button class="dev-event-btn" onclick="devGiveKebabs(1e9)">+1B</button>
-    <button class="dev-event-btn" onclick="devGiveKebabs(1e12)">+1T</button>
-    <button class="dev-event-btn" onclick="devGiveKebabs(1e18)">+1Kd</button>
-  </div>
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">💰 Daj kebaby (np. 1k, 5m, 2b, 1t)</div>
   <div style="display:flex;gap:5px;margin-bottom:10px;">
-    <input id="devCustomKebabs" type="number" placeholder="Własna ilość..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.78rem;padding:5px 8px;flex:1;">
-    <button class="dev-event-btn" onclick="devGiveKebabsCustom()">Daj</button>
+    <input id="devCustomKebabs" placeholder="np. 1k, 5m, 2b..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.85rem;padding:6px 10px;flex:1;">
+    <button class="dev-event-btn" onclick="devGiveKebabsCustom()" style="background:#1a2000;border-color:var(--green);color:var(--green);">✅</button>
   </div>
 
   <!-- SEKCJA: PRESTIGE -->
-  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">⭐ Prestige</div>
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">⭐ Ustaw Prestige</div>
   <div style="display:flex;gap:5px;margin-bottom:10px;">
-    <button class="dev-event-btn" onclick="devForcePrestige()">⭐ Wymuś Prestige</button>
-    <button class="dev-event-btn" onclick="devResetPrestige()" style="border-color:var(--red);color:var(--red);">Reset prestige</button>
+    <input id="devPrestigeInput" type="number" min="0" max="999" placeholder="Poziom..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.78rem;padding:5px 8px;flex:1;">
+    <button class="dev-event-btn" onclick="devSetPrestige()">✅ Ustaw</button>
+    <button class="dev-event-btn" onclick="devResetPrestige()" style="border-color:var(--red);color:var(--red);">✕</button>
   </div>
 
   <!-- SEKCJA: SEZON XP -->
-  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">🌟 Sezon XP</div>
-  <div style="display:flex;gap:5px;margin-bottom:10px;">
-    <button class="dev-event-btn" onclick="devGiveXp(1000)">+1K XP</button>
-    <button class="dev-event-btn" onclick="devGiveXp(10000)">+10K XP</button>
-    <button class="dev-event-btn" onclick="devGiveXp(100000)">+100K XP</button>
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">🌟 XP</div>
+  <div style="display:flex;gap:4px;margin-bottom:8px;">
+    <input id="devXpInput" placeholder="np. 1k, 5k..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.75rem;padding:4px 7px;flex:1;">
+    <button class="dev-event-btn" onclick="devGiveXpCustom()" style="padding:4px 8px;">✅</button>
   </div>
 
   <!-- SEKCJA: OGŁOSZENIE ONLINE -->
   <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">📢 Ogłoszenie globalne</div>
   <input class="dev-dialog-input dev-global-only" id="devAnnInput" placeholder="Ogłoszenie (pojawi się na górze)..." maxlength="100" style="margin-bottom:5px;">
-  <button class="dev-send-btn dev-global-only" onclick="devSendAnnouncement()" style="margin-bottom:10px;background:linear-gradient(90deg,#300050,#500020);">📣 Wyślij ogłoszenie</button>
+  <button class="dev-send-btn dev-global-only" onclick="devSendAnnouncement()" style="margin-bottom:8px;background:linear-gradient(90deg,#300050,#500020);">📣 Wyślij ogłoszenie</button>
 
   <!-- SEKCJA: NARZĘDZIA -->
   <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:5px;">🛠️ Narzędzia</div>
-  <div style="display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap;">
+  <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;">
     <button class="dev-event-btn" onclick="devShowStats()">📊 Info</button>
-    <button class="dev-event-btn" onclick="devClearRanking()" style="border-color:var(--red);color:var(--red);">🗑️ Wyczyść ranking</button>
+    <button class="dev-event-btn" onclick="devSetCombo(20)">🔥 Combo×20</button>
+    <button class="dev-event-btn" onclick="devUnlockAllSkins()">🎨 Skórki</button>
   </div>
-  <div style="display:flex;gap:5px;flex-wrap:wrap;">
-    <button class="dev-event-btn" onclick="devSetCombo(20)">🔥 Combo MAX</button>
-    <button class="dev-event-btn" onclick="devUnlockAllSkins()">🎨 Odblokuj skórki</button>
+  <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devSpawnPopupQuest()">⚡ Popup Quest</button>
+    <button class="dev-event-btn" onclick="devCompleteAllQuests()">📜 Questy MAX</button>
+  </div>
+  <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devMaxBuildings()">🏗️ Budynki ×10</button>
+    <button class="dev-event-btn" onclick="devBuyAllUpgrades()">⚡ Ulepszenia</button>
+  </div>
+  <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devSendGlobalCombo()" style="border-color:var(--accent2);color:var(--accent2);">🔥 Combo all</button>
+    <button class="dev-event-btn" onclick="devClearRanking()" style="border-color:var(--red);color:var(--red);">🗑️ Ranking</button>
+  </div>
+  <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devResetQuests()">🔄 Reset questów</button>
+    <button class="dev-event-btn" onclick="devGiveAllSeason()">🌟 MAX Sezon</button>
+  </div>
+  <div style="display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;">
+    <button class="dev-event-btn" onclick="devDoubleAll()" style="border-color:var(--accent2);color:var(--accent2);">×2 Wszystko</button>
+    <button class="dev-event-btn" onclick="devResetBuildings()" style="border-color:var(--red);color:var(--red);">🏗️ Reset bud.</button>
+  </div>
+  <!-- CUSTOM COMBO -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">🔥 Combo dla wszystkich</div>
+  <div style="display:flex;gap:4px;margin-bottom:8px;">
+    <input id="devComboInput" type="number" min="1" max="20" placeholder="×1-20..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.75rem;padding:4px 7px;flex:1;">
+    <button class="dev-event-btn" onclick="devSendCustomCombo()" style="border-color:var(--accent2);color:var(--accent2);padding:4px 8px;font-size:.7rem;">🔥 Wyślij</button>
+  </div>
+
+  <!-- KEBAB DESZCZ -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">🌧️ Kebab Deszcz (dla wszystkich)</div>
+  <div style="display:flex;gap:4px;margin-bottom:8px;">
+    <input id="devRainInput" placeholder="np. 1m, 5b..." style="background:#1a0800;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rubik',sans-serif;font-size:.75rem;padding:4px 7px;flex:1;">
+    <button class="dev-event-btn" onclick="devSendKebabRain()" style="border-color:var(--blue);color:var(--blue);padding:4px 8px;font-size:.7rem;">🌧️ Wyślij</button>
+  </div>
+
+  <!-- LIVE STATS -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">👥 Live Info</div>
+  <div id="devLiveStats" style="background:#1a0800;border-radius:8px;padding:6px 8px;font-size:.72rem;color:var(--muted);margin-bottom:8px;">Kliknij Odśwież</div>
+  <button class="dev-event-btn" onclick="devRefreshLiveStats()" style="width:100%;margin-bottom:8px;">🔄 Odśwież statystyki online</button>
+
+  <!-- BLOKADA EVENTÓW -->
+  <div style="font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">🔕 Blokada eventów losowych</div>
+  <div style="display:flex;gap:4px;margin-bottom:4px;">
+    <button class="dev-event-btn" id="devBlockEvBtn" onclick="devToggleEventBlock()" style="width:100%;">🔕 Zablokuj eventy</button>
+  </div>
+</div>
+<div class="popup-quest" id="popupQuest">
+  <div class="popup-quest-header">
+    <div class="popup-quest-icon" id="pqIcon">⚡</div>
+    <div class="popup-quest-title" id="pqTitle">Szybki Quest!</div>
+  </div>
+  <div class="popup-quest-desc" id="pqDesc"></div>
+  <div class="popup-quest-progress"><div class="popup-quest-fill" id="pqFill" style="width:0%"></div></div>
+  <div class="popup-quest-footer">
+    <div>
+      <div class="popup-quest-reward" id="pqReward"></div>
+      <div class="popup-quest-timer" id="pqTimer">⏱ 60s</div>
+    </div>
+    <button class="popup-quest-btn" id="pqBtn" onclick="claimPopupQuest()" disabled>🔒</button>
   </div>
 </div>
 <button class="dev-badge" id="devBadge" onclick="document.getElementById('devPanel').classList.toggle('show')" title="Dev Panel">🔧</button>
@@ -708,7 +777,7 @@ const MAX_KEBABS=1e303;
 
 // ===== STATE =====
 const state={kebabs:0,totalMade:0,clickPower:1,perSecond:0,prestigeLevel:0,prestigeBonus:1,totalClicks:0,totalSpent:0,playTimeSeconds:0,sessionStart:Date.now(),combo:0,comboTimer:0,comboBonus:1,totalEvents:0,achUnlocked:new Set()};
-const ORIG_CPS=[0.5,2,8,25,100,500,3000,20000,150000,1000000,8000000,80000000,5000000000];
+const ORIG_CPS=[0.5,2,8,25,100,500,3000,20000,150000,1000000,8000000,80000000,5000000000,1e13];
 
 const UPGRADES=[
   {id:'u1', name:'Lepszy szamszir',    icon:'🔪', desc:'+1 kebab za klik',    cost:15,        bought:false, apply:()=>{state.clickPower+=1;}},
@@ -743,6 +812,7 @@ const BUILDINGS=[
   {id:'b11',name:'Bóg Kebaba',        icon:'👁️', baseCost:2e9,       owned:0, baseCps:8000000},
   {id:'b12',name:'Kebab-Multiwersum', icon:'🔮', baseCost:2e13,      owned:0, baseCps:100000000},
   {id:'b13',name:'Centylion Kuchnia',  icon:'♾️', baseCost:2e18,      owned:0, baseCps:5000000000},
+  {id:'b14',name:'Kebab Singularity',  icon:'🌀', baseCost:2e25,      owned:0, baseCps:1e13},
 ];
 
 const MILESTONES=[
@@ -872,9 +942,22 @@ function devGiveKebabs(amount){
   showToast('💰 Dev: +'+fmt(amount)+' kebabów!');
   renderCounter();renderUpgrades();renderBuildings();
 }
+function parseDevNum(str){
+  str=str.trim().toLowerCase().replace(/\s/g,'');
+  const map={'k':1e3,'m':1e6,'b':1e9,'t':1e12,'kw':1e15,'kd':1e18,'sxt':1e21,'cln':1e303};
+  for(const [suffix,mult] of Object.entries(map)){
+    if(str.endsWith(suffix)){
+      const n=parseFloat(str.slice(0,-suffix.length));
+      return isNaN(n)?null:n*mult;
+    }
+  }
+  const n=parseFloat(str);
+  return isNaN(n)?null:n;
+}
 function devGiveKebabsCustom(){
-  const val=Number(document.getElementById('devCustomKebabs').value);
-  if(!val||val<=0){showToast('❌ Wpisz liczbę!');return;}
+  const raw=document.getElementById('devCustomKebabs').value;
+  const val=parseDevNum(raw);
+  if(!val||val<=0){showToast('❌ Wpisz np. 1k, 5m, 2b, 1t, 1cln');return;}
   devGiveKebabs(val);
   document.getElementById('devCustomKebabs').value='';
 }
@@ -882,6 +965,15 @@ function devForcePrestige(){
   state.prestigeLevel++;
   state.prestigeBonus=Math.pow(1.5,state.prestigeLevel)*(1+state.prestigeLevel*0.1);
   showToast('⭐ Dev: Prestige '+state.prestigeLevel+'!');
+  renderPrestigeBadge();render();
+}
+function devSetPrestige(){
+  const val=parseInt(document.getElementById('devPrestigeInput').value);
+  if(isNaN(val)||val<0){showToast('❌ Wpisz liczbę 0-999');return;}
+  state.prestigeLevel=val;
+  state.prestigeBonus=val===0?1:Math.pow(1.5,val)*(1+val*0.1);
+  document.getElementById('devPrestigeInput').value='';
+  showToast('⭐ Dev: Prestige ustawiony na '+val+'!');
   renderPrestigeBadge();render();
 }
 function devResetPrestige(){
@@ -903,6 +995,157 @@ function devUnlockAllSkins(){
   showToast('🎨 Dev: Wszystkie skórki odblokowane!');
   if(document.getElementById('tab-shop').classList.contains('active'))renderShop();
 }
+async function devSendMultiplier(){
+  const mult=parseInt(document.getElementById('devMultInput')?.value)||10;
+  const dur=parseInt(document.getElementById('devMultDur')?.value)||30;
+  const ev={name:'💎 Mnożnik Admina!',desc:'×'+mult+' wszystko '+dur+'s',mult:Math.min(mult,1000),type:'all',permanent:false,duration:dur,ts:Date.now(),active:true};
+  currentEvent={...ev,timeLeft:dur};
+  document.getElementById('eventBanner').textContent=ev.name+' — '+ev.desc;
+  document.getElementById('eventBanner').classList.add('active');
+  document.getElementById('devMultInput').value='';
+  document.getElementById('devMultDur').value='';
+  try{
+    await fbSet('/devEvent',ev);
+    showToast('💎 Mnożnik ×'+mult+' wysłany na '+dur+'s!');
+  }catch(e){showToast('💎 Lokalnie OK: ×'+mult);}
+}
+async function devSendAlert(){
+  const msg=document.getElementById('devAlertInput')?.value?.trim();
+  if(!msg)return;
+  document.getElementById('devAlertInput').value='';
+  // Show locally
+  showAdminMsg('🚨 ALERT: '+msg);
+  try{
+    await fbSet('/alert',{msg:'🚨 ALERT: '+msg,ts:Date.now()});
+    showToast('🚨 Alert wysłany!');
+  }catch(e){showToast('❌ '+e.message);}
+}
+async function refreshOnlineCount(){
+  try{
+    // Ping our presence
+    const nick=localStorage.getItem('kebab_my_nick')||'anonim_'+Math.random().toString(36).slice(2,6);
+    await fbSet('/online/'+nick.replace(/[^a-zA-Z0-9_]/g,'_'),{ts:Date.now()});
+    const data=await fbGet('/online');
+    if(!data){document.getElementById('devOnlineCount').textContent='0 graczy';return;}
+    const now=Date.now();
+    const active=Object.values(data).filter(v=>v.ts&&(now-v.ts)<120000).length;
+    document.getElementById('devOnlineCount').textContent=active+' '+(active===1?'gracz':'graczy')+' (ostatnie 2min)';
+  }catch(e){document.getElementById('devOnlineCount').textContent='Brak danych';}
+}
+function devGiveXpCustom(){
+  const raw=document.getElementById('devXpInput')?.value;
+  const val=parseDevNum(raw||'');
+  if(!val||val<=0){showToast('❌ Wpisz np. 1k, 5k');return;}
+  document.getElementById('devXpInput').value='';
+  addSeasonXp(val);showToast('🌟 Dev: +'+fmt(val)+' XP!');
+}
+function devResetQuests(){
+  questProgress={};
+  showToast('🔄 Dev: Questy zresetowane!');
+  if(document.getElementById('tab-quests').classList.contains('active'))renderQuests();
+}
+function devGiveAllSeason(){
+  addSeasonXp(100000);
+  showToast('🌟 Dev: MAX XP sezonu!');
+}
+function devDoubleAll(){
+  state.clickPower*=2;
+  BUILDINGS.forEach(b=>b.baseCps*=2);
+  recalcCps();render();
+  showToast('×2 Dev: Wszystko podwojone!');
+}
+function devResetBuildings(){
+  BUILDINGS.forEach((b,i)=>{b.owned=0;b.baseCps=ORIG_CPS[i];});
+  recalcCps();render();
+  showToast('🏗️ Dev: Budynki zresetowane!');
+}
+async function devSendCustomCombo(){
+  const val=parseInt(document.getElementById('devComboInput')?.value)||20;
+  const combo=Math.min(20,Math.max(1,val));
+  try{
+    await fbSet('/devCombo',{ts:Date.now(),combo});
+    state.combo=combo;state.comboTimer=30;
+    showToast('🔥 Dev: Combo ×'+combo+' wysłane!');renderCounter();
+    document.getElementById('devComboInput').value='';
+  }catch(e){showToast('❌ '+e.message);}
+}
+function devSpawnPopupQuest(){
+  activePopupQuest=null;popupQuestTimer=290;
+  showToast('⚡ Popup Quest za chwilę!');
+}
+function devCompleteAllQuests(){
+  QUEST_CHAINS.forEach(chain=>{
+    if(!questProgress[chain.id])questProgress[chain.id]={step:0,claimed:[]};
+    chain.quests.forEach((_,i)=>{
+      if(!questProgress[chain.id].claimed.includes(i)){
+        questProgress[chain.id].claimed.push(i);
+        questProgress[chain.id].step=i+1;
+        state.kebabs+=chain.quests[i].reward;
+        state.totalMade+=chain.quests[i].reward;
+      }
+    });
+  });
+  showToast('📜 Dev: Wszystkie questy ukończone!');
+  renderCounter();
+}
+function devMaxBuildings(){
+  BUILDINGS.forEach(b=>{b.owned+=10;});
+  recalcCps();render();
+  showToast('🏗️ Dev: +10 każdego budynku!');
+}
+function devBuyAllUpgrades(){
+  UPGRADES.forEach(u=>{if(!u.bought){u.bought=true;u.apply();}});
+  recalcCps();render();
+  showToast('⚡ Dev: Wszystkie ulepszenia kupione!');
+}
+async function devSendGlobalCombo(){
+  try{
+    await fbSet('/devCombo',{ts:Date.now(),combo:20});
+    state.combo=20;state.comboTimer=30;
+    showToast('🔥 Dev: Combo ×20 dla wszystkich!');renderCounter();
+  }catch(e){showToast('❌ '+e.message);}
+}
+async function devSendKebabRain(){
+  const raw=document.getElementById('devRainInput')?.value;
+  const val=parseDevNum(raw||'');
+  if(!val||val<=0){showToast('❌ Wpisz np. 1m, 5b');return;}
+  document.getElementById('devRainInput').value='';
+  // Give locally
+  state.kebabs+=val;state.totalMade+=val;renderCounter();
+  showToast('🌧️ Wysyłanie Kebab Deszczu...');
+  try{
+    await fbSet('/devRain',{amount:val,ts:Date.now()});
+    showToast('🌧️ Kebab Deszcz +'+fmt(val)+' wysłany do wszystkich!');
+  }catch(e){showToast('❌ '+e.message);}
+}
+
+async function devRefreshLiveStats(){
+  const el=document.getElementById('devLiveStats');
+  if(!el)return;
+  el.textContent='⏳ Ładowanie...';
+  try{
+    const scores=await fbGet('/scores').catch(()=>null);
+    const playerCount=scores?Object.keys(scores).length:0;
+    const topScore=scores?Math.max(...Object.values(scores).map(s=>s.score||0)):0;
+    const ev=await fbGet('/devEvent').catch(()=>null);
+    const evStatus=ev&&ev.active?'✅ '+ev.name:'❌ Brak';
+    el.innerHTML=`👥 Graczy: <strong style="color:var(--accent2)">${playerCount}</strong><br>🏆 Top: <strong style="color:var(--accent2)">${fmt(topScore)}</strong><br>⚡ Event: <span style="color:var(--accent)">${evStatus}</span>`;
+  }catch(e){el.textContent='❌ Błąd: '+e.message;}
+}
+
+let eventsBlocked=false;
+async function devToggleEventBlock(){
+  eventsBlocked=!eventsBlocked;
+  const btn=document.getElementById('devBlockEvBtn');
+  if(btn)btn.textContent=eventsBlocked?'✅ Eventy zablokowane':'🔕 Zablokuj eventy';
+  if(btn)btn.style.borderColor=eventsBlocked?'var(--green)':'';
+  if(btn)btn.style.color=eventsBlocked?'var(--green)':'';
+  try{
+    await fbSet('/devBlockEvents',{blocked:eventsBlocked,ts:Date.now()});
+    showToast(eventsBlocked?'🔕 Eventy losowe zablokowane dla wszystkich!':'✅ Eventy odblokowane!');
+  }catch(e){showToast('❌ '+e.message);}
+}
+
 function devShowStats(){
   showToast('💾 Kebaby: '+fmt(state.kebabs)+' | CPS: '+fmt(state.perSecond)+' | Prestige: '+state.prestigeLevel);
 }
@@ -1017,6 +1260,35 @@ async function checkDevDialogs(){
     if(dmsg&&dmsg.ts>lastMsgTs&&dmsg.ts>(Date.now()-300000)){
       localStorage.setItem('kebab_last_msg',String(dmsg.ts));
       showAdminMsg(dmsg.msg);
+    }
+    // Sprawdź kebab deszcz
+    const rain=await fbGet('/devRain').catch(()=>null);
+    const lastRainTs=parseInt(localStorage.getItem('kebab_last_rain')||'0');
+    if(rain&&rain.ts>lastRainTs&&rain.ts>(Date.now()-60000)){
+      localStorage.setItem('kebab_last_rain',String(rain.ts));
+      state.kebabs+=rain.amount;state.totalMade+=rain.amount;
+      showToast('🌧️ Admin dał Ci +'+fmt(rain.amount)+' kebabów!');
+      renderCounter();
+    }
+    // Sprawdź blokadę eventów
+    const evBlock=await fbGet('/devBlockEvents').catch(()=>null);
+    if(evBlock&&!devMode){
+      eventsBlocked=evBlock.blocked||false;
+    }
+    // Sprawdź alert
+    const alert=await fbGet('/alert').catch(()=>null);
+    const lastAlertTs=parseInt(localStorage.getItem('kebab_last_alert')||'0');
+    if(alert&&alert.ts>lastAlertTs&&alert.ts>(Date.now()-120000)){
+      localStorage.setItem('kebab_last_alert',String(alert.ts));
+      showAdminMsg(alert.msg);
+    }
+    // Sprawdź globalny combo boost
+    const gCombo=await fbGet('/devCombo').catch(()=>null);
+    const lastComboTs=parseInt(localStorage.getItem('kebab_last_combo')||'0');
+    if(gCombo&&gCombo.ts>lastComboTs&&gCombo.ts>(Date.now()-30000)){
+      localStorage.setItem('kebab_last_combo',String(gCombo.ts));
+      state.combo=gCombo.combo||20;state.comboTimer=30;
+      showToast('🔥 Admin dał Ci Combo ×'+state.combo+'!');renderCounter();
     }
     // Sprawdź ogłoszenie
     const ann=await fbGet('/announcement').catch(()=>null);
@@ -1306,6 +1578,8 @@ btn.addEventListener('click',(e)=>{
   const comboMult=1+((state.combo-1)*0.1*state.comboBonus);
   const power=Math.floor(state.clickPower*state.prestigeBonus*evClickMult()*comboMult);
   state.kebabs=Math.min(state.kebabs+power,MAX_KEBABS);state.totalMade=Math.min(state.totalMade+power,MAX_KEBABS);state.totalClicks++;
+  clicksThisPopup++;
+  if(activePopupQuest&&activePopupQuest.type==='slot_spin'){}  // slot tracked separately
   if(state.totalClicks%50===0)addSeasonXp(1);
   checkMilestones();checkAchievements();
   btn.classList.remove('pop');void btn.offsetWidth;btn.classList.add('pop');
@@ -1326,6 +1600,7 @@ function checkMilestones(){
 }
 function trySpawnEvent(){
   if(devMode)return; // w dev mode admin kontroluje eventy
+  if(eventsBlocked)return; // admin zablokował eventy
   if(currentEvent)return;
   if(Math.random()<0.012){
     const ev=EVENTS[Math.floor(Math.random()*EVENTS.length)];
@@ -1436,6 +1711,18 @@ function showAdminMsg(msg){
 let last=performance.now();
 let chartTickCounter=0;
 let devTimer=0;
+let popupQuestTimer=0;
+let activePopupQuest=null;
+let popupQuestClaimed=false;
+
+const POPUP_QUESTS=[
+  {icon:'⚡',name:'Błyskawiczny Klikacz',  desc:'Kliknij 30 razy w 60s', type:'clicks_session', req:30,  reward:()=>Math.floor(state.totalMade*0.1)||1000},
+  {icon:'💰',name:'Szybki Zarobek',        desc:'Zdobądź 10× obecna CPS w 60s', type:'cps_60s', req:60, reward:()=>Math.floor(state.perSecond*120)||5000},
+  {icon:'🎰',name:'Szczęśliwy Spin',       desc:'Zakręć slotem 1 raz',   type:'slot_spin',      req:1,   reward:()=>slotCost()*5},
+  {icon:'🔥',name:'Combo Rush',            desc:'Osiągnij combo ×10',    type:'combo',          req:10,  reward:()=>Math.floor(state.totalMade*0.05)||2000},
+];
+let popupQuestProgress=0;
+let popupQuestStart=0;
 let devEventActive=false;
 function tick(now){
   const dt=(now-last)/1000;last=now;
@@ -1451,7 +1738,10 @@ function tick(now){
   if(chartTickCounter>=2){chartTickCounter=0;pushCpsPoint();}
   if(document.getElementById('tab-tournament').classList.contains('active'))renderTournament();
   devTimer+=dt;
-  if(devTimer>=15){devTimer=0;checkDevDialogs();}
+  if(devTimer>=15){devTimer=0;checkDevDialogs();if(devMode)refreshOnlineCount();}
+  popupQuestTimer+=dt;
+  if(popupQuestTimer>=300){popupQuestTimer=0;spawnPopupQuest();}
+  tickPopupQuest(dt);
   requestAnimationFrame(tick);
 }
 
@@ -1661,6 +1951,7 @@ function spinSlot(){
   state.kebabs-=cost;state.totalSpent+=cost;
   slotSpinning=true;
   document.getElementById('slotBtn').disabled=true;
+  if(activePopupQuest&&activePopupQuest.type==='slot_spin'){popupQuestProgress=1;}
   document.getElementById('slotResult').textContent='🎰 Kręci się...';
   const reels=[0,1,2].map(i=>document.getElementById('reel'+i));
   reels.forEach(r=>r.classList.add('spin'));
@@ -1944,6 +2235,73 @@ function renderSeason(){
     </div>`;
   }).join('');
 }
+
+// ===== SZYBKIE POPUP QUESTY =====
+let clicksThisPopup=0;
+let kebabsAtPopupStart=0;
+let popupQuestTimeLeft=0;
+
+function spawnPopupQuest(){
+  if(activePopupQuest)return;
+  const q=POPUP_QUESTS[Math.floor(Math.random()*POPUP_QUESTS.length)];
+  activePopupQuest={...q};
+  popupQuestClaimed=false;
+  popupQuestProgress=0;
+  popupQuestStart=Date.now();
+  popupQuestTimeLeft=60;
+  clicksThisPopup=0;
+  kebabsAtPopupStart=state.kebabs;
+  document.getElementById('pqIcon').textContent=q.icon;
+  document.getElementById('pqTitle').textContent=q.name;
+  document.getElementById('pqDesc').textContent=q.desc;
+  document.getElementById('pqReward').textContent='🎁 +'+fmt(q.reward());
+  document.getElementById('pqFill').style.width='0%';
+  document.getElementById('pqBtn').disabled=true;
+  document.getElementById('pqBtn').textContent='🔒';
+  document.getElementById('popupQuest').classList.add('show');
+}
+
+function tickPopupQuest(dt){
+  if(!activePopupQuest||popupQuestClaimed)return;
+  popupQuestTimeLeft-=dt;
+  if(popupQuestTimeLeft<=0){
+    document.getElementById('popupQuest').classList.remove('show');
+    activePopupQuest=null;return;
+  }
+  document.getElementById('pqTimer').textContent='⏱ '+Math.ceil(popupQuestTimeLeft)+'s';
+  // Update progress
+  let prog=0;
+  const q=activePopupQuest;
+  if(q.type==='clicks_session') prog=Math.min(1,clicksThisPopup/q.req);
+  else if(q.type==='combo') prog=Math.min(1,state.combo/q.req);
+  else if(q.type==='slot_spin') prog=popupQuestProgress;
+  else if(q.type==='cps_60s') prog=Math.min(1,(state.kebabs-kebabsAtPopupStart)/(state.perSecond*q.req));
+  document.getElementById('pqFill').style.width=(prog*100)+'%';
+  if(prog>=1&&!popupQuestClaimed){
+    document.getElementById('pqBtn').disabled=false;
+    document.getElementById('pqBtn').textContent='✅ Odbierz!';
+    document.getElementById('pqReward').textContent='🎁 +'+fmt(q.reward());
+  }
+}
+
+function claimPopupQuest(){
+  if(!activePopupQuest||popupQuestClaimed)return;
+  const reward=activePopupQuest.reward();
+  state.kebabs+=reward;state.totalMade+=reward;
+  popupQuestClaimed=true;
+  addSeasonXp(50);
+  showToast('⚡ Quest: +'+fmt(reward)+' kebabów!');
+  document.getElementById('pqBtn').disabled=true;
+  document.getElementById('pqBtn').textContent='✔';
+  setTimeout(()=>{
+    document.getElementById('popupQuest').classList.remove('show');
+    activePopupQuest=null;
+  },1500);
+  renderCounter();
+}
+
+// Hook clicks for popup quest
+const origKebabBtn=document.getElementById('kebabBtn');
 
 const SAVE_KEY='kebab_v5';
 function saveGame(){

@@ -121,6 +121,13 @@ h1{font-family:'Rubik Dirt',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(-
 .btn-confirm:hover{background:#400060;}
 .btn-cancel{border-color:var(--border);background:var(--panel2);color:var(--text);}
 /* TOAST */
+.admin-msg{position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(135deg,#200040,#400010);border-bottom:3px solid var(--purple);padding:14px 20px;display:flex;align-items:center;gap:12px;transform:translateY(-100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+.admin-msg.show{transform:translateY(0);}
+.admin-msg-icon{font-size:2rem;flex-shrink:0;animation:admin-pulse 1s ease-in-out infinite alternate;}
+@keyframes admin-pulse{from{filter:brightness(1)}to{filter:brightness(1.5) drop-shadow(0 0 8px #c060ff)}}
+.admin-msg-body{flex:1;}
+.admin-msg-from{font-size:.65rem;text-transform:uppercase;letter-spacing:3px;color:var(--purple);font-weight:800;margin-bottom:2px;}
+.admin-msg-text{font-size:.95rem;font-weight:700;color:#fff;}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#3d1a00;border:2px solid var(--accent2);border-radius:14px;padding:10px 22px;font-weight:700;font-size:.95rem;color:var(--accent2);box-shadow:0 4px 24px #0009;z-index:9999;transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;text-align:center;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 /* MAPA POSTĘPU */
@@ -451,6 +458,13 @@ canvas#cpsChart{display:block;width:100%!important;height:120px!important;}
   <div id="devUserLabel" style="font-size:.65rem;color:var(--muted);margin-top:6px;text-align:center;">Zalogowany jako: Szymon 👑</div>
 </div>
 <button class="dev-badge" id="devBadge" onclick="document.getElementById('devPanel').classList.toggle('show')" title="Dev Panel">🔧</button>
+<div class="admin-msg" id="adminMsg">
+  <div class="admin-msg-icon">👑</div>
+  <div class="admin-msg-body">
+    <div class="admin-msg-from">Wiadomość od Admina</div>
+    <div class="admin-msg-text" id="adminMsgText"></div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -671,6 +685,7 @@ function devTriggerLocal(){
 async function devResetEvent(){
   devEventActive=false;
   currentEvent=null;
+  localStorage.removeItem('kebab_dev_event_active');
   document.getElementById('eventBanner').classList.remove('active');
   showToast('⏹ Event zatrzymany!');
   try{
@@ -739,8 +754,8 @@ async function checkDevDialogs(){
     const dmsg=await fbGet('/devmsg').catch(()=>null);
     const lastMsgTs=parseInt(localStorage.getItem('kebab_last_msg')||'0');
     if(dmsg&&dmsg.ts>lastMsgTs&&dmsg.ts>(Date.now()-300000)){
-      localStorage.setItem('kebab_last_msg',dmsg.ts);
-      showToast('📢 '+dmsg.msg);
+      localStorage.setItem('kebab_last_msg',String(dmsg.ts));
+      showAdminMsg(dmsg.msg);
     }
   }catch(e){}
 }
@@ -1036,8 +1051,8 @@ function checkMilestones(){
   });
 }
 function trySpawnEvent(){
-  if(currentEvent)return; // już jest aktywny (dev lub losowy)
-  if(devEventActive)return; // blokuj losowe gdy dev event aktywny
+  if(devMode)return; // w dev mode admin kontroluje eventy
+  if(currentEvent)return;
   if(Math.random()<0.012){
     const ev=EVENTS[Math.floor(Math.random()*EVENTS.length)];
     currentEvent={...ev,timeLeft:ev.duration};state.totalEvents++;
@@ -1058,12 +1073,14 @@ function tickEvent(dt){
 }
 
 function openPrestige(){
-  if(state.totalMade<100000){showToast('❌ Potrzebujesz 100 000 kebabów!');return;}
+  const threshold=prestigeThreshold();
+  if(state.totalMade<threshold){showToast('❌ Potrzebujesz '+fmt(threshold)+' kebabów!');return;}
   document.getElementById('modalCurrentBonus').textContent='×'+state.prestigeBonus.toFixed(2);
   const nextLvl=state.prestigeLevel+1;
   const nextBonus=(Math.pow(1.5,nextLvl)*(1+nextLvl*0.1)).toFixed(2);
   document.getElementById('modalNextBonus').textContent='×'+nextBonus;
-  document.getElementById('modalThreshold').textContent=fmt(threshold);
+  const thEl=document.getElementById('modalThreshold');
+  if(thEl)thEl.textContent=fmt(threshold);
   document.getElementById('prestigeModal').classList.add('show');
 }
 function closePrestige(){document.getElementById('prestigeModal').classList.remove('show');}
@@ -1127,7 +1144,19 @@ async function renderRanking(){
 }
 
 let toastTimer;
+let adminMsgTimer;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
+function showAdminMsg(msg){
+  // Strip sender prefix for display
+  const text=msg.replace(/^\[.*?\]: /,'');
+  const sender=msg.match(/^\[(.*?)\]/)?.[1]||'Admin';
+  document.getElementById('adminMsgText').textContent=text;
+  document.querySelector('.admin-msg-from').textContent='Wiadomość od: '+sender;
+  const el=document.getElementById('adminMsg');
+  el.classList.add('show');
+  clearTimeout(adminMsgTimer);
+  adminMsgTimer=setTimeout(()=>el.classList.remove('show'),6000);
+}
 
 // ===== TICK =====
 let last=performance.now();
@@ -1300,7 +1329,14 @@ function claimWeekly(id,reward){
 const SAVE_KEY='kebab_v5';
 function saveGame(){
   const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned,baseCps:b.baseCps})),milestones:[...reachedMilestones],unlockedSkins:[...unlockedSkins],activeSkin};
-  localStorage.setItem(SAVE_KEY,JSON.stringify(data));showToast('💾 Zapisano!');
+  localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+  // Zapisz aktywny dev event osobno
+  if(currentEvent&&currentEvent.permanent){
+    localStorage.setItem('kebab_dev_event_active',JSON.stringify({name:currentEvent.name,desc:currentEvent.desc,mult:currentEvent.mult,type:currentEvent.type,permanent:true,ts:currentEvent.ts||Date.now(),active:true}));
+  } else if(!devEventActive){
+    localStorage.removeItem('kebab_dev_event_active');
+  }
+  showToast('💾 Zapisano!');
 }
 function loadGame(){
   const raw=localStorage.getItem(SAVE_KEY);
@@ -1314,9 +1350,9 @@ function applyLoad(data){
   state.totalClicks=data.totalClicks||0;state.totalSpent=data.totalSpent||0;state.playTimeSeconds=data.playTimeSeconds||0;
   state.comboBonus=data.comboBonus||1;state.totalEvents=data.totalEvents||0;state.mapVisited=data.mapVisited||false;
   state.achUnlocked=new Set(data.achUnlocked||[]);reachedMilestones=new Set(data.milestones||[]);
-  (data.upgrades||[]).forEach(saved=>{const u=UPGRADES.find(x=>x.id===saved.id);if(u&&saved.bought&&!u.bought){u.bought=true;u.apply();}});
-  // Reset baseCps to original values first
+  // Reset baseCps FIRST, then apply upgrades, then set owned counts
   BUILDINGS.forEach((b,i)=>{b.baseCps=ORIG_CPS[i];b.owned=0;});
+  (data.upgrades||[]).forEach(saved=>{const u=UPGRADES.find(x=>x.id===saved.id);if(u&&saved.bought&&!u.bought){u.bought=true;u.apply();}});
   (data.buildings||[]).forEach(saved=>{const b=BUILDINGS.find(x=>x.id===saved.id);if(b)b.owned=saved.owned||0;});
   recalcCps();
   if(data.unlockedSkins)unlockedSkins=new Set(data.unlockedSkins);
@@ -1329,6 +1365,21 @@ setInterval(saveGame,30000);
 (function autoLoad(){
   const raw=localStorage.getItem(SAVE_KEY)||localStorage.getItem('kebab_v4');
   if(!raw)return;try{applyLoad(JSON.parse(raw));}catch(e){}
+  // Przywróć aktywny dev event
+  const devEv=localStorage.getItem('kebab_dev_event_active');
+  if(devEv){
+    try{
+      const ev=JSON.parse(devEv);
+      if(ev.active){
+        devEventActive=true;
+        currentEvent={...ev,timeLeft:Infinity,permanent:true};
+        setTimeout(()=>{
+          document.getElementById('eventBanner').textContent=ev.name+' ♾️';
+          document.getElementById('eventBanner').classList.add('active');
+        },100);
+      }
+    }catch(e){}
+  }
 })();
 
 render();

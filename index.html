@@ -292,6 +292,66 @@ body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
 .god-badge{position:fixed;top:62px;right:12px;background:linear-gradient(135deg,#300050,#500010);border:2px solid #ffbe00;border-radius:12px;padding:5px 10px;font-size:.72rem;font-weight:800;color:#ffbe00;z-index:999;display:none;animation:god-pulse .6s ease-in-out infinite alternate;box-shadow:0 0 20px #ffbe0044;}
 .god-badge.show{display:block;}
 @keyframes god-pulse{from{box-shadow:0 0 10px #ffbe0044}to{box-shadow:0 0 30px #c060ffaa,0 0 60px #ffbe0066}}
+/* KEBAB RUNNER */
+.runner-wrap{background:#0a0500;border:3px solid var(--accent2);border-radius:16px;overflow:hidden;margin-top:12px;position:relative;}
+#runnerCanvas{display:block;width:100%;image-rendering:pixelated;}
+.runner-hud{display:flex;justify-content:space-between;padding:8px 14px;background:#1a0800;border-bottom:2px solid var(--border);}
+.runner-stat{font-weight:800;font-size:.9rem;}
+.runner-stat span{color:var(--accent2);}
+.runner-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000a;z-index:10;}
+.runner-overlay.hidden{display:none;}
+.runner-title{font-family:'Rubik Dirt',cursive;font-size:1.8rem;color:var(--accent2);text-shadow:0 0 20px #ffbe0088;margin-bottom:8px;}
+.runner-subtitle{font-size:.85rem;color:var(--muted);margin-bottom:20px;text-align:center;}
+.runner-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;color:#000;font-family:'Rubik',sans-serif;font-weight:800;font-size:1.1rem;padding:14px 36px;cursor:pointer;margin-bottom:10px;}
+.runner-btn:hover{transform:scale(1.05);}
+.runner-score-box{background:var(--panel);border:2px solid var(--border);border-radius:10px;padding:8px 18px;text-align:center;margin-top:8px;}
+.runner-controls{display:flex;gap:10px;padding:10px;background:#1a0800;border-top:2px solid var(--border);justify-content:center;}
+.runner-ctrl-btn{background:var(--panel2);border:2px solid var(--border);border-radius:10px;color:var(--text);font-family:'Rubik',sans-serif;font-weight:700;font-size:1rem;padding:10px 20px;cursor:pointer;flex:1;max-width:140px;text-align:center;user-select:none;-webkit-tap-highlight-color:transparent;}
+.runner-ctrl-btn:active{background:var(--panel);border-color:var(--accent);}
+.runner-leaderboard{margin-top:12px;}
+/* LABORATORIUM */
+.lab-wrap{display:flex;flex-direction:column;gap:12px;margin-top:12px;}
+.lab-ingredients{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px;}
+.lab-ing{background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;transition:.2s;position:relative;}
+.lab-ing:hover{border-color:var(--accent);transform:scale(1.05);}
+.lab-ing.selected{border-color:var(--accent2);background:#1a1000;}
+.lab-ing.empty{opacity:.3;cursor:not-allowed;}
+.lab-ing-icon{font-size:1.8rem;}
+.lab-ing-name{font-size:.62rem;color:var(--muted);margin-top:3px;}
+.lab-ing-count{position:absolute;top:4px;right:6px;font-size:.65rem;font-weight:800;color:var(--accent2);}
+.lab-slots{display:flex;gap:10px;justify-content:center;margin:10px 0;}
+.lab-slot{width:64px;height:64px;background:var(--panel2);border:2px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:2rem;cursor:pointer;transition:.2s;position:relative;}
+.lab-slot.filled{border-color:var(--accent);border-style:solid;}
+.lab-slot:hover{border-color:var(--accent2);}
+.lab-slot-x{position:absolute;top:-6px;right:-6px;background:var(--red);border-radius:50%;width:18px;height:18px;font-size:.65rem;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-weight:800;}
+.lab-result{background:linear-gradient(135deg,#0a0020,#200010);border:2px solid var(--purple);border-radius:14px;padding:14px;text-align:center;}
+.lab-result-icon{font-size:3rem;margin-bottom:6px;}
+.lab-result-name{font-family:'Rubik Dirt',cursive;color:var(--accent2);font-size:1rem;}
+.lab-result-desc{font-size:.8rem;color:var(--muted);margin-top:4px;}
+.lab-brew-btn{background:linear-gradient(135deg,var(--purple),var(--accent));border:none;border-radius:12px;color:#fff;font-family:'Rubik',sans-serif;font-weight:800;font-size:1rem;padding:12px 28px;cursor:pointer;margin-top:10px;width:100%;}
+.lab-brew-btn:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
+.lab-recipes{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.lab-recipe{background:var(--panel);border:2px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.lab-recipe.discovered{border-color:var(--green);}
+.lab-recipe.undiscovered{opacity:.4;}
+/* KEBAB GIEŁDA */
+.market-wrap{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+.market-item{background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;}
+.market-item.bull{border-color:var(--green);}
+.market-item.bear{border-color:var(--red);}
+.market-price{font-size:1.1rem;font-weight:800;}
+.market-change{font-size:.78rem;font-weight:700;}
+.market-change.up{color:var(--green);}
+.market-change.down{color:var(--red);}
+.market-chart{display:flex;align-items:flex-end;gap:2px;height:32px;margin-top:4px;}
+.market-bar{width:6px;border-radius:2px 2px 0 0;min-height:4px;}
+/* LORE/HISTORIA */
+.lore-chapter{background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:14px 16px;margin-top:10px;}
+.lore-chapter.unlocked{border-color:var(--purple);}
+.lore-chapter.locked{opacity:.4;}
+.lore-title{font-family:'Rubik Dirt',cursive;color:var(--purple);font-size:.95rem;margin-bottom:6px;}
+.lore-text{font-size:.8rem;color:var(--muted);line-height:1.6;}
+.lore-req{font-size:.7rem;color:var(--accent);margin-top:4px;}
 /* STREAK SYSTEM */
 .streak-badge{background:linear-gradient(135deg,#2a0000,#1a0020);border:2px solid var(--red);border-radius:10px;padding:6px 12px;text-align:center;width:100%;}
 .streak-fire{font-size:1.4rem;}
@@ -392,6 +452,10 @@ body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
   <button class="tab-btn" id="tabBtn-codes" onclick="showTab('codes',this)">🎁 Kody</button>
   <button class="tab-btn" id="tabBtn-bank" onclick="showTab('bank',this)">🏦 Bank</button>
   <button class="tab-btn" id="tabBtn-auction" onclick="showTab('auction',this)">⚡ Aukcja</button>
+  <button class="tab-btn" id="tabBtn-market" onclick="showTab('market',this)">📈 Giełda</button>
+  <button class="tab-btn" id="tabBtn-lore" onclick="showTab('lore',this)">📖 Lore</button>
+  <button class="tab-btn" id="tabBtn-lab" onclick="showTab('lab',this)">🧪 Lab</button>
+  <button class="tab-btn" id="tabBtn-runner" onclick="showTab('runner',this)">🎮 Runner</button>
 </div>
 
 <div class="milestone-bar" id="milestoneBar"></div>
@@ -721,6 +785,92 @@ body.god-mode{animation:god-bg 1.5s ease-in-out infinite alternate;}
     <button onclick="renderAuction()" style="background:var(--panel2);border:1px solid var(--border);border-radius:7px;color:var(--muted);font-size:.75rem;padding:4px 10px;cursor:pointer;font-family:'Rubik',sans-serif;">🔄 Odśwież</button>
   </div>
   <div id="auctionList"></div>
+</div>
+
+<!-- GIEŁDA KEBABA -->
+<div class="tab-panel" id="tab-market">
+  <div class="section-title" style="margin-top:10px;">📈 Giełda Kebaba</div>
+  <p style="font-size:.78rem;color:var(--muted);margin:6px 0 10px;">Inwestuj kebaby w akcje! Kursy zmieniają się co 30 sekund.</p>
+  <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:.78rem;color:var(--muted);">💼 Portfel:</span>
+    <span style="font-weight:800;color:var(--accent2);" id="portfolioVal">0 🌯</span>
+    <button onclick="sellAllStocks()" style="background:var(--red);border:none;border-radius:7px;color:#fff;font-family:'Rubik',sans-serif;font-weight:700;font-size:.75rem;padding:5px 12px;cursor:pointer;">💵 Sprzedaj wszystko</button>
+  </div>
+  <div class="market-wrap" id="marketList"></div>
+</div>
+
+<!-- LORE -->
+<div class="tab-panel" id="tab-lore">
+  <div class="section-title" style="margin-top:10px;">📖 Historia Kebaba</div>
+  <p style="font-size:.78rem;color:var(--muted);margin:6px 0 10px;">Odkryj tajemniczą historię Kebab Klikacza zdobywając kolejne milestony!</p>
+  <div id="loreList"></div>
+</div>
+
+<!-- LABORATORIUM -->
+<div class="tab-panel" id="tab-lab">
+  <div class="section-title" style="margin-top:10px;">🧪 Laboratorium Kebaba</div>
+  <p style="font-size:.78rem;color:var(--muted);margin:6px 0 10px;">Zbieraj składniki klikając kebaba i mieszaj je żeby tworzyć ulepszenia!</p>
+
+  <div style="background:var(--panel);border:2px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+    <span style="font-size:.78rem;color:var(--muted);">🔬 Punkty badań: <strong id="researchPts" style="color:var(--purple)">0</strong></span>
+    <span style="font-size:.78rem;color:var(--muted);">🧪 Receptury: <strong id="recipesFound" style="color:var(--green)">0</strong>/12</span>
+  </div>
+
+  <div class="section-title" style="font-size:.8rem;">🫙 Składniki (kliknij żeby dodać do mieszanki)</div>
+  <div class="lab-ingredients" id="labIngredients"></div>
+
+  <div class="section-title" style="font-size:.8rem;margin-top:8px;">⚗️ Mieszanka (max 3 składniki)</div>
+  <div class="lab-slots" id="labSlots">
+    <div class="lab-slot" id="slot0" onclick="removeSlot(0)"><span id="slot0Icon">?</span></div>
+    <div class="lab-slot" id="slot1" onclick="removeSlot(1)"><span id="slot1Icon">?</span></div>
+    <div class="lab-slot" id="slot2" onclick="removeSlot(2)"><span id="slot2Icon">?</span></div>
+  </div>
+  <button class="lab-brew-btn" id="labBrewBtn" onclick="brewPotion()" disabled>🧪 Mieszaj!</button>
+
+  <div class="lab-result" id="labResultBox" style="display:none;margin-top:12px;">
+    <div class="lab-result-icon" id="labResultIcon">✨</div>
+    <div class="lab-result-name" id="labResultName"></div>
+    <div class="lab-result-desc" id="labResultDesc"></div>
+  </div>
+
+  <div class="section-title" style="font-size:.8rem;margin-top:14px;">📚 Odkryte Receptury</div>
+  <div class="lab-recipes" id="labRecipes"></div>
+</div>
+
+<!-- KEBAB RUNNER -->
+<div class="tab-panel" id="tab-runner">
+  <div class="section-title" style="margin-top:10px;">🎮 Kebab Runner</div>
+  <p style="font-size:.78rem;color:var(--muted);margin:6px 0 8px;">Skacz przez przeszkody i zbieraj kebaby! Zebrane kebaby dodają się do Twojego konta.</p>
+
+  <div class="runner-hud">
+    <div class="runner-stat">🌯 <span id="runnerKebabs">0</span></div>
+    <div class="runner-stat">📏 <span id="runnerScore">0</span>m</div>
+    <div class="runner-stat">🏆 Best: <span id="runnerBest">0</span>m</div>
+  </div>
+
+  <div class="runner-wrap">
+    <canvas id="runnerCanvas" width="800" height="220"></canvas>
+    <div class="runner-overlay" id="runnerOverlay">
+      <div class="runner-title">🌯 KEBAB RUNNER</div>
+      <div class="runner-subtitle">Skacz przez przeszkody!<br>Zbieraj kebaby 🌯<br>Unikaj szpikulców ⚡</div>
+      <button class="runner-btn" onclick="startRunner()">▶ GRAJ!</button>
+      <div class="runner-score-box" id="runnerScoreBox" style="display:none;">
+        <div style="font-size:.75rem;color:var(--muted);">Ostatni wynik</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--accent2);" id="runnerLastScore">0m</div>
+        <div style="font-size:.75rem;color:var(--green);" id="runnerKebabsEarned"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="runner-controls">
+    <button class="runner-ctrl-btn" id="runnerJumpBtn" ontouchstart="runnerJump()" onclick="runnerJump()">⬆ SKOCZ</button>
+    <button class="runner-ctrl-btn" onclick="stopRunner()" style="max-width:80px;font-size:.75rem;">⏹ Stop</button>
+  </div>
+
+  <div class="runner-leaderboard">
+    <div class="section-title" style="font-size:.85rem;margin-top:10px;">🏆 Ranking Runnera</div>
+    <div id="runnerLeaderboard" style="margin-top:8px;"></div>
+  </div>
 </div>
 
 <!-- RESET MODAL -->
@@ -2196,6 +2346,10 @@ function showTab(id,el){
   if(id==='tournament')renderTournament();
   if(id==='slot')updateSlotCost();
   if(id==='bank')renderBank();
+  if(id==='market'){renderMarket();updatePortfolio();}
+  if(id==='lore')renderLore();
+  if(id==='lab')renderLab();
+  if(id==='runner'){document.getElementById('runnerBest').textContent=RUNNER.best+'m';loadRunnerLeaderboard();}
   if(id==='auction'){if(auctionItems.length===0)generateAuction();renderAuction();}
   if(id==='quests')renderQuests();
   if(id==='season')renderSeason();
@@ -2309,6 +2463,7 @@ btn.addEventListener('click',(e)=>{
   const power=Math.floor(state.clickPower*state.prestigeBonus*evClickMult()*comboMult);
   state.kebabs=Math.min(state.kebabs+power,MAX_KEBABS);state.totalMade=Math.min(state.totalMade+power,MAX_KEBABS);state.totalClicks++;
   clicksThisPopup++;
+  tryDropIngredient();
   if(activePopupQuest&&activePopupQuest.type==='slot_spin'){}  // slot tracked separately
   if(state.totalClicks%50===0)addSeasonXp(1);
   furyCharge(1+(state.combo>5?1:0)+(godModeActive?5:0));
@@ -2476,6 +2631,7 @@ function tick(now){
   tickPopupQuest(dt);
   tickBank(dt);
   tickAuction(dt);
+  tickMarket(dt);
   // Track no-spend timer
   if(!state.noSpendTimer)state.noSpendTimer=0;
   if(state.lastSpendTime&&Date.now()-state.lastSpendTime>0)state.noSpendTimer+=dt;
@@ -3241,9 +3397,531 @@ function checkStreak(){
   }
 }
 
+// ===== GIEŁDA KEBABA =====
+const STOCKS=[
+  {id:'st1',name:'Kebab Corp',    icon:'🌯', price:1000,  history:[],owned:0},
+  {id:'st2',name:'Mięso Ltd',     icon:'🥩', price:5000,  history:[],owned:0},
+  {id:'st3',name:'Chili Ventures',icon:'🌶️', price:15000, history:[],owned:0},
+  {id:'st4',name:'Galaktyk SA',   icon:'🌌', price:100000,history:[],owned:0},
+  {id:'st5',name:'Centylion Inc', icon:'♾️', price:1e9,   history:[],owned:0},
+];
+let marketTimer=0;
+
+function tickMarket(dt){
+  marketTimer+=dt;
+  if(marketTimer<30)return;
+  marketTimer=0;
+  STOCKS.forEach(s=>{
+    const change=(Math.random()-0.45)*0.3; // lekka tendencja wzrostowa
+    s.price=Math.max(1,Math.floor(s.price*(1+change)));
+    s.history.push(change>0?1:-1);
+    if(s.history.length>12)s.history.shift();
+  });
+  if(document.getElementById('tab-market').classList.contains('active'))renderMarket();
+  updatePortfolio();
+}
+
+function updatePortfolio(){
+  const val=STOCKS.reduce((sum,s)=>sum+s.price*s.owned,0);
+  const el=document.getElementById('portfolioVal');
+  if(el)el.textContent=fmt(val)+' 🌯';
+}
+
+function buyStock(id){
+  const s=STOCKS.find(x=>x.id===id);
+  if(!s)return;
+  if(state.kebabs<s.price){showToast('❌ Za mało kebabów!');return;}
+  state.kebabs-=s.price;state.totalSpent+=s.price;s.owned++;
+  showToast('📈 Kupiono 1× '+s.name+'!');
+  renderMarket();renderCounter();
+}
+function sellStock(id){
+  const s=STOCKS.find(x=>x.id===id);
+  if(!s||s.owned<=0){showToast('❌ Nie masz akcji!');return;}
+  s.owned--;state.kebabs+=s.price;state.totalMade+=s.price;
+  showToast('💵 Sprzedano 1× '+s.name+' za '+fmt(s.price)+'!');
+  renderMarket();renderCounter();
+}
+function sellAllStocks(){
+  let total=0;
+  STOCKS.forEach(s=>{total+=s.price*s.owned;s.owned=0;});
+  if(total<=0){showToast('❌ Brak akcji!');return;}
+  state.kebabs+=total;state.totalMade+=total;
+  showToast('💵 Sprzedano wszystko za '+fmt(total)+'!');
+  renderMarket();renderCounter();
+}
+
+function renderMarket(){
+  const list=document.getElementById('marketList');
+  if(!list)return;
+  list.innerHTML=STOCKS.map(s=>{
+    const lastChange=s.history[s.history.length-1]||0;
+    const isBull=lastChange>0;
+    const changePct=((s.price/(s.history.length>0?s.price/(1+(lastChange*0.3)):s.price))-1)*100;
+    const bars=s.history.map(h=>`<div class="market-bar" style="height:${Math.random()*24+8}px;background:${h>0?'var(--green)':'var(--red)'}"></div>`).join('');
+    const canBuy=state.kebabs>=s.price;
+    return `<div class="market-item ${isBull?'bull':'bear'}">
+      <div style="font-size:1.8rem;flex-shrink:0;">${s.icon}</div>
+      <div style="flex:1;">
+        <div style="font-weight:800;font-size:.88rem;">${s.name}</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="market-price">${fmt(s.price)} 🌯</span>
+          <span class="market-change ${isBull?'up':'down'}">${isBull?'▲':'▼'} ${Math.abs(Math.round(changePct*10)/10)||'—'}%</span>
+        </div>
+        <div class="market-chart">${bars}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:center;">
+        <div style="font-size:.68rem;color:var(--muted);">Posiadasz: ${s.owned}</div>
+        <button onclick="buyStock('${s.id}')" style="background:${canBuy?'var(--green)':'var(--border)'};border:none;border-radius:7px;color:${canBuy?'#000':'var(--muted)'};font-family:'Rubik',sans-serif;font-weight:700;font-size:.72rem;padding:5px 10px;cursor:${canBuy?'pointer':'not-allowed'};">Kup</button>
+        <button onclick="sellStock('${s.id}')" style="background:${s.owned>0?'var(--red)':'var(--border)'};border:none;border-radius:7px;color:#fff;font-family:'Rubik',sans-serif;font-weight:700;font-size:.72rem;padding:5px 10px;cursor:${s.owned>0?'pointer':'not-allowed'};">Sprzedaj</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===== LORE HISTORIA =====
+const LORE_CHAPTERS=[
+  {id:'l1', req:0,      icon:'🌯', title:'Rozdział 1: Narodziny Kebaba',
+   text:'Na początku był głód. Wielki, kosmiczny głód, który trząsł fundamentami wszechświata. I wtedy — z ciemności — pojawił się KEBAB. Nikt nie wiedział skąd przyszedł. Nikt nie pytał. Klikałeś, a on rósł.'},
+  {id:'l2', req:1e4,    icon:'🔥', title:'Rozdział 2: Pierwsze Imperium',
+   text:'Gdy miałeś już 10 000 kebabów, zbudowałeś swój pierwszy Grill. Ludzie przychodzili z daleka, by skosztować Twojego dzieła. Mówili że smakuje jak sam sen. Ale Ty wiedziałeś — to dopiero początek.'},
+  {id:'l3', req:1e6,    icon:'🏪', title:'Rozdział 3: Biznes Kebabowy',
+   text:'Milion kebabów. Restauracje rosły jak grzyby po deszczu. Krytycy kulinarni płakali ze wzruszenia. Rząd zaproponował Ci medal. Odmówiłeś — byłeś zbyt zajęty klikaniem.'},
+  {id:'l4', req:1e9,    icon:'🌆', title:'Rozdział 4: Kebabopolis',
+   text:'Całe miasto pachniało kebabem. Architekci projektowali budynki w kształcie szpikulców. Dzieci śniły o mięsie. Stałeś się legendą — i nadal klikałeś.'},
+  {id:'l5', req:1e12,   icon:'🛸', title:'Rozdział 5: Kosmiczny Kebab',
+   text:'NASA skontaktowała się z prośbą. Chcieli wysłać kebaba w kosmos — jako symbol ludzkości. Twój kebab orbita Ziemię do dziś. Kosmici próbowali go skopiować, ale nie potrafili uchwycić esencji.'},
+  {id:'l6', req:1e18,   icon:'🌌', title:'Rozdział 6: Galaktyczny Klan',
+   text:'Kebab dotarł do innych galaktyk. Cywilizacje zaawansowane o miliony lat zatrzymały swój postęp technologiczny, by studiować jego strukturę. Twoje imię zapisano w Księdze Istot Kosmicznych.'},
+  {id:'l7', req:1e30,   icon:'👁️', title:'Rozdział 7: Przebudzenie Boga Kebaba',
+   text:'Zaszedłeś tak daleko, że stary Bóg Kebaba — śpiący od początku czasu — otworzył jedno oko. Spojrzał na Ciebie. Skinął głową. I znowu zasnął, bo wiedział że jesteś w dobrych rękach.'},
+  {id:'l8', req:1e100,  icon:'♾️', title:'Rozdział 8: Centylion — Koniec i Początek',
+   text:'Googol kebabów. Na tym poziomie liczby tracą sens. Fizycy twierdzą że masz więcej kebabów niż atomów we wszechświecie. Matematycy złożyli rezygnację. A Ty? Nadal klikasz. Bo kebab to nie cel — to droga.'},
+];
+
+function renderLore(){
+  const list=document.getElementById('loreList');
+  if(!list)return;
+  list.innerHTML=LORE_CHAPTERS.map(ch=>{
+    const unlocked=state.totalMade>=ch.req;
+    return `<div class="lore-chapter ${unlocked?'unlocked':'locked'}">
+      <div class="lore-title">${ch.icon} ${ch.title}</div>
+      ${unlocked
+        ?`<div class="lore-text">${ch.text}</div>`
+        :`<div class="lore-text" style="font-style:italic;">??? Rozdział zablokowany ???</div>
+          <div class="lore-req">Odblokuj mając ${fmt(ch.req)} kebabów łącznie</div>`
+      }
+    </div>`;
+  }).join('');
+}
+
+// ===== LABORATORIUM =====
+const LAB_INGREDIENTS=[
+  {id:'i1', icon:'🥩', name:'Mięso',       dropChance:0.08},
+  {id:'i2', icon:'🌶️', name:'Chili',       dropChance:0.07},
+  {id:'i3', icon:'🧅', name:'Cebula',      dropChance:0.09},
+  {id:'i4', icon:'🧄', name:'Czosnek',     dropChance:0.06},
+  {id:'i5', icon:'🍅', name:'Pomidor',     dropChance:0.07},
+  {id:'i6', icon:'🧀', name:'Ser',         dropChance:0.05},
+  {id:'i7', icon:'✨', name:'Złoty Proszek',dropChance:0.03},
+  {id:'i8', icon:'💎', name:'Kryształ',    dropChance:0.02},
+  {id:'i9', icon:'🔥', name:'Ogień',       dropChance:0.04},
+  {id:'i10',icon:'🌿', name:'Zioła',       dropChance:0.06},
+  {id:'i11',icon:'⚡', name:'Energia',     dropChance:0.03},
+  {id:'i12',icon:'🌙', name:'Moonstone',   dropChance:0.01},
+];
+
+const LAB_RECIPES=[
+  {id:'r1',  name:'Turbo Mięso',    icon:'🥩⚡', desc:'+50% klik na 60s',   combo:['i1','i1','i11'], effect:()=>{state.clickPower*=1.5;setTimeout(()=>{state.clickPower/=1.5;},60000);}},
+  {id:'r2',  name:'Ognisty Sos',    icon:'🌶️🔥', desc:'+100% CPS na 60s',  combo:['i2','i9','i9'],  effect:()=>{BUILDINGS.forEach(b=>b.baseCps*=2);recalcCps();setTimeout(()=>{BUILDINGS.forEach(b=>b.baseCps/=2);recalcCps();},60000);}},
+  {id:'r3',  name:'Złoty Kebab',    icon:'✨🌯', desc:'+1M kebabów',         combo:['i7','i1','i3'],  effect:()=>{state.kebabs+=1e6;state.totalMade+=1e6;renderCounter();}},
+  {id:'r4',  name:'Diamentowy Sos', icon:'💎✨', desc:'+10M kebabów',        combo:['i8','i7','i7'],  effect:()=>{state.kebabs+=1e7;state.totalMade+=1e7;renderCounter();}},
+  {id:'r5',  name:'Combo Eliksir',  icon:'🔥⚡', desc:'Combo ×20 na 30s',   combo:['i9','i11','i11'],effect:()=>{state.combo=20;state.comboTimer=30;}},
+  {id:'r6',  name:'Warzywny Mix',   icon:'🧅🍅', desc:'+200K kebabów',       combo:['i3','i5','i10'], effect:()=>{state.kebabs+=2e5;state.totalMade+=2e5;renderCounter();}},
+  {id:'r7',  name:'Serowy Boom',    icon:'🧀💥', desc:'×3 prestige bonus 30s',combo:['i6','i6','i7'], effect:()=>{const old=state.prestigeBonus;state.prestigeBonus*=3;setTimeout(()=>{state.prestigeBonus=old;},30000);}},
+  {id:'r8',  name:'Magiczny Kebab', icon:'🌙✨', desc:'+1B kebabów',          combo:['i12','i7','i8'], effect:()=>{state.kebabs+=1e9;state.totalMade+=1e9;renderCounter();}},
+  {id:'r9',  name:'Czosnkowy Buff', icon:'🧄⚡', desc:'+10% CPS permanentnie',combo:['i4','i4','i11'],effect:()=>{BUILDINGS.forEach(b=>b.baseCps*=1.1);recalcCps();}},
+  {id:'r10', name:'Moonshine Kebab',icon:'🌙🔥', desc:'×50 na 10s',           combo:['i12','i9','i12'],effect:()=>{currentEvent={name:'🌙 Moonshine!',desc:'×50 10s',mult:50,type:'all',timeLeft:10};document.getElementById('eventBanner').textContent='🌙 Moonshine Kebab! ×50 10s';document.getElementById('eventBanner').classList.add('active');}},
+  {id:'r11', name:'Zioła Życia',    icon:'🌿💚', desc:'+5% offline bonus',    combo:['i10','i10','i10'],effect:()=>{showToast('🌿 Offline bonus +5% permanentnie!');}},
+  {id:'r12', name:'Centylion Esencja',icon:'⚡💎',desc:'+100B kebabów!',      combo:['i11','i8','i12'],effect:()=>{state.kebabs+=1e11;state.totalMade+=1e11;renderCounter();}},
+];
+
+let labIngCounts={};
+let labSlots=[null,null,null];
+let labDiscovered=new Set();
+let researchPts=0;
+
+// Drop ingredients on click
+function tryDropIngredient(){
+  LAB_INGREDIENTS.forEach(ing=>{
+    if(Math.random()<ing.dropChance*0.1){
+      labIngCounts[ing.id]=(labIngCounts[ing.id]||0)+1;
+      researchPts++;
+      if(document.getElementById('tab-lab').classList.contains('active'))renderLab();
+    }
+  });
+  document.getElementById('researchPts').textContent=researchPts;
+}
+
+function addToSlot(ingId){
+  const filled=labSlots.filter(s=>s!==null).length;
+  if(filled>=3){showToast('❌ Max 3 składniki!');return;}
+  const count=labIngCounts[ingId]||0;
+  if(count<=0){showToast('❌ Brak tego składnika!');return;}
+  const emptyIdx=labSlots.indexOf(null);
+  labSlots[emptyIdx]=ingId;
+  labIngCounts[ingId]--;
+  renderLab();
+}
+
+function removeSlot(idx){
+  const id=labSlots[idx];
+  if(!id)return;
+  labIngCounts[id]=(labIngCounts[id]||0)+1;
+  labSlots[idx]=null;
+  renderLab();
+}
+
+function brewPotion(){
+  const filled=labSlots.filter(s=>s!==null);
+  if(filled.length<2){showToast('❌ Dodaj co najmniej 2 składniki!');return;}
+  const sorted=[...filled].sort();
+  const recipe=LAB_RECIPES.find(r=>{
+    const rc=[...r.combo].sort();
+    return rc.length===sorted.length&&rc.every((v,i)=>v===sorted[i]);
+  });
+  const box=document.getElementById('labResultBox');
+  if(recipe){
+    recipe.effect();
+    labDiscovered.add(recipe.id);
+    researchPts+=50;
+    document.getElementById('labResultIcon').textContent=recipe.icon;
+    document.getElementById('labResultName').textContent=recipe.name;
+    document.getElementById('labResultDesc').textContent='✅ '+recipe.desc;
+    box.style.display='block';
+    box.style.borderColor='var(--green)';
+    showToast('🧪 Stworzono: '+recipe.name+'!');
+  } else {
+    document.getElementById('labResultIcon').textContent='💨';
+    document.getElementById('labResultName').textContent='Nieznana mieszanka';
+    document.getElementById('labResultDesc').textContent='Ta kombinacja nic nie robi... spróbuj czegoś innego!';
+    box.style.display='block';
+    box.style.borderColor='var(--red)';
+    researchPts+=5;
+  }
+  labSlots=[null,null,null];
+  renderLab();
+}
+
+function renderLab(){
+  // Ingredients
+  const ingEl=document.getElementById('labIngredients');
+  if(ingEl){
+    ingEl.innerHTML=LAB_INGREDIENTS.map(ing=>{
+      const count=labIngCounts[ing.id]||0;
+      return `<div class="lab-ing ${count<=0?'empty':''}" onclick="addToSlot('${ing.id}')">
+        ${count>0?`<div class="lab-ing-count">${count}</div>`:''}
+        <div class="lab-ing-icon">${ing.icon}</div>
+        <div class="lab-ing-name">${ing.name}</div>
+      </div>`;
+    }).join('');
+  }
+  // Slots
+  for(let i=0;i<3;i++){
+    const slot=document.getElementById('slot'+i);
+    const icon=document.getElementById('slot'+i+'Icon');
+    const id=labSlots[i];
+    if(id){
+      const ing=LAB_INGREDIENTS.find(x=>x.id===id);
+      slot.classList.add('filled');
+      icon.textContent=ing?ing.icon:'?';
+    } else {
+      slot.classList.remove('filled');
+      icon.textContent='?';
+    }
+  }
+  // Brew button
+  const btn=document.getElementById('labBrewBtn');
+  const filled=labSlots.filter(s=>s!==null).length;
+  if(btn)btn.disabled=filled<2;
+  // Research pts
+  const rp=document.getElementById('researchPts');
+  if(rp)rp.textContent=researchPts;
+  const rf=document.getElementById('recipesFound');
+  if(rf)rf.textContent=labDiscovered.size+'/'+LAB_RECIPES.length;
+  // Recipes list
+  const recEl=document.getElementById('labRecipes');
+  if(recEl){
+    recEl.innerHTML=LAB_RECIPES.map(r=>{
+      const found=labDiscovered.has(r.id);
+      return `<div class="lab-recipe ${found?'discovered':'undiscovered'}">
+        <div style="font-size:1.4rem;flex-shrink:0;">${found?r.icon:'❓'}</div>
+        <div style="flex:1;">
+          <div style="font-weight:800;font-size:.85rem;">${found?r.name:'???'}</div>
+          <div style="font-size:.72rem;color:var(--muted);">${found?r.desc:'Nieodkryta receptura'}</div>
+          ${found?`<div style="font-size:.65rem;color:var(--accent);margin-top:2px;">Składniki: ${r.combo.map(id=>LAB_INGREDIENTS.find(x=>x.id===id)?.icon||'?').join(' + ')}</div>`:''}
+        </div>
+        ${found?'<div style="color:var(--green);font-size:.8rem;">✅</div>':''}
+      </div>`;
+    }).join('');
+  }
+}
+
+// ===== KEBAB RUNNER =====
+const RUNNER={
+  active:false, raf:null,
+  score:0, best:parseInt(localStorage.getItem('runner_best')||'0'),
+  kebabsCollected:0,
+  speed:4, gravity:0.6, groundY:170,
+  player:{x:80,y:170,vy:0,w:36,h:40,jumping:false,doubleJump:true},
+  obstacles:[],obstacleCooldown:0,
+  coins:[],
+  particles:[],
+  bg:{x:0},
+  frameCount:0,
+  lastTime:0,
+};
+
+function startRunner(){
+  const cv=document.getElementById('runnerCanvas');
+  if(!cv)return;
+  cv.width=cv.offsetWidth;
+  RUNNER.active=true;
+  RUNNER.score=0;RUNNER.kebabsCollected=0;RUNNER.speed=4;RUNNER.frameCount=0;
+  RUNNER.player={x:80,y:RUNNER.groundY,vy:0,w:36,h:40,jumping:false,doubleJump:true};
+  RUNNER.obstacles=[];RUNNER.coins=[];RUNNER.particles=[];
+  RUNNER.obstacleCooldown=60;
+  document.getElementById('runnerOverlay').classList.add('hidden');
+  document.getElementById('runnerKebabs').textContent='0';
+  document.getElementById('runnerScore').textContent='0';
+  if(RUNNER.raf)cancelAnimationFrame(RUNNER.raf);
+  RUNNER.lastTime=performance.now();
+  runnerLoop(performance.now());
+}
+
+function stopRunner(){
+  RUNNER.active=false;
+  if(RUNNER.raf)cancelAnimationFrame(RUNNER.raf);
+  showRunnerGameOver();
+}
+
+function runnerJump(){
+  if(!RUNNER.active)return;
+  const p=RUNNER.player;
+  if(!p.jumping){p.vy=-12;p.jumping=true;RUNNER.doubleJump=true;}
+  else if(RUNNER.doubleJump){p.vy=-10;RUNNER.doubleJump=false;}
+}
+
+function runnerLoop(ts){
+  if(!RUNNER.active)return;
+  RUNNER.raf=requestAnimationFrame(runnerLoop);
+  const dt=Math.min((ts-RUNNER.lastTime)/16.67,3);
+  RUNNER.lastTime=ts;
+  updateRunner(dt);
+  drawRunner();
+}
+
+function updateRunner(dt){
+  const R=RUNNER;
+  R.frameCount++;
+  R.score=Math.floor(R.frameCount/6);
+  R.speed=Math.min(14,4+R.score/200);
+
+  // Player physics
+  const p=R.player;
+  p.vy+=R.gravity*dt;
+  p.y+=p.vy*dt;
+  if(p.y>=R.groundY){p.y=R.groundY;p.vy=0;p.jumping=false;R.doubleJump=true;}
+
+  // Obstacles
+  R.obstacleCooldown-=dt;
+  if(R.obstacleCooldown<=0){
+    const types=[
+      {w:20,h:40,icon:'⚡'},{w:30,h:60,icon:'🗡️'},
+      {w:18,h:80,icon:'🌶️'},{w:40,h:30,icon:'🧱'},
+    ];
+    const t=types[Math.floor(Math.random()*types.length)];
+    const cv=document.getElementById('runnerCanvas');
+    R.obstacles.push({x:cv.width+20,y:R.groundY+p.h-t.h,w:t.w,h:t.h,icon:t.icon});
+    R.obstacleCooldown=Math.max(35,80-R.score/10)+Math.random()*30;
+    // Spawn coin
+    if(Math.random()<0.6){
+      const cx=cv.width+Math.random()*200+100;
+      const cy=R.groundY-Math.random()*90-20;
+      R.coins.push({x:cx,y:cy,collected:false,bounce:0});
+    }
+  }
+
+  // Move obstacles
+  R.obstacles.forEach(o=>{o.x-=R.speed*dt;});
+  R.obstacles=R.obstacles.filter(o=>o.x>-50);
+
+  // Move coins
+  R.coins.forEach(c=>{c.x-=R.speed*dt;c.bounce+=0.1;});
+  R.coins=R.coins.filter(c=>c.x>-20&&!c.collected);
+
+  // Collision — obstacles
+  R.obstacles.forEach(o=>{
+    if(p.x+p.w-8>o.x+4&&p.x+8<o.x+o.w-4&&p.y+p.h-4>o.y+4&&p.y+4<o.y+o.h){
+      R.active=false;
+      if(R.raf)cancelAnimationFrame(R.raf);
+      showRunnerGameOver();
+    }
+  });
+
+  // Collision — coins
+  R.coins.forEach(c=>{
+    if(!c.collected&&p.x+p.w>c.x-16&&p.x<c.x+16&&p.y+p.h>c.y-16&&p.y<c.y+16){
+      c.collected=true;R.kebabsCollected++;
+      // Particle
+      R.particles.push({x:c.x,y:c.y,vx:(Math.random()-0.5)*4,vy:-Math.random()*4-2,life:1});
+    }
+  });
+
+  // Particles
+  R.particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.2;p.life-=0.04;});
+  R.particles=R.particles.filter(p=>p.life>0);
+
+  // Update HUD
+  document.getElementById('runnerKebabs').textContent=R.kebabsCollected;
+  document.getElementById('runnerScore').textContent=R.score;
+}
+
+function drawRunner(){
+  const cv=document.getElementById('runnerCanvas');
+  const ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height;
+  const R=RUNNER;
+  const p=R.player;
+
+  // Sky gradient
+  const sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#1a0800');
+  sky.addColorStop(1,'#3d1200');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+
+  // Stars
+  ctx.fillStyle='rgba(255,220,100,0.4)';
+  for(let i=0;i<20;i++){
+    const sx=(i*137+R.frameCount*0.2)%W;
+    const sy=(i*71)%(R.groundY-20);
+    ctx.fillRect(sx,sy,2,2);
+  }
+
+  // Ground
+  ctx.fillStyle='#3d1a00';
+  ctx.fillRect(0,R.groundY+p.h,W,H-R.groundY-p.h);
+  ctx.fillStyle='#5a2e00';
+  ctx.fillRect(0,R.groundY+p.h,W,4);
+  // Ground pattern
+  ctx.fillStyle='#4a2200';
+  for(let i=0;i<20;i++){
+    const gx=((i*60-R.frameCount*R.speed*0.5)%W+W)%W;
+    ctx.fillRect(gx,R.groundY+p.h+2,30,2);
+  }
+
+  // Draw coins
+  R.coins.forEach(c=>{
+    if(c.collected)return;
+    const bounce=Math.sin(c.bounce)*4;
+    ctx.font='20px serif';
+    ctx.textAlign='center';
+    ctx.fillText('🌯',c.x,c.y+bounce);
+  });
+
+  // Draw obstacles
+  R.obstacles.forEach(o=>{
+    ctx.font=o.h>50?'36px serif':'24px serif';
+    ctx.textAlign='center';
+    ctx.fillText(o.icon,o.x+o.w/2,o.y+o.h*0.8);
+  });
+
+  // Draw player (kebab character)
+  ctx.font='36px serif';
+  ctx.textAlign='center';
+  ctx.fillText('🌯',p.x+p.w/2,p.y+p.h-2);
+
+  // Draw particles
+  R.particles.forEach(pt=>{
+    ctx.globalAlpha=pt.life;
+    ctx.font='16px serif';
+    ctx.fillText('✨',pt.x,pt.y);
+    ctx.globalAlpha=1;
+  });
+
+  // Speed indicator
+  ctx.fillStyle='rgba(255,150,0,0.6)';
+  ctx.font='bold 11px Rubik,sans-serif';
+  ctx.textAlign='right';
+  ctx.fillText('×'+R.speed.toFixed(1),W-8,18);
+
+  // Combo text if many kebabs
+  if(R.kebabsCollected>=5){
+    ctx.fillStyle='rgba(255,190,0,0.8)';
+    ctx.font='bold 13px Rubik,sans-serif';
+    ctx.textAlign='left';
+    ctx.fillText('🌯 ×'+R.kebabsCollected,8,20);
+  }
+  ctx.textAlign='left';
+}
+
+async function showRunnerGameOver(){
+  const R=RUNNER;
+  const reward=R.kebabsCollected*Math.max(1,Math.floor(state.totalMade*0.001+1));
+  state.kebabs+=reward;state.totalMade+=reward;
+
+  if(R.score>R.best){
+    R.best=R.score;
+    localStorage.setItem('runner_best',R.best);
+    document.getElementById('runnerBest').textContent=R.best+'m';
+    // Submit to Firebase
+    const nick=localStorage.getItem('kebab_my_nick')||'Anonim';
+    try{
+      const key=nick.replace(/[^a-zA-Z0-9_]/g,'_');
+      const prev=await fbGet('/runner/'+key).catch(()=>null);
+      if(!prev||R.score>prev.score){
+        await fbSet('/runner/'+key,{nick,score:R.score,date:Date.now()});
+      }
+    }catch(e){}
+  }
+
+  document.getElementById('runnerOverlay').classList.remove('hidden');
+  const sb=document.getElementById('runnerScoreBox');
+  sb.style.display='block';
+  document.getElementById('runnerLastScore').textContent=R.score+'m';
+  document.getElementById('runnerKebabsEarned').textContent='+'+fmt(reward)+' kebabów zarobione!';
+  renderCounter();
+  loadRunnerLeaderboard();
+}
+
+async function loadRunnerLeaderboard(){
+  const el=document.getElementById('runnerLeaderboard');
+  if(!el)return;
+  el.innerHTML='<div style="color:var(--muted);font-size:.8rem;">⏳ Ładowanie...</div>';
+  try{
+    const data=await fbGet('/runner');
+    if(!data){el.innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;">Brak wyników!</div>';return;}
+    const scores=Object.values(data).sort((a,b)=>b.score-a.score).slice(0,10);
+    const myNick=localStorage.getItem('kebab_my_nick')||'';
+    const medals=['🥇','🥈','🥉'];
+    el.innerHTML='<table style="width:100%;border-collapse:collapse;">'+
+      scores.map((s,i)=>`<tr style="${s.nick===myNick?'color:var(--accent2);font-weight:800;':''}">
+        <td style="padding:5px 6px;font-size:.8rem;">${medals[i]||i+1}</td>
+        <td style="padding:5px 6px;font-size:.8rem;">${s.nick}${s.nick===myNick?' 👈':''}</td>
+        <td style="padding:5px 6px;font-size:.8rem;text-align:right;color:var(--accent2);">${s.score}m</td>
+      </tr>`).join('')+
+      '</table>';
+  }catch(e){el.innerHTML='<div style="color:var(--red);font-size:.8rem;">Błąd ładowania</div>';}
+}
+
+// Keyboard support
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();runnerJump();}
+});
+
 const SAVE_KEY='kebab_v5';
 function saveGame(){
-  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,lastOnline:Date.now(),achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned})),milestones:[...reachedMilestones],bankDeposited,bankLoanAmount,bankLoanTs,slotSpins:state.slotSpins||0,auctionBought:state.auctionBought||0,unlockedSkins:[...unlockedSkins],activeSkin,questProgress,seasonXp,seasonClaimed:[...seasonClaimed]};
+  const data={kebabs:state.kebabs,totalMade:state.totalMade,clickPower:state.clickPower,prestigeLevel:state.prestigeLevel,prestigeBonus:state.prestigeBonus,totalClicks:state.totalClicks,totalSpent:state.totalSpent,playTimeSeconds:state.playTimeSeconds+Math.floor((Date.now()-state.sessionStart)/1000),totalEvents:state.totalEvents,lastOnline:Date.now(),achUnlocked:[...state.achUnlocked],mapVisited:state.mapVisited||false,upgrades:UPGRADES.map(u=>({id:u.id,bought:u.bought})),buildings:BUILDINGS.map(b=>({id:b.id,owned:b.owned})),milestones:[...reachedMilestones],stocks:STOCKS.map(s=>({id:s.id,price:s.price,owned:s.owned,history:s.history})),labIngCounts,labDiscovered:[...labDiscovered],researchPts,bankDeposited,bankLoanAmount,bankLoanTs,slotSpins:state.slotSpins||0,auctionBought:state.auctionBought||0,unlockedSkins:[...unlockedSkins],activeSkin,questProgress,seasonXp,seasonClaimed:[...seasonClaimed]};
   localStorage.setItem(SAVE_KEY,JSON.stringify(data));
   // Zapisz aktywny dev event osobno
   if(devEventActive&&currentEvent&&currentEvent.permanent){
@@ -3287,6 +3965,10 @@ function applyLoad(data){
   if(data.questProgress)questProgress=data.questProgress;
   if(data.seasonXp)seasonXp=data.seasonXp;
   if(data.seasonClaimed)seasonClaimed=new Set(data.seasonClaimed);
+  if(data.stocks)data.stocks.forEach(saved=>{const s=STOCKS.find(x=>x.id===saved.id);if(s){s.price=saved.price||s.price;s.owned=saved.owned||0;s.history=saved.history||[];}});
+  if(data.labIngCounts)labIngCounts=data.labIngCounts;
+  if(data.labDiscovered)labDiscovered=new Set(data.labDiscovered);
+  if(data.researchPts)researchPts=data.researchPts;
   if(data.bankDeposited)bankDeposited=data.bankDeposited;
   if(data.bankLoanAmount)bankLoanAmount=data.bankLoanAmount;
   if(data.bankLoanTs)bankLoanTs=data.bankLoanTs;

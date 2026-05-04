@@ -1454,7 +1454,7 @@ function closePwModal(){document.getElementById('pwModal').classList.remove('sho
 document.addEventListener('keydown',(e)=>{
   if(document.getElementById('pwModal').classList.contains('show')&&e.key==='Enter')checkPw();
 });
-const DEV_PASSWORD_2='';
+const DEV_PASSWORD_2='turek';
 let devUser='';
 function checkPw(){
   const val=document.getElementById('pwInput').value;
@@ -1473,18 +1473,18 @@ function checkPw(){
       updateDevPanelForUser();
     }
   } else if(val===DEV_PASSWORD_2){
-    devUser='piotr';
-    sessionStorage.setItem('kebab_dev_user','piotr');
+    devUser='milosz';
+    sessionStorage.setItem('kebab_dev_user','milosz');
     closePwModal();
     if(!devMode){
       devMode=true;
       document.getElementById('devBadge').classList.add('show');
       buildDevEventList();
-      showToast('🔧 Dev Mode aktywny! Witaj, Piotrze! 👋');
+      showToast('🔧 Dev Mode aktywny! Witaj, Miloszu! 👋');
     } else {
       document.getElementById('devPanel').classList.toggle('show');
     }
-    // Ukryj globalny send i wiadomości dla Piotra
+    // Ukryj globalny send i wiadomości dla milosza
     updateDevPanelForUser();
   } else {
     document.getElementById('pwError').textContent='❌ Złe hasło!';
@@ -1495,7 +1495,7 @@ function updateDevPanelForUser(){
   // Obaj mają pełny dostęp
   document.querySelectorAll('.dev-global-only').forEach(el=>{el.style.display='';});
   const lbl=document.getElementById('devUserLabel');
-  if(lbl)lbl.textContent='Zalogowany jako: '+(devUser==='szymon'?'Szymon 👑':'Piotr 👋');
+  if(lbl)lbl.textContent='Zalogowany jako: '+(devUser==='szymon'?'Szymon 👑':'milosz 👋');
 }
 
 // ===== DEV FUNCTIONS =====

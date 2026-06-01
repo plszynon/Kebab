@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logowanie — Kebab Clicker</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&family=Rubik+Dirt&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    background:#0d0d0d;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Rubik',sans-serif;
+    overflow:hidden;
+  }
+
+  /* Animowane tło */
+  .bg{
+    position:fixed;inset:0;
+    background:radial-gradient(ellipse at 20% 50%,#1a0030 0%,transparent 60%),
+               radial-gradient(ellipse at 80% 50%,#002a00 0%,transparent 60%),
+               #0d0d0d;
+    z-index:0;
+  }
+  .bg-glow{
+    position:fixed;inset:0;z-index:0;
+    background:radial-gradient(circle at 50% 50%,rgba(145,71,255,.08) 0%,transparent 70%);
+    animation:pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+
+  .card{
+    position:relative;z-index:1;
+    background:rgba(20,10,35,.95);
+    border:2px solid #9147ff;
+    border-radius:24px;
+    padding:48px 40px 40px;
+    max-width:420px;width:90%;
+    text-align:center;
+    box-shadow:0 0 60px rgba(145,71,255,.35), 0 0 120px rgba(145,71,255,.12);
+    animation:slideIn .5s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes slideIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+  .kebab-icon{font-size:3rem;margin-bottom:8px;display:block;animation:spin 2s ease-out;}
+  @keyframes spin{from{transform:rotate(-20deg) scale(.5)}to{transform:rotate(0deg) scale(1)}}
+
+  .platform-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(145,71,255,.15);
+    border:1.5px solid #9147ff;
+    border-radius:30px;
+    padding:7px 18px;
+    margin-bottom:24px;
+    font-size:.85rem;font-weight:700;color:#9147ff;
+  }
+  .platform-badge svg{flex-shrink:0;}
+
+  h1{
+    font-family:'Rubik Dirt',cursive;
+    font-size:1.7rem;
+    color:#fff;
+    margin-bottom:10px;
+    line-height:1.2;
+  }
+  h1 span{color:#9147ff;}
+
+  .subtitle{
+    font-size:.9rem;color:#aaa;margin-bottom:28px;line-height:1.5;
+  }
+  .subtitle strong{color:#fff;}
+
+  .success-icon{
+    width:64px;height:64px;
+    background:linear-gradient(135deg,#1a0030,#2a0050);
+    border:2px solid #6fcf45;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 20px;
+    font-size:1.8rem;
+    box-shadow:0 0 24px rgba(111,207,69,.4);
+    animation:checkPop .6s .3s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes checkPop{from{transform:scale(0)}to{transform:scale(1)}}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    width:100%;
+    background:linear-gradient(135deg,#9147ff,#6a1fd1);
+    border:none;border-radius:14px;
+    color:#fff;font-family:'Rubik',sans-serif;font-weight:800;font-size:1rem;
+    padding:15px 24px;
+    cursor:pointer;
+    text-decoration:none;
+    transition:transform .15s,box-shadow .15s;
+    box-shadow:0 4px 24px rgba(145,71,255,.45);
+    margin-bottom:12px;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(145,71,255,.6);}
+  .btn:active{transform:translateY(0);}
+
+  .countdown{
+    font-size:.8rem;color:#666;
+    margin-top:4px;
+  }
+  .countdown span{color:#9147ff;font-weight:700;}
+
+  /* Error state */
+  .card.error{border-color:#ff4444;}
+  .card.error .success-icon{border-color:#ff4444;box-shadow:0 0 24px rgba(255,68,68,.4);}
+  .card.error .btn{background:linear-gradient(135deg,#ff4444,#cc0000);box-shadow:0 4px 24px rgba(255,68,68,.4);}
+  .card.error .btn:hover{box-shadow:0 8px 32px rgba(255,68,68,.6);}
+  .card.error .platform-badge{border-color:#ff4444;color:#ff4444;background:rgba(255,68,68,.1);}
+
+  /* Loading state */
+  .spinner{
+    width:40px;height:40px;
+    border:3px solid rgba(145,71,255,.2);
+    border-top-color:#9147ff;
+    border-radius:50%;
+    margin:0 auto 20px;
+    animation:spin2 .8s linear infinite;
+  }
+  @keyframes spin2{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="bg-glow"></div>
+
+<div class="card" id="card">
+  <span class="kebab-icon">🌯</span>
+  <div class="spinner" id="spinner"></div>
+  <h1 id="title">Łączenie konta...</h1>
+  <p class="subtitle" id="subtitle">Proszę czekać, weryfikujemy Twoje konto.</p>
+</div>
+
+<script>
+const TWITCH_CLIENT_ID = '6o92ms93sezoirikzyg6blxyy9ibsu';
+const GAME_URL = 'https://plszynon.github.io/Kebab';
+
+let countdown = 5;
+let timer = null;
+
+function startCountdown() {
+  const el = document.getElementById('countdown-num');
+  if (!el) return;
+  timer = setInterval(() => {
+    countdown--;
+    if (el) el.textContent = countdown;
+    if (countdown <= 0) {
+      clearInterval(timer);
+      redirect();
+    }
+  }, 1000);
+}
+
+function redirect() {
+  window.location.href = GAME_URL;
+}
+
+function showSuccess(platform, nick) {
+  const card = document.getElementById('card');
+  const spinner = document.getElementById('spinner');
+  spinner.remove();
+
+  const platformLabel = platform === 'twitch' ? 'Twitch' : platform;
+  const platformColor = platform === 'twitch' ? '#9147ff' : '#00b0f4';
+  const platformIcon = platform === 'twitch'
+    ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="${platformColor}"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714z"/></svg>`
+    : '🔗';
+
+  card.innerHTML = `
+    <span class="kebab-icon">🌯</span>
+    <div class="platform-badge">
+      ${platformIcon}
+      Pomyślnie zalogowano z ${platformLabel}
+    </div>
+    <div class="success-icon">✅</div>
+    <h1>Witaj, <span>${nick}</span>!</h1>
+    <p class="subtitle">Konto <strong>${platformLabel}</strong> zostało pomyślnie połączone z Kebab Clickerem.</p>
+    <a href="${GAME_URL}" class="btn" onclick="clearInterval(timer)">
+      🌯 Wróć do Kebab Clickera
+    </a>
+    <p class="countdown">Automatyczne przekierowanie za <span id="countdown-num">${countdown}</span>s</p>
+  `;
+
+  startCountdown();
+}
+
+function showError(msg) {
+  const card = document.getElementById('card');
+  const spinner = document.getElementById('spinner');
+  spinner.remove();
+  card.classList.add('error');
+
+  card.innerHTML = `
+    <span class="kebab-icon">🌯</span>
+    <div class="platform-badge">❌ Błąd logowania</div>
+    <div class="success-icon">❌</div>
+    <h1 style="color:#ff6666;">Coś poszło nie tak</h1>
+    <p class="subtitle">${msg}</p>
+    <a href="${GAME_URL}" class="btn">🌯 Wróć do Kebab Clickera</a>
+  `;
+}
+
+async function handleCallback() {
+  const hash = window.location.hash;
+
+  // Obsługa błędów od Twitcha (np. user odrzucił)
+  const errorParam = new URLSearchParams(window.location.search).get('error');
+  if (errorParam) {
+    const desc = new URLSearchParams(window.location.search).get('error_description') || errorParam;
+    showError('Autoryzacja odrzucona: ' + decodeURIComponent(desc.replace(/\+/g,' ')));
+    return;
+  }
+
+  if (!hash || !hash.includes('access_token=')) {
+    showError('Brak tokena autoryzacji. Spróbuj zalogować się ponownie.');
+    return;
+  }
+
+  const params = new URLSearchParams(hash.substring(1));
+  const accessToken = params.get('access_token');
+  if (!accessToken) {
+    showError('Token autoryzacji jest pusty.');
+    return;
+  }
+
+  // Wyczyść hash
+  history.replaceState(null, '', window.location.pathname);
+
+  // Odczytaj dane z localStorage (zapisane przed redirect)
+  const savedUserKey = localStorage.getItem('twitch_oauth_userkey');
+  const savedTs = parseInt(localStorage.getItem('twitch_oauth_ts') || '0');
+  localStorage.removeItem('twitch_oauth_state');
+  localStorage.removeItem('twitch_oauth_userkey');
+  localStorage.removeItem('twitch_oauth_ts');
+
+  if (!savedUserKey || Date.now() - savedTs > 600000) {
+    showError('Sesja wygasła (ponad 10 minut). Spróbuj ponownie z poziomu gry.');
+    return;
+  }
+
+  try {
+    // Waliduj token i pobierz login
+    const resp = await fetch('https://id.twitch.tv/oauth2/validate', {
+      headers: { 'Authorization': 'OAuth ' + accessToken }
+    });
+    if (!resp.ok) throw new Error('Token nieprawidłowy (status ' + resp.status + ')');
+    const data = await resp.json();
+    if (!data.login) throw new Error('Brak loginu w odpowiedzi Twitcha');
+
+    const twitchNick = data.login;
+
+    // Zapisz do localStorage — gra odczyta po powrocie
+    localStorage.setItem('twitch_pending_nick', twitchNick);
+    localStorage.setItem('twitch_pending_userkey', savedUserKey);
+    localStorage.setItem('twitch_pending_ts', Date.now().toString());
+
+    showSuccess('twitch', twitchNick);
+
+  } catch(e) {
+    showError('Błąd weryfikacji: ' + e.message);
+  }
+}
+
+handleCallback();
+</script>
+</body>
+</html>

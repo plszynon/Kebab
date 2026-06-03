@@ -2,7 +2,8 @@
   "name": "Kebab Clicker",
   "short_name": "Kebab",
   "description": "Klikaj kebaby i zostań Bogiem Kebaba!",
-  "start_url": "/",
+  "start_url": "/Kebab/",
+  "scope": "/Kebab/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#1a0a00",
@@ -20,14 +21,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "narrow"
     }
   ],
   "categories": ["games", "entertainment"],
